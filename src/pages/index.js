@@ -1,14 +1,16 @@
-import Image from "next/image";
-import { Inter } from "next/font/google";
-
-const inter = Inter({ subsets: ["latin"] });
-
 export default function Home() {
   return (
-    <main
-      className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
-    >
-      <h1>Hi :)</h1>
-    </main>
+    <div className="h-screen flex flex-col justify-center items-center gap-28">
+      <h1 className="text-5xl font-bold	">Create collaborative tier lists</h1>
+      <div className="w-full flex flex-col items-center">
+        <button className="border block w-full font-bold">Sign In</button>
+        <p className="font-bold">
+          <small>or</small>
+        </p>
+        <button className="border block w-full font-bold">
+          Create an Account
+        </button>
+      </div>
+    </div>
   );
 }
