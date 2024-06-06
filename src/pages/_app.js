@@ -6,7 +6,6 @@ const inter = Inter({ subsets: ["latin"] });
 
 export default function App({ Component, pageProps }) {
   useEffect(() => {
-    localStorage.setItem("theme", "light");
     const selectedTheme = localStorage.getItem("theme");
     if (selectedTheme) {
       document.body.classList.add(selectedTheme);
