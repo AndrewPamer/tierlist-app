@@ -4,6 +4,35 @@
 :root {
   padding: 20px;
 }
+@media (prefers-color-scheme: light) {
+  :root {
+    --background: 250, 249, 246;
+    --text: 44, 44, 44;
+
+    --button-background: 44, 44, 44;
+    --button-text: 250, 249, 246;
+    --button-hover: 65, 65, 65;
+
+    --input-bg: 215, 215, 215;
+
+    --error-text: 127, 29, 29;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: 44, 44, 44;
+    --text: 250, 249, 246;
+
+    --button-background: 250, 249, 246;
+    --button-text: 44, 44, 44;
+    --button-hover: 177, 182, 166;
+
+    --input-bg: 24, 24, 24;
+
+    --error-text: 248, 113, 113;
+  }
+}
 
 .light {
   --background: 250, 249, 246;

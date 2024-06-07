@@ -1,20 +1,32 @@
+"use client";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+
+import { signup } from "./actions";
+
 export default function Login() {
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
     watch,
   } = useForm();
-  function handleLogin(data) {
-    console.log(data);
-  }
 
   return (
     <div className="flex flex-col items-stretch">
-      <h1 className="text-3xl font-bold self-center  mb-12">Register</h1>
+      <p className="text-sm">
+        <Link href="/" className="p-2 inline-block" replace>
+          Cancel
+        </Link>
+      </p>
+      <h1 className="text-3xl font-bold self-center  mb-12">
+        Create an Account
+      </h1>
       <form
-        onSubmit={handleSubmit((data) => handleLogin(data))}
+        onSubmit={handleSubmit((data) => signup(data))}
         className="flex flex-col gap-7"
       >
         <label className="flex flex-col gap-1">
@@ -29,7 +41,18 @@ export default function Login() {
         <label className="flex flex-col gap-1">
           <span className="text-sm font-bold">Password</span>
           <input
-            {...register("password", { required: "Password is required" })}
+            {...register("password", {
+              required: "Password is required",
+              minLength: { value: 8, message: "Minimum length is 8" },
+              pattern: {
+                value: /.*[A-Z].*/,
+                message: "A capital letter is required",
+              },
+              pattern: {
+                value: /.*[0-9].*/,
+                message: "A number is required",
+              },
+            })}
             type="password"
             className="bg-input-bg rounded-xl border-2 border-text p-1.5 outline-none"
           />
@@ -63,7 +86,7 @@ export default function Login() {
           <p className="text-error font-bold">{errors.username?.message}</p>
         </label>
         <button className="font-bold bg-button-bg text-button-text text-1xl p-2.5 rounded-xl hover:bg-button-hover mt-10">
-          Login
+          Create Account
         </button>
       </form>
     </div>

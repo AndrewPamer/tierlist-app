@@ -1,19 +1,29 @@
+"use client";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+
+import Link from "next/link";
+
+import { login } from "./actions";
+
 export default function Login() {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  function handleLogin(data) {
-    console.log(data);
-  }
 
   return (
     <div className="flex flex-col items-stretch">
+      <p className="text-sm">
+        <Link href="/" className="p-2 inline-block" replace>
+          Cancel
+        </Link>
+      </p>
       <h1 className="text-3xl font-bold self-center  mb-12">Login</h1>
       <form
-        onSubmit={handleSubmit((data) => handleLogin(data))}
+        onSubmit={handleSubmit((data) => login(data))}
         className="flex flex-col gap-7"
       >
         <label className="flex flex-col gap-1">
