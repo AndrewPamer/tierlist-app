@@ -2,25 +2,25 @@ import { updateSession } from "@/utils/supabase/middleware";
 import { NextResponse } from "next/server";
 
 export async function middleware(request) {
-  const { supabase, result } = await updateSession(request);
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { result } = await updateSession(request);
+  // const {
+  //   data: { user },
+  // } = await supabase.auth.getUser();
 
-  const notProtected =
-    request.nextUrl.pathname === "/" ||
-    request.nextUrl.pathname === "/login" ||
-    request.nextUrl.pathname === "/signup";
+  // const notProtected =
+  //   request.nextUrl.pathname === "/" ||
+  //   request.nextUrl.pathname === "/login" ||
+  //   request.nextUrl.pathname === "/signup";
 
-  if (user) {
-    if (notProtected) {
-      return NextResponse.rewrite(new URL("/home", request.url));
-    }
-  } else {
-    if (!notProtected) {
-      return NextResponse.rewrite(new URL("/", request.url));
-    }
-  }
+  // if (user) {
+  //   if (notProtected) {
+  //     return NextResponse.rewrite(new URL("/home", request.url));
+  //   }
+  // } else {
+  //   if (!notProtected) {
+  //     return NextResponse.rewrite(new URL("/", request.url));
+  //   }
+  // }
 
   return result;
 }
