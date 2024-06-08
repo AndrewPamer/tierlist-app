@@ -14,6 +14,13 @@ export default function Login() {
     formState: { errors },
   } = useForm();
 
+  async function handleLogin(data) {
+    //If we get an error back we need to check
+    //Otherwise we will just go to home page.
+    const error = await login(data);
+    console.log(error);
+  }
+
   return (
     <div className="flex flex-col items-stretch">
       <p className="text-sm">
@@ -23,7 +30,7 @@ export default function Login() {
       </p>
       <h1 className="text-3xl font-bold self-center  mb-12">Login</h1>
       <form
-        onSubmit={handleSubmit((data) => login(data))}
+        onSubmit={handleSubmit((data) => handleLogin(data))}
         className="flex flex-col gap-7"
       >
         <label className="flex flex-col gap-1">

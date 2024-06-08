@@ -8,6 +8,7 @@ import AccountNavbar from "@/components/menus/AccountNavbar";
 export default function Home() {
   const [name, setName] = useState();
   const [loading, setLoading] = useState(false);
+  const [friends, setFriends] = useState([]);
   const supabase = createClient();
   const user = getAuthContext();
   const getProfile = useCallback(async () => {
@@ -41,6 +42,7 @@ export default function Home() {
       });
       console.log(error);
       console.log(data);
+      setFriends(data);
     } catch (e) {
       console.error(e);
     }
@@ -144,6 +146,9 @@ export default function Home() {
         <button className="bg-blue-400" onClick={() => getFriends()}>
           Get Friends
         </button>
+        {friends.map((friend) => {
+          return <p key={friend.id}>{friend.friend_username}</p>;
+        })}
         <button
           className="bg-purple-400"
           onClick={() => getOutgoingFriendRequests()}

@@ -10,7 +10,6 @@ export async function login({ email, password }) {
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
-    console.error(error);
     redirect("/error");
   }
 
