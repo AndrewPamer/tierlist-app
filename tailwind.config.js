@@ -22,6 +22,9 @@ module.exports = {
 
         "input-bg": "rgba(var(--input-bg))",
 
+        "alt-bg": "rgba(var(--alt-bg))",
+        "alt-bg-darker": "rgba(var(--alt-bg-darker))",
+
         error: "rgba(var(--error-text))",
       },
     },

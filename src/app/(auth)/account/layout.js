@@ -4,13 +4,25 @@ import { useState, useCallback } from "react";
 import { getAuthContext } from "@/components/context/AuthContextProvider";
 import { createClient } from "@/utils/supabase/client";
 
+import { usePathname } from "next/navigation";
+
 import Link from "next/link";
 
+const navLinks = [
+  { title: "Lists", path: "/account" },
+  { title: "Friends", path: "/account/friends" },
+  { title: "Settings", path: "/account/settings" },
+];
+
 export default function AccountLayout({ children }) {
-  const [name, setName] = useState();
-  const [loading, setLoading] = useState(true);
+  const pathname = usePathname();
+
   const supabase = createClient();
   const user = getAuthContext();
+
+  const [name, setName] = useState();
+  const [loading, setLoading] = useState(true);
+
   const getProfile = useCallback(async () => {
     try {
       const { data, error, status } = await supabase
@@ -34,6 +46,8 @@ export default function AccountLayout({ children }) {
 
   getProfile();
 
+  console.log(pathname);
+
   if (loading) {
     return "Loading...";
   }
@@ -50,16 +64,19 @@ export default function AccountLayout({ children }) {
           </button>
         </form>
       </div>
-      <ul className="flex mt-5 justify-around">
-        <li>
-          <Link href="/account">Lists</Link>
-        </li>
-        <li>
-          <Link href="/account/friends">Friends</Link>
-        </li>
-        <li>
-          <Link href="/account/settings">Settings</Link>
-        </li>
+      <ul className="flex justify-around mt-5">
+        {navLinks.map((item, i) => {
+          return (
+            <li key={i}>
+              <Link
+                href={item.path}
+                className={pathname === item.path ? "font-bold underline" : ""}
+              >
+                {item.title}
+              </Link>
+            </li>
+          );
+        })}
       </ul>
       {children}
     </main>
