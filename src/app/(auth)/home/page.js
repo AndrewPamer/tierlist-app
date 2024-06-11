@@ -2,12 +2,10 @@
 import { useState, useCallback } from "react";
 import { getAuthContext } from "@/components/context/AuthContextProvider";
 import { createClient } from "@/utils/supabase/client";
-
-import AccountNavbar from "@/components/menus/AccountNavbar";
-
+import Link from "next/link";
 export default function Home() {
   const [name, setName] = useState();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [friends, setFriends] = useState([]);
   const supabase = createClient();
   const user = getAuthContext();
@@ -129,6 +127,24 @@ export default function Home() {
     }
   }
 
+  async function search() {
+    if (!user) {
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase.rpc("get_ids_from_username", {
+        name: "testing",
+      });
+      console.log(data);
+      if (error) {
+        throw error;
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
   getProfile();
 
   console.log(user);
@@ -138,9 +154,13 @@ export default function Home() {
   }
   return (
     <div>
-      <div className="flex justify-between">
+      <div className="flex justify-between items-center">
         <h1 className="text-3xl	font-bold">Hello, {name}</h1>
-        <AccountNavbar />
+        <Link href="/account">
+          <button className="bg-red-400 w-8 h-8 rounded-full">
+            {name[0].toUpperCase()}
+          </button>
+        </Link>
       </div>
       <div className="flex flex-col">
         <button className="bg-blue-400" onClick={() => getFriends()}>
@@ -166,6 +186,9 @@ export default function Home() {
         </button>
         <button className="bg-green-400" onClick={() => acceptFriendRequest()}>
           Accept friend request
+        </button>
+        <button className="bg-pink-800" onClick={() => search()}>
+          Search for user
         </button>
         <form action="/auth/signout" method="post">
           <button className="button block" type="submit">
