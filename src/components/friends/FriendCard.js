@@ -1,4 +1,5 @@
 import { BsThreeDotsVertical } from "react-icons/bs";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 
 export default function FriendCard({ name, children }) {
   return (
@@ -11,9 +12,34 @@ export default function FriendCard({ name, children }) {
       </div>
       {/* {children} */}
 
-      <button className="bg-alt-bg-darker p-1 rounded-full">
+      <Menu>
+        <MenuButton className="bg-alt-bg-darker p-1 rounded-full overflow-hidden">
+          <BsThreeDotsVertical />
+        </MenuButton>
+        <MenuItems anchor="top" className="bg-red-500 flex flex-col rounded-lg">
+          <MenuItem>
+            <button>Test 1</button>
+          </MenuItem>
+          <MenuItem>
+            <button>Test 2</button>
+          </MenuItem>
+        </MenuItems>
+      </Menu>
+      {/* <button
+        data-dropdown-toggle="dropdown"
+        className="bg-alt-bg-darker p-1 rounded-full"
+      >
         <BsThreeDotsVertical />
-      </button>
+        <div
+          id="dropdown"
+          class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"
+        >
+          <ul>
+            <li>Test</li>
+            <li>Test 2</li>
+          </ul>
+        </div>
+      </button> */}
     </div>
   );
 }

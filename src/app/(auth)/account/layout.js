@@ -46,8 +46,6 @@ export default function AccountLayout({ children }) {
 
   getProfile();
 
-  console.log(pathname);
-
   if (loading) {
     return "Loading...";
   }
@@ -64,7 +62,7 @@ export default function AccountLayout({ children }) {
           </button>
         </form>
       </div>
-      <ul className="flex justify-around mt-5">
+      <ul className="flex justify-center mt-5 gap-10">
         {navLinks.map((item, i) => {
           return (
             <li key={i}>
