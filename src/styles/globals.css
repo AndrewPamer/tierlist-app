@@ -37,6 +37,10 @@
 
     --alt-bg: 65, 65, 65;
     --alt-bg-darker: 35, 35, 35;
+
+    --confirm-bg: 1, 255, 32;
+    --deny-bg: 139, 0, 0;
+    /* --alt-bg-lighter: 25, 25, 25; */
   }
 }
 

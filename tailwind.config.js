@@ -25,6 +25,9 @@ module.exports = {
         "alt-bg": "rgba(var(--alt-bg))",
         "alt-bg-darker": "rgba(var(--alt-bg-darker))",
 
+        confirm: "rgba(var(--confirm-bg))",
+        deny: "rgba(var(--deny-bg))",
+
         error: "rgba(var(--error-text))",
       },
     },
