@@ -34,11 +34,10 @@ export default function IncomingRequests({ supabase }) {
       )
       .subscribe();
 
+    getIncoming();
     return () => {
       subscription.unsubscribe();
     };
-
-    getIncoming();
   }, []);
 
   async function acceptRequest(requestid) {

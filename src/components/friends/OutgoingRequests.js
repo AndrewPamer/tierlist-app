@@ -36,10 +36,10 @@ export default function OutgoingRequests({ supabase }) {
       )
       .subscribe();
 
+    getOutgoingFriendRequests();
     return () => {
       subscription.unsubscribe();
     };
-    getOutgoingFriendRequests();
   }, []);
 
   async function cancelRequest(request_id) {
