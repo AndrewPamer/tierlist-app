@@ -18,8 +18,54 @@ export default function IncomingRequests({ supabase }) {
         console.error(e);
       }
     }
+
+    const subscription = supabase
+      .channel("incoming_db_changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "friendrequests",
+        },
+        (payload) => {
+          getIncoming();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      subscription.unsubscribe();
+    };
+
     getIncoming();
   }, []);
+
+  async function acceptRequest(requestid) {
+    try {
+      const { error } = await supabase.rpc("accept_friend_request", {
+        requestid,
+      });
+      if (error) {
+        throw error;
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  async function denyRequest(requestid) {
+    try {
+      const { error } = await supabase.rpc("deny_friend_request", {
+        requestid,
+      });
+      if (error) {
+        throw error;
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
 
   if (incoming.length == 0) {
     return null;
@@ -30,12 +76,24 @@ export default function IncomingRequests({ supabase }) {
       <h2 className="font-bold self-center">Incoming Friend Requests</h2>
       {incoming.map((incomingReq) => {
         return (
-          <FriendCard name={incomingReq.sender_username}>
-            <div className="flex flex-col">
-              <button>Accept</button>
-              <button>Deny</button>
-            </div>
-          </FriendCard>
+          <FriendCard
+            key={incomingReq.request_id}
+            name={incomingReq.sender_username}
+            buttons={[
+              {
+                buttonTitle: "Accept Request",
+                popupTitle: `Accept friend request from ${incomingReq.sender_username}`,
+                popupHeader: `Are you sure you want to accept the friend request from ${incomingReq.sender_username}?`,
+                popupAction: () => acceptRequest(incomingReq.request_id),
+              },
+              {
+                buttonTitle: "Deny Request",
+                popupTitle: `Deny friend request from ${incomingReq.sender_username}`,
+                popupHeader: `Are you sure you want to deny the friend request from ${incomingReq.sender_username}?`,
+                popupAction: () => denyRequest(incomingReq.request_id),
+              },
+            ]}
+          />
         );
       })}
       <hr className="my-5" />

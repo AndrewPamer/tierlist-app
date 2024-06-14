@@ -1,9 +1,26 @@
+"use client";
+import { useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 
-export default function FriendCard({ name, children }) {
-  if (!Array.isArray(children)) {
-    children = [children];
+import DialogPopup from "@/components/DialogPopup";
+
+export default function FriendCard({ name, buttons, children }) {
+  const [popup, setPopup] = useState(null);
+
+  if (!buttons) {
+    return;
+  }
+
+  function showPopup({ popupTitle, popupHeader, popupAction }) {
+    setPopup(
+      <DialogPopup
+        onClose={() => setPopup(null)}
+        title={popupTitle}
+        header={popupHeader}
+        action={popupAction}
+      />
+    );
   }
 
   return (
@@ -23,13 +40,16 @@ export default function FriendCard({ name, children }) {
           anchor="top"
           className="bg-alt-bg-darker flex-col rounded-lg 	"
         >
-          {children.map((child, i) => (
-            <MenuItem key={i} className="text-xs p-1">
-              {child}
+          {buttons.map((button, i) => (
+            <MenuItem key={i} className="text-xs p1">
+              <button onClick={() => showPopup(button)}>
+                {button.buttonTitle}
+              </button>
             </MenuItem>
           ))}
         </MenuItems>
       </Menu>
+      {popup}
     </div>
   );
 }

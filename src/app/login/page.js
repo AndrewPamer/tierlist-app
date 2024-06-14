@@ -1,24 +1,27 @@
 "use client";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
 
 import Link from "next/link";
 
 import { login } from "./actions";
 
 export default function Login() {
-  const router = useRouter();
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    reset,
+    formState: { errors, isSubmitting, isSubmitted, isSubmitSuccessful },
   } = useForm();
+
+  useEffect(() => {
+    reset(undefined, { keepDirtyValues: true });
+  }, [isSubmitSuccessful]);
 
   async function handleLogin(data) {
     //If we get an error back we need to check
     //Otherwise we will just go to home page.
     const error = await login(data);
-    console.log(error);
   }
 
   return (
@@ -51,8 +54,11 @@ export default function Login() {
           />
           <p className="text-error font-bold">{errors.password?.message}</p>
         </label>
-        <button className="font-bold bg-button-bg text-button-text text-1xl p-2.5 rounded-xl hover:bg-button-hover mt-10">
-          Login
+        <button
+          className="font-bold bg-button-bg text-button-text text-1xl p-2.5 rounded-xl hover:bg-button-hover mt-10"
+          disabled={isSubmitting || isSubmitted}
+        >
+          {isSubmitting || isSubmitted ? "Logging in..." : "Log in"}
         </button>
       </form>
     </div>

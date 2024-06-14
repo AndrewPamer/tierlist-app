@@ -20,8 +20,41 @@ export default function OutgoingRequests({ supabase }) {
         console.error(e);
       }
     }
+
+    const subscription = supabase
+      .channel("outgoing_db_changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "friendrequests",
+        },
+        (payload) => {
+          getOutgoingFriendRequests();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      subscription.unsubscribe();
+    };
     getOutgoingFriendRequests();
   }, []);
+
+  async function cancelRequest(request_id) {
+    try {
+      const { error } = await supabase.rpc("cancel_outgoing_friend_request", {
+        request_id,
+      });
+
+      if (error) {
+        throw error;
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
 
   if (outgoing.length == 0) {
     return null;
@@ -32,9 +65,21 @@ export default function OutgoingRequests({ supabase }) {
       <h2 className="font-bold self-center">Outgoing Friend Requests</h2>
       {outgoing.map((outgoingReq) => {
         return (
-          <FriendCard name={outgoingReq.recipient_username}>
-            <button>Cancel</button>
-          </FriendCard>
+          <FriendCard
+            key={outgoingReq.request_id}
+            name={outgoingReq.recipient_username}
+            buttons={[
+              {
+                buttonTitle: "Cancel Request",
+                popupTitle: `Cancel friend request to ${outgoingReq.recipient_username}`,
+                popupHeader: `Are you sure you want to cancel the friend request to ${outgoingReq.recipient_username}?`,
+                popupAction: () => cancelRequest(outgoingReq.request_id),
+              },
+            ]}
+          />
+          // <FriendCard name={outgoingReq.recipient_username}>
+          //   <button>Cancel</button>
+          // </FriendCard>
         );
       })}
       <hr className="my-5" />

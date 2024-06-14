@@ -10,9 +10,10 @@ export async function login({ email, password }) {
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
-    redirect("/error");
+    console.log(error);
+    // redirect("/error");
+  } else {
+    revalidatePath("/", "layout");
+    redirect("/home");
   }
-
-  revalidatePath("/", "layout");
-  redirect("/home");
 }

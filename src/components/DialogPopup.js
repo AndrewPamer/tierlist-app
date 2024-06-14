@@ -1,6 +1,3 @@
-"use client";
-import { useState } from "react";
-
 import {
   Description,
   Dialog,
@@ -30,7 +27,10 @@ export default function DialogPopup({
               Cancel
             </button>
             <button
-              onClick={action}
+              onClick={() => {
+                action();
+                onClose();
+              }}
               className="font-bold bg-button-bg text-button-text text-1xl p-2.5 rounded-xl hover:bg-button-hover"
             >
               Confirm

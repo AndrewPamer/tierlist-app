@@ -5,7 +5,6 @@ import { getAuthContext } from "@/components/context/AuthContextProvider";
 import { createClient } from "@/utils/supabase/client";
 
 import FriendCard from "@/components/friends/FriendCard";
-import DialogPopup from "@/components/DialogPopup";
 
 import Search from "@/components/friends/Search";
 import IncomingRequests from "@/components/friends/IncomingRequests";
@@ -14,9 +13,6 @@ import OutgoingRequests from "@/components/friends/OutgoingRequests";
 export default function Friends() {
   const [loading, setLoading] = useState(true);
   const [friends, setFriends] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
-  const [popup, setPopup] = useState(null);
-  const [deleteFriend, setDeleteFriend] = useState({});
 
   const supabase = createClient();
   const user = getAuthContext();
@@ -41,18 +37,39 @@ export default function Friends() {
       }
     }
 
+    const subscription = supabase
+      .channel("friend_db_changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "friends",
+        },
+        (payload) => {
+          getFriends();
+        }
+      )
+      .subscribe();
+
     getFriends();
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
-  function showPopup(id, name) {
-    console.log(id, name);
-    setPopup(
-      <DialogPopup
-        onClose={() => setPopup(null)}
-        title={`Remove ${name} as a friend`}
-        header={`Are you sure you want to remove ${name} as a friend?`}
-      />
-    );
+  async function removeFriend(friend_id) {
+    try {
+      const { error } = await supabase.rpc("remove_friend", {
+        friend_id,
+      });
+
+      if (error) {
+        throw error;
+      }
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   if (loading) {
@@ -66,15 +83,18 @@ export default function Friends() {
           <h2 className="font-bold self-center">My Friends</h2>
           {friends.map((friend) => {
             return (
-              <FriendCard key={friend.friend_id} name={friend.friend_username}>
-                <button
-                  onClick={() =>
-                    showPopup(friend.friend_id, friend.friend_username)
-                  }
-                >
-                  Remove Friend
-                </button>
-              </FriendCard>
+              <FriendCard
+                key={friend.friend_id}
+                name={friend.friend_username}
+                buttons={[
+                  {
+                    buttonTitle: "Remove Friend",
+                    popupTitle: `Remove ${friend.friend_username} as a friend`,
+                    popupHeader: `Are you sure you want to remove ${friend.friend_username} as a friend?`,
+                    popupAction: () => removeFriend(friend.friend_id),
+                  },
+                ]}
+              />
             );
           })}
           <hr className="my-5" />
@@ -83,15 +103,6 @@ export default function Friends() {
       <IncomingRequests supabase={supabase} />
       <OutgoingRequests supabase={supabase} />
       <Search supabase={supabase} />
-      {popup}
-      {/* {isOpen && deleteFriend && (
-        <DialogPopup
-          isOpen={isOpen}
-          onClose={() => setIsOpen(false)}
-          header={`Are you sure you want to remove ${deleteFriend.name} as a friend?`}
-          action={() => console.log("F")}
-        />
-      )} */}
     </section>
   );
 }

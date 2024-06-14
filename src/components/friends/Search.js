@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { BsSearch } from "react-icons/bs";
 
@@ -9,9 +9,34 @@ export default function Search({ supabase }) {
   const [searched, setSearched] = useState([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [firstSearch, setFirstSearch] = useState(false);
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, getValues } = useForm();
+
+  useEffect(() => {
+    const subscription = supabase
+      .channel("search_db_changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "friendrequests",
+        },
+        (payload) => {
+          if (firstSearch) {
+            handleSubmit((data) => findUsers(data))();
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [firstSearch]);
+
   async function findUsers({ search: name }) {
     try {
+      console.log(name);
       setSearchLoading(true);
       const { data, error } = await supabase.rpc("get_users_not_friends", {
         name,
@@ -28,6 +53,19 @@ export default function Search({ supabase }) {
     }
   }
 
+  async function sendFriendRequest(recipient) {
+    try {
+      const { error } = await supabase.rpc("send_friend_request", {
+        recipient,
+      });
+      if (error) {
+        throw error;
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
   let searchDisplay = undefined;
 
   if (searchLoading) {
@@ -37,11 +75,23 @@ export default function Search({ supabase }) {
   } else {
     searchDisplay = searched.map((search) => {
       return (
-        <FriendCard name={search.username}>
-          <button onClick={() => sendFriendRequest(search.user_id)}>
-            Send Friend Request
-          </button>
-        </FriendCard>
+        <FriendCard
+          key={search.user_id}
+          name={search.username}
+          buttons={[
+            {
+              buttonTitle: "Send Friend Request",
+              popupTitle: `Send ${search.username} a friend request`,
+              popupHeader: `Are you sure you want to send ${search.username} a friend request?`,
+              popupAction: () => sendFriendRequest(search.user_id),
+            },
+          ]}
+        />
+        // <FriendCard name={search.username}>
+        //   <button onClick={() => sendFriendRequest(search.user_id)}>
+        //     Send Friend Request
+        //   </button>
+        // </FriendCard>
       );
     });
   }
