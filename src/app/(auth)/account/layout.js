@@ -51,6 +51,11 @@ export default function AccountLayout({ children }) {
   }
   return (
     <main>
+      <p className="text-sm">
+        <Link href="/home" className="p-2 inline-block">
+          Go Back
+        </Link>
+      </p>
       <div className="flex items-center flex-col">
         <div className="flex justify-center items-center bg-red-400 w-24 h-24 rounded-full text-3xl">
           {name[0].toUpperCase()}

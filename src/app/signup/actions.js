@@ -19,6 +19,7 @@ export async function signup({ email, password, username }) {
   });
 
   if (error) {
+    console.log(error);
     redirect("/error");
   }
 

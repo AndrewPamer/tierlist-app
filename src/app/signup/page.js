@@ -1,13 +1,12 @@
 "use client";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 import { signup } from "./actions";
 
-export default function Login() {
-  const router = useRouter();
-
+export default function SignUp() {
+  const [disabled, setDisabled] = useState(false);
   const {
     register,
     handleSubmit,
@@ -85,8 +84,11 @@ export default function Login() {
           />
           <p className="text-error font-bold">{errors.username?.message}</p>
         </label>
-        <button className="font-bold bg-button-bg text-button-text text-1xl p-2.5 rounded-xl hover:bg-button-hover mt-10">
-          Create Account
+        <button
+          className="font-bold bg-button-bg text-button-text text-1xl p-2.5 rounded-xl hover:bg-button-hover mt-10"
+          disabled={disabled}
+        >
+          {disabled ? "Creating Account..." : "Create Account"}
         </button>
       </form>
     </div>

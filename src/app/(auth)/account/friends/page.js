@@ -45,6 +45,7 @@ export default function Friends() {
           event: "*",
           schema: "public",
           table: "friends",
+          // filter: "",
         },
         (payload) => {
           getFriends();
@@ -100,8 +101,8 @@ export default function Friends() {
           <hr className="my-5" />
         </div>
       ) : null}
-      <IncomingRequests supabase={supabase} />
-      <OutgoingRequests supabase={supabase} />
+      <IncomingRequests supabase={supabase} user={user} />
+      <OutgoingRequests supabase={supabase} user={user} />
       <Search supabase={supabase} />
     </section>
   );

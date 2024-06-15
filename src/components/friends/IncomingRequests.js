@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import FriendCard from "./FriendCard";
-export default function IncomingRequests({ supabase }) {
+export default function IncomingRequests({ supabase, user }) {
   const [incoming, setIncoming] = useState([]);
 
   useEffect(() => {
@@ -27,8 +27,10 @@ export default function IncomingRequests({ supabase }) {
           event: "*",
           schema: "public",
           table: "friendrequests",
+          filter: `recipient_id=eq.${user.id}`,
         },
         (payload) => {
+          console.log("in");
           getIncoming();
         }
       )

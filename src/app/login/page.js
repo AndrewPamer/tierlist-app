@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import Link from "next/link";
@@ -7,6 +7,7 @@ import Link from "next/link";
 import { login } from "./actions";
 
 export default function Login() {
+  const [disabled, setDisabled] = useState(false);
   const {
     register,
     handleSubmit,
@@ -21,7 +22,9 @@ export default function Login() {
   async function handleLogin(data) {
     //If we get an error back we need to check
     //Otherwise we will just go to home page.
+    setDisabled(true);
     const error = await login(data);
+    setDisabled(false);
   }
 
   return (
@@ -56,9 +59,11 @@ export default function Login() {
         </label>
         <button
           className="font-bold bg-button-bg text-button-text text-1xl p-2.5 rounded-xl hover:bg-button-hover mt-10"
-          disabled={isSubmitting || isSubmitted}
+          // disabled={isSubmitting || isSubmitted}
+          disabled={disabled}
         >
-          {isSubmitting || isSubmitted ? "Logging in..." : "Log in"}
+          {/* {isSubmitting || isSubmitted ? "Logging in..." : "Log in"} */}
+          {disabled ? "Logging in..." : "Log In"}
         </button>
       </form>
     </div>

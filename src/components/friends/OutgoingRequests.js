@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 
 import FriendCard from "./FriendCard";
 
-export default function OutgoingRequests({ supabase }) {
+export default function OutgoingRequests({ supabase, user }) {
   const [outgoing, setOutgoing] = useState([]);
 
   useEffect(() => {
@@ -29,8 +29,10 @@ export default function OutgoingRequests({ supabase }) {
           event: "*",
           schema: "public",
           table: "friendrequests",
+          filter: `sender_id=eq.${user.id}`,
         },
         (payload) => {
+          console.log("out");
           getOutgoingFriendRequests();
         }
       )
