@@ -3,17 +3,21 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { login } from "./actions";
 
 export default function Login() {
   const [disabled, setDisabled] = useState(false);
+  const [responseMessage, setResponseMessage] = useState(null);
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors, isSubmitting, isSubmitted, isSubmitSuccessful },
   } = useForm();
+
+  const router = useRouter();
 
   useEffect(() => {
     reset(undefined, { keepDirtyValues: true });
@@ -23,7 +27,26 @@ export default function Login() {
     //If we get an error back we need to check
     //Otherwise we will just go to home page.
     setDisabled(true);
-    const error = await login(data);
+    try {
+      const res = await fetch("/login/api", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      //Success
+      if (res.status === 200) {
+        router.replace("/home");
+      } else {
+        //Error
+        const errorMessage = await res.text();
+        setResponseMessage(errorMessage);
+      }
+    } catch (e) {
+      setResponseMessage("An unexpected error occurred");
+    }
     setDisabled(false);
   }
 
@@ -35,6 +58,7 @@ export default function Login() {
         </Link>
       </p>
       <h1 className="text-3xl font-bold self-center  mb-12">Login</h1>
+      {responseMessage}
       <form
         onSubmit={handleSubmit((data) => handleLogin(data))}
         className="flex flex-col gap-7"
