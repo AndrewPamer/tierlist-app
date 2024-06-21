@@ -46,8 +46,9 @@ export default function Login() {
       }
     } catch (e) {
       setResponseMessage("An unexpected error occurred");
+    } finally {
+      setDisabled(false);
     }
-    setDisabled(false);
   }
 
   return (

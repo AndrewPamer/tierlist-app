@@ -7,12 +7,37 @@ import { signup } from "./actions";
 
 export default function SignUp() {
   const [disabled, setDisabled] = useState(false);
+  const [responseMessage, setResponseMessage] = useState(null);
   const {
     register,
     handleSubmit,
     formState: { errors },
     watch,
   } = useForm();
+
+  async function handleSignup(data) {
+    setDisabled(true);
+    try {
+      const res = await fetch("/signup/api", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      if (res.status === 200) {
+        router.replace("/home");
+      } else {
+        //Error
+        const errorMessage = await res.text();
+        setResponseMessage(errorMessage);
+      }
+    } catch (e) {
+      setResponseMessage("An unexpected error occurred");
+    } finally {
+      setDisabled(false);
+    }
+  }
 
   return (
     <div className="flex flex-col items-stretch">
@@ -24,8 +49,9 @@ export default function SignUp() {
       <h1 className="text-3xl font-bold self-center  mb-12">
         Create an Account
       </h1>
+      {responseMessage}
       <form
-        onSubmit={handleSubmit((data) => signup(data))}
+        onSubmit={handleSubmit((data) => handleSignup(data))}
         className="flex flex-col gap-7"
       >
         <label className="flex flex-col gap-1">
