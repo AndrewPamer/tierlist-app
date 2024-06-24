@@ -30,7 +30,6 @@ export default function Create() {
 
   async function seachForAlbum({ search }) {
     try {
-      console.log(accessToken);
       const res = await fetch(
         "https://api.spotify.com/v1/search?" +
           new URLSearchParams({
