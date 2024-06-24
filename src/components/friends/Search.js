@@ -9,7 +9,11 @@ export default function Search({ supabase }) {
   const [searched, setSearched] = useState([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [firstSearch, setFirstSearch] = useState(false);
-  const { register, handleSubmit, getValues } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { isDirty, dirtyFields },
+  } = useForm({ defaultValues: { search: "" } });
 
   useEffect(() => {
     const subscription = supabase
@@ -36,7 +40,6 @@ export default function Search({ supabase }) {
 
   async function findUsers({ search: name }) {
     try {
-      console.log(name);
       setSearchLoading(true);
       const { data, error } = await supabase.rpc("get_users_not_friends", {
         name,
@@ -87,11 +90,6 @@ export default function Search({ supabase }) {
             },
           ]}
         />
-        // <FriendCard name={search.username}>
-        //   <button onClick={() => sendFriendRequest(search.user_id)}>
-        //     Send Friend Request
-        //   </button>
-        // </FriendCard>
       );
     });
   }
@@ -111,7 +109,7 @@ export default function Search({ supabase }) {
             id="search"
             className="bg-input-bg rounded-xl border-2 border-text p-1.5 outline-none"
           />
-          <button className="bg-alt-bg p-2 rounded-xl">
+          <button className="bg-alt-bg p-2 rounded-xl" disabled={!isDirty}>
             <BsSearch size={20} />
           </button>
         </div>

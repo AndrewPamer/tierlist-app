@@ -12,6 +12,17 @@ export async function POST(request) {
   const supabase = createClient();
 
   try {
+    //First, check if the username is unique
+    const usernameCheck = await supabase.rpc("check_unique_username", {
+      name: username,
+    });
+
+    if (usernameCheck.error) {
+      return new Response(usernameCheck.error.message, {
+        status: 400,
+      });
+    }
+
     const { error } = await supabase.auth.signUp({
       email,
       password,
@@ -23,7 +34,6 @@ export async function POST(request) {
     });
 
     if (error) {
-      console.log(error);
       return new Response(error.message, {
         status: 400,
       });

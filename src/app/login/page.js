@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-import { login } from "./actions";
+import { BsExclamationTriangle } from "react-icons/bs";
 
 export default function Login() {
   const [disabled, setDisabled] = useState(false);
@@ -59,7 +59,12 @@ export default function Login() {
         </Link>
       </p>
       <h1 className="text-3xl font-bold self-center  mb-12">Login</h1>
-      {responseMessage}
+      {responseMessage && (
+        <div className="flex justify-center items-center gap-2 text-error font-bold border-2 rounded-lg	p-2 mb-5 border-error">
+          <BsExclamationTriangle size={30} />
+          <h3 className="text-xl">{responseMessage}</h3>
+        </div>
+      )}
       <form
         onSubmit={handleSubmit((data) => handleLogin(data))}
         className="flex flex-col gap-7"

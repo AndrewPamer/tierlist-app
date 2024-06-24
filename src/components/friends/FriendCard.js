@@ -41,7 +41,7 @@ export default function FriendCard({ name, buttons, children }) {
           className="bg-alt-bg-darker flex-col rounded-lg 	"
         >
           {buttons.map((button, i) => (
-            <MenuItem key={i} className="text-xs p1">
+            <MenuItem key={i} className="text-xs p-1">
               <button onClick={() => showPopup(button)}>
                 {button.buttonTitle}
               </button>
