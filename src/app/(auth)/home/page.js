@@ -45,6 +45,7 @@ export default function Home() {
           </button>
         </Link>
       </div>
+      <Link href="/create">Create a new List</Link>
     </div>
   );
 }
