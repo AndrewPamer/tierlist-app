@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-
+import { login } from "./actions";
 import { BsExclamationTriangle } from "react-icons/bs";
 
 export default function Login() {
@@ -17,35 +17,16 @@ export default function Login() {
     formState: { errors, isSubmitting, isSubmitted, isSubmitSuccessful },
   } = useForm();
 
-  const router = useRouter();
-
   useEffect(() => {
     reset(undefined, { keepDirtyValues: true });
   }, [isSubmitSuccessful]);
 
   async function handleLogin(data) {
-    //If we get an error back we need to check
-    //Otherwise we will just go to home page.
     setDisabled(true);
     try {
-      const res = await fetch("/login/api", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      //Success
-      if (res.status === 200) {
-        router.replace("/home");
-      } else {
-        //Error
-        const errorMessage = await res.text();
-        setResponseMessage(errorMessage);
-      }
+      await login(data);
     } catch (e) {
-      setResponseMessage("An unexpected error occurred");
+      setResponseMessage(e.message);
     } finally {
       setDisabled(false);
     }

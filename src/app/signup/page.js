@@ -3,6 +3,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
 
+import { signup } from "./actions";
+
 import { BsExclamationTriangle } from "react-icons/bs";
 
 export default function SignUp() {
@@ -18,26 +20,37 @@ export default function SignUp() {
   async function handleSignup(data) {
     setDisabled(true);
     try {
-      const res = await fetch("/signup/api", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-      if (res.status === 200) {
-        router.replace("/home");
-      } else {
-        //Error
-        const errorMessage = await res.text();
-        setResponseMessage(errorMessage);
-      }
+      await signup(data);
     } catch (e) {
-      setResponseMessage("An unexpected error occurred");
+      setResponseMessage(e.message);
     } finally {
       setDisabled(false);
     }
   }
+
+  // async function handleSignup(data) {
+  //   setDisabled(true);
+  //   try {
+  //     const res = await fetch("/signup/api", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(data),
+  //     });
+  //     if (res.status === 200) {
+  //       router.replace("/home");
+  //     } else {
+  //       //Error
+  //       const errorMessage = await res.text();
+  //       setResponseMessage(errorMessage);
+  //     }
+  //   } catch (e) {
+  //     setResponseMessage("An unexpected error occurred");
+  //   } finally {
+  //     setDisabled(false);
+  //   }
+  // }
 
   return (
     <div className="flex flex-col items-stretch">
