@@ -20,37 +20,16 @@ export default function SignUp() {
   async function handleSignup(data) {
     setDisabled(true);
     try {
-      await signup(data);
+      const { error } = await signup(data);
+      if (error) {
+        throw error;
+      }
     } catch (e) {
-      setResponseMessage(e.message);
+      setResponseMessage(e);
     } finally {
       setDisabled(false);
     }
   }
-
-  // async function handleSignup(data) {
-  //   setDisabled(true);
-  //   try {
-  //     const res = await fetch("/signup/api", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(data),
-  //     });
-  //     if (res.status === 200) {
-  //       router.replace("/home");
-  //     } else {
-  //       //Error
-  //       const errorMessage = await res.text();
-  //       setResponseMessage(errorMessage);
-  //     }
-  //   } catch (e) {
-  //     setResponseMessage("An unexpected error occurred");
-  //   } finally {
-  //     setDisabled(false);
-  //   }
-  // }
 
   return (
     <div className="flex flex-col items-stretch">

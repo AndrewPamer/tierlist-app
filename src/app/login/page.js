@@ -24,9 +24,12 @@ export default function Login() {
   async function handleLogin(data) {
     setDisabled(true);
     try {
-      await login(data);
+      const { error } = await login(data);
+      if (error) {
+        throw error;
+      }
     } catch (e) {
-      setResponseMessage(e.message);
+      setResponseMessage(e);
     } finally {
       setDisabled(false);
     }

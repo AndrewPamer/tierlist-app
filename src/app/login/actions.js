@@ -16,7 +16,9 @@ export async function login({ email, password }) {
       throw error;
     }
   } catch (e) {
-    throw new Error(e.message);
+    return {
+      error: e.message,
+    };
   }
   revalidatePath("/", "layout");
   redirect("/home");
