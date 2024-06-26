@@ -24,11 +24,13 @@ export default function Login() {
   async function handleLogin(data) {
     setDisabled(true);
     try {
-      const { error } = await login(data);
+      const res = await login(data);
+      const { error } = res || {};
       if (error) {
         throw error;
       }
     } catch (e) {
+      console.log(e);
       setResponseMessage(e);
     } finally {
       setDisabled(false);

@@ -1,5 +1,5 @@
 "use server";
-export default async function getSpotifyToken() {
+export default async function getSpotifyToken(url) {
   try {
     const res = await fetch("https://accounts.spotify.com/api/token", {
       method: "POST",

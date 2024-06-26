@@ -20,7 +20,8 @@ export default function SignUp() {
   async function handleSignup(data) {
     setDisabled(true);
     try {
-      const { error } = await signup(data);
+      const res = await signup(data);
+      const { error } = res || {};
       if (error) {
         throw error;
       }

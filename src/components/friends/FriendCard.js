@@ -1,7 +1,13 @@
 "use client";
 import { useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import {
+  Popover,
+  PopoverHandler,
+  PopoverContent,
+  Button,
+  List,
+} from "@material-tailwind/react";
 
 import DialogPopup from "@/components/DialogPopup";
 
@@ -32,7 +38,22 @@ export default function FriendCard({ name, buttons, children }) {
         <h3>{name}</h3>
       </div>
 
-      <Menu>
+      <Popover>
+        <PopoverHandler>
+          <Button ripple={false} className="bg-alt-bg-darker">
+            <BsThreeDotsVertical />
+          </Button>
+        </PopoverHandler>
+        <PopoverContent className="p-0 border-none rounded-none	">
+          <List className="p-0 gap-0 ">
+            {buttons.map((data, i) => {
+              return <DialogPopup data={data} key={i} />;
+            })}
+          </List>
+        </PopoverContent>
+      </Popover>
+
+      {/* <Menu>
         <MenuButton className="bg-alt-bg-darker p-1 rounded-full overflow-hidden">
           <BsThreeDotsVertical />
         </MenuButton>
@@ -48,7 +69,7 @@ export default function FriendCard({ name, buttons, children }) {
             </MenuItem>
           ))}
         </MenuItems>
-      </Menu>
+      </Menu> */}
       {popup}
     </div>
   );
