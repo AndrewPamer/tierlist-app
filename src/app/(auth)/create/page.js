@@ -8,6 +8,7 @@ export default function Create() {
   const [loading, setLoading] = useState(true);
   const [accessToken, setAccessToken] = useState(null);
   const [albumSearch, setAlbumSearch] = useState({});
+  const [list, setList] = useState([]);
   const {
     register,
     handleSubmit,
@@ -56,15 +57,23 @@ export default function Create() {
     }
   }
 
+  function addToList(item) {
+    if (list.some((listEl) => listEl.id === item.id)) {
+      console.error("Item already in list");
+    } else {
+      setList((prevList) => [...prevList, item]);
+    }
+  }
+
+  console.log(list);
+
   if (loading) {
     return "Loading...";
   }
 
-  //Connect spotify api for doing things like getting songs, etc.
   return (
     <main>
-      <h1>Create page</h1>
-      <p>Create a list here</p>
+      <h1 className="text-3xl font-bold text-center">Create a new List</h1>
       <form
         className="flex flex-col justify-center items-center mb-8"
         onSubmit={handleSubmit((data) => seachForAlbum(data))}
@@ -86,7 +95,11 @@ export default function Create() {
       <section className="grid grid-cols-2 gap-3">
         {albumSearch?.items?.map((album) => {
           return (
-            <div className="bg-alt-bg p-2 rounded-md">
+            <button
+              className="bg-alt-bg p-2 rounded-md text-left"
+              onClick={() => addToList(album)}
+              key={album.id}
+            >
               <img
                 className="mb-1"
                 src={album.images[0].url}
@@ -96,10 +109,14 @@ export default function Create() {
               <h3 className="text-lg font-bold">{album.name}</h3>
               <div>
                 {album.artists.map((artist) => {
-                  return <p className="text-sm">{artist.name}</p>;
+                  return (
+                    <p className="text-sm" key={artist.id}>
+                      {artist.name}
+                    </p>
+                  );
                 })}
               </div>
-            </div>
+            </button>
           );
         })}
       </section>
