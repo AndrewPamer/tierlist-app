@@ -3,10 +3,25 @@ import { useState, useCallback } from "react";
 import { getAuthContext } from "@/components/context/AuthContextProvider";
 import { createClient } from "@/utils/supabase/client";
 import Link from "next/link";
+
+import Form from "@/components/Form";
+
+const formElements = {
+  elements: [
+    {
+      title: "Name",
+      type: "text",
+      placeholder: "Enter your name",
+      required: true,
+    },
+  ],
+  submitButtonText: "login",
+  onSubmit: () => console.log("Hi"),
+};
+
 export default function Home() {
   const [name, setName] = useState();
   const [loading, setLoading] = useState(true);
-  const [friends, setFriends] = useState([]);
   const supabase = createClient();
   const user = getAuthContext();
   const getProfile = useCallback(async () => {
@@ -46,6 +61,7 @@ export default function Home() {
         </Link>
       </div>
       <Link href="/create">Create a new List</Link>
+      {/* <Form data={formElements} /> */}
     </div>
   );
 }
