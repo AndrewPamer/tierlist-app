@@ -1,46 +1,75 @@
 "use client";
-import { useState, useEffect } from "react";
+import {
+  useSubscription,
+  useQuery,
+} from "@supabase-cache-helpers/postgrest-swr";
 import FriendCard from "./FriendCard";
 export default function IncomingRequests({ supabase, user }) {
-  const [incoming, setIncoming] = useState([]);
+  // const [incoming, setIncoming] = useState([]);
 
-  useEffect(() => {
-    async function getIncoming() {
-      try {
-        const { data, error } = await supabase.rpc(
-          "get_incoming_friend_requests"
-        );
-        if (error) {
-          throw error;
-        }
-        setIncoming(data);
-      } catch (e) {
-        console.error(e);
-      }
+  const { data, isLoading, error, mutate } = useQuery(
+    supabase.rpc("get_incoming_friend_requests"),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
     }
+  );
 
-    const subscription = supabase
-      .channel("incoming_db_changes")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "friendrequests",
-          filter: `recipient_id=eq.${user.id}`,
-        },
-        (payload) => {
-          console.log("in");
-          getIncoming();
-        }
-      )
-      .subscribe();
+  const { status } = useSubscription(
+    supabase,
+    "incoming_db_changes",
+    {
+      event: "*",
+      schema: "public",
+      table: "friendrequests",
+      filter: `recipient_id=eq.${user.id}`,
+    },
+    ["id"],
+    {
+      callback: (payload) => {
+        console.log(payload);
+        mutate();
+      },
+    }
+  );
 
-    getIncoming();
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, []);
+  // useEffect(() => {
+  //   async function getIncoming() {
+  //     try {
+  //       const { data, error } = await supabase.rpc(
+  //         "get_incoming_friend_requests"
+  //       );
+  //       if (error) {
+  //         throw error;
+  //       }
+  //       setIncoming(data);
+  //     } catch (e) {
+  //       console.error(e);
+  //     }
+  //   }
+
+  //   const subscription = supabase
+  //     .channel("incoming_db_changes")
+  //     .on(
+  //       "postgres_changes",
+  //       {
+  //         event: "*",
+  //         schema: "public",
+  //         table: "friendrequests",
+  //         filter: `recipient_id=eq.${user.id}`,
+  //       },
+  //       (payload) => {
+  //         console.log("in");
+  //         getIncoming();
+  //       }
+  //     )
+  //     .subscribe();
+
+  //   getIncoming();
+  //   return () => {
+  //     subscription.unsubscribe();
+  //   };
+  // }, []);
 
   async function acceptRequest(requestid) {
     try {
@@ -68,18 +97,23 @@ export default function IncomingRequests({ supabase, user }) {
     }
   }
 
-  if (incoming.length == 0) {
+  if (isLoading) {
+    return "Loading...";
+  }
+
+  if (data.length == 0) {
     return null;
   }
 
   return (
     <div className="flex flex-col ">
       <h2 className="font-bold self-center">Incoming Friend Requests</h2>
-      {incoming.map((incomingReq) => {
+      {data.map((incomingReq) => {
         return (
           <FriendCard
             key={incomingReq.request_id}
             name={incomingReq.sender_username}
+            color={incomingReq.color}
             buttons={[
               {
                 buttonTitle: "Accept Request",

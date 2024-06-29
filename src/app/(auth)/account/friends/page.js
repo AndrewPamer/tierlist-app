@@ -1,5 +1,9 @@
 "use client";
-import { useEffect, useState } from "react";
+
+import {
+  useSubscription,
+  useQuery,
+} from "@supabase-cache-helpers/postgrest-swr";
 
 import { getAuthContext } from "@/components/context/AuthContextProvider";
 import { createClient } from "@/utils/supabase/client";
@@ -11,51 +15,35 @@ import IncomingRequests from "@/components/friends/IncomingRequests";
 import OutgoingRequests from "@/components/friends/OutgoingRequests";
 
 export default function Friends() {
-  const [loading, setLoading] = useState(true);
-  const [friends, setFriends] = useState([]);
-
   const supabase = createClient();
   const user = getAuthContext();
 
-  useEffect(() => {
-    async function getFriends() {
-      if (!user) {
-        return;
-      }
-      try {
-        const { data, error } = await supabase.rpc("get_friends");
-        if (error) {
-          throw error;
-        }
-        setFriends(data);
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLoading(false);
-      }
+  const { data, isLoading, error, mutate } = useQuery(
+    supabase.rpc("get_friends"),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
     }
+  );
 
-    const subscription = supabase
-      .channel("friend_db_changes")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "friends",
-          // filter: "",
-        },
-        (payload) => {
-          getFriends();
-        }
-      )
-      .subscribe();
+  // console.log(data, isLoading, error);
 
-    getFriends();
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, []);
+  const { status } = useSubscription(
+    supabase,
+    "friend_db_changes",
+    {
+      event: "*",
+      schema: "public",
+      table: "friends",
+    },
+    ["userid1", "userid2"],
+    {
+      callback: (payload) => {
+        console.log(payload);
+        mutate();
+      },
+    }
+  );
 
   async function removeFriend(friend_id) {
     try {
@@ -71,20 +59,22 @@ export default function Friends() {
     }
   }
 
-  if (loading) {
+  if (isLoading) {
     return "Loading...";
   }
 
   return (
     <section className="flex flex-col  mt-3">
-      {friends.length !== 0 ? (
+      {data.length !== 0 ? (
         <div className="flex flex-col">
           <h2 className="font-bold self-center">My Friends</h2>
-          {friends.map((friend) => {
+
+          {data.map((friend) => {
             return (
               <FriendCard
                 key={friend.friend_id}
                 name={friend.friend_username}
+                color={friend.color}
                 buttons={[
                   {
                     buttonTitle: "Remove Friend",

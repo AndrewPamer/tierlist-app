@@ -1,48 +1,74 @@
 "use client";
-import { useState, useEffect } from "react";
-
+import {
+  useSubscription,
+  useQuery,
+} from "@supabase-cache-helpers/postgrest-swr";
 import FriendCard from "./FriendCard";
 
 export default function OutgoingRequests({ supabase, user }) {
-  const [outgoing, setOutgoing] = useState([]);
-
-  useEffect(() => {
-    async function getOutgoingFriendRequests() {
-      try {
-        const { data, error } = await supabase.rpc(
-          "get_outgoing_friend_requests"
-        );
-        setOutgoing(data);
-        if (error) {
-          throw error;
-        }
-      } catch (e) {
-        console.error(e);
-      }
+  const { data, isLoading, error, mutate } = useQuery(
+    supabase.rpc("get_outgoing_friend_requests"),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
     }
+  );
 
-    const subscription = supabase
-      .channel("outgoing_db_changes")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "friendrequests",
-          filter: `sender_id=eq.${user.id}`,
-        },
-        (payload) => {
-          console.log("out");
-          getOutgoingFriendRequests();
-        }
-      )
-      .subscribe();
+  const { status } = useSubscription(
+    supabase,
+    "outgoing_db_changes",
+    {
+      event: "*",
+      schema: "public",
+      table: "friendrequests",
+      filter: `sender_id=eq.${user.id}`,
+    },
+    ["id"],
+    {
+      callback: (payload) => {
+        console.log(payload);
+        mutate();
+      },
+    }
+  );
 
-    getOutgoingFriendRequests();
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, []);
+  // useEffect(() => {
+  //   async function getOutgoingFriendRequests() {
+  //     try {
+  //       const { data, error } = await supabase.rpc(
+  //         "get_outgoing_friend_requests"
+  //       );
+  //       setOutgoing(data);
+  //       if (error) {
+  //         throw error;
+  //       }
+  //     } catch (e) {
+  //       console.error(e);
+  //     }
+  //   }
+
+  //   const subscription = supabase
+  //     .channel("outgoing_db_changes")
+  //     .on(
+  //       "postgres_changes",
+  //       {
+  //         event: "*",
+  //         schema: "public",
+  //         table: "friendrequests",
+  //         filter: `sender_id=eq.${user.id}`,
+  //       },
+  //       (payload) => {
+  //         console.log("out");
+  //         getOutgoingFriendRequests();
+  //       }
+  //     )
+  //     .subscribe();
+
+  //   getOutgoingFriendRequests();
+  //   return () => {
+  //     subscription.unsubscribe();
+  //   };
+  // }, []);
 
   async function cancelRequest(request_id) {
     try {
@@ -58,18 +84,23 @@ export default function OutgoingRequests({ supabase, user }) {
     }
   }
 
-  if (outgoing.length == 0) {
+  if (isLoading) {
+    return "Loading...";
+  }
+
+  if (data.length == 0) {
     return null;
   }
 
   return (
     <div className="flex flex-col">
       <h2 className="font-bold self-center">Outgoing Friend Requests</h2>
-      {outgoing.map((outgoingReq) => {
+      {data.map((outgoingReq) => {
         return (
           <FriendCard
             key={outgoingReq.request_id}
             name={outgoingReq.recipient_username}
+            color={outgoingReq.color}
             buttons={[
               {
                 buttonTitle: "Cancel Request",
@@ -79,9 +110,6 @@ export default function OutgoingRequests({ supabase, user }) {
               },
             ]}
           />
-          // <FriendCard name={outgoingReq.recipient_username}>
-          //   <button>Cancel</button>
-          // </FriendCard>
         );
       })}
       <hr className="my-5" />

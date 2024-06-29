@@ -1,5 +1,4 @@
 "use client";
-import { useState, useCallback, useRef } from "react";
 
 import { getAuthContext } from "@/components/context/AuthContextProvider";
 import { createClient } from "@/utils/supabase/client";
@@ -70,8 +69,6 @@ export default function AccountLayout({ children }) {
       onSuccess: () => console.log("SDf"),
     }
   );
-
-  console.log(data, isLoading);
 
   if (isLoading) {
     return "Loading...";

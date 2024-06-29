@@ -1,4 +1,5 @@
 "use client";
+
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { BsSearch } from "react-icons/bs";
@@ -81,6 +82,7 @@ export default function Search({ supabase }) {
         <FriendCard
           key={search.user_id}
           name={search.username}
+          color={search.color}
           buttons={[
             {
               buttonTitle: "Send Friend Request",
