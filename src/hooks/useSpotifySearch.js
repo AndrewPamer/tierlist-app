@@ -1,22 +1,12 @@
 import useSWR from "swr";
 
-async function fetcher([url, token, search]) {
-  console.log("Search Ran");
-  const res = await fetch(
-    url +
-      new URLSearchParams({
-        q: search,
-        type: "album",
-        market: "US",
-        limit: 10,
-      }).toString(),
-    {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+async function fetcher([url, token, queryParams]) {
+  const res = await fetch(url + queryParams, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
   if (!res.ok) {
     throw new Error(`HTTP Error: ${res.status}`);
@@ -25,9 +15,9 @@ async function fetcher([url, token, search]) {
   return res.json();
 }
 
-export default function useSpotifySearch({ token, search }) {
+export default function useSpotifySearch({ url, token, search, queryParams }) {
   const { data, error, isLoading } = useSWR(
-    search ? ["https://api.spotify.com/v1/search?", token, search] : null,
+    search ? [url, token, queryParams] : null,
     fetcher
   );
 

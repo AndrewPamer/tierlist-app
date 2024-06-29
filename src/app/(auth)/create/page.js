@@ -111,6 +111,11 @@ export default function Create() {
             <PopoverContent>Search for a friend to Add</PopoverContent>
           </Popover>
         </div>
+        {list.length != 0 && (
+          <section className="flex justify-center">
+            <h2 className="text-lg font-bold">Your List</h2>
+          </section>
+        )}
         <SpotifySearch token={data.access_token} onClick={addToList} />
       </Form>
 
