@@ -23,9 +23,7 @@ export default function Friends() {
         return;
       }
       try {
-        const { data, error } = await supabase.rpc("get_friends", {
-          userid: user.id,
-        });
+        const { data, error } = await supabase.rpc("get_friends");
         if (error) {
           throw error;
         }

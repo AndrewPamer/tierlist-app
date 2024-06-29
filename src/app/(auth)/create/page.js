@@ -2,6 +2,12 @@
 import useSWRImmutable from "swr/immutable";
 import { useState, useEffect } from "react";
 
+import {
+  Popover,
+  PopoverHandler,
+  PopoverContent,
+} from "@material-tailwind/react";
+
 import SpotifySearch from "@/components/tierlists/SpotifySearch";
 
 import { ToastContainer, toast, Flip } from "react-toastify";
@@ -11,14 +17,43 @@ import "react-toastify/dist/ReactToastify.css";
 import getSpotifyToken from "@/tools/getSpotifyToken";
 
 import ListItem from "@/components/tierlists/ListItem";
+import Form from "@/components/Form";
+
+import FriendSearch from "@/components/friends/FriendSearch";
+
+const formElements = {
+  elements: [
+    {
+      title: "Name",
+      type: "text",
+      required: true,
+    },
+    {
+      registerTitle: "Visibility",
+      title: "Visibility",
+      type: "radio",
+      value: "Public",
+      required: true,
+    },
+    {
+      registerTitle: "Visibility",
+      type: "radio",
+      value: "Private",
+      required: true,
+    },
+  ],
+  submitButtonText: "Create List",
+  onSubmit: (d) => console.log(d),
+};
 
 export default function Create() {
+  const [list, setList] = useState([]);
+  const [col, setCol] = useState([]);
+
   const { data, error, isLoading } = useSWRImmutable(
     "some string",
     getSpotifyToken
   );
-
-  const [list, setList] = useState([]);
 
   function addToList(item) {
     if (list.some((listEl) => listEl.id === item.id)) {
@@ -44,6 +79,7 @@ export default function Create() {
 
   return (
     <main>
+      <FriendSearch />
       <ToastContainer
         position="bottom-right"
         autoClose={2500}
@@ -59,15 +95,25 @@ export default function Create() {
       />
 
       <h1 className="text-3xl font-bold text-center">Create a new List</h1>
-      <form className="">
-        <label className="flex flex-col gap-1">
-          <span className="">List Name</span>
-          <input className="bg-input-bg rounded-xl border-2 border-text p-1.5 outline-none"></input>
-        </label>
-        <button className="font-bold bg-button-bg text-button-text text-1xl p-2.5 rounded-xl hover:bg-button-hover ">
-          Create List
-        </button>
-      </form>
+      <Form data={formElements}>
+        <div>
+          <span className="text-sm font-bold">Collaborators</span>
+          {}
+          <Popover>
+            <PopoverHandler>
+              <button
+                type="button"
+                className="flex justify-center items-center bg-green-800 w-8 h-8 rounded-full"
+              >
+                +
+              </button>
+            </PopoverHandler>
+            <PopoverContent>Search for a friend to Add</PopoverContent>
+          </Popover>
+        </div>
+        <SpotifySearch token={data.access_token} onClick={addToList} />
+      </Form>
+
       {list.length > 0 ? (
         <section>
           <h2>Items</h2>
@@ -80,7 +126,6 @@ export default function Create() {
           </div>
         </section>
       ) : null}
-      <SpotifySearch token={data.access_token} onClick={addToList} />
     </main>
   );
 }

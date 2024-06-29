@@ -4,21 +4,6 @@ import { getAuthContext } from "@/components/context/AuthContextProvider";
 import { createClient } from "@/utils/supabase/client";
 import Link from "next/link";
 
-import Form from "@/components/Form";
-
-const formElements = {
-  elements: [
-    {
-      title: "Name",
-      type: "text",
-      placeholder: "Enter your name",
-      required: true,
-    },
-  ],
-  submitButtonText: "login",
-  onSubmit: () => console.log("Hi"),
-};
-
 export default function Home() {
   const [name, setName] = useState();
   const [loading, setLoading] = useState(true);
