@@ -10,6 +10,9 @@ module.exports = withMT({
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    fontFamily: {
+      sans: ["var(--font-inter)"],
+    },
     extend: {
       colors: {
         black: "#000000",

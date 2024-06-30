@@ -8,7 +8,6 @@ import {
   Typography,
   Spinner,
 } from "@material-tailwind/react";
-import { Label } from "@headlessui/react";
 
 async function fetcher([url, token]) {
   const res = await fetch(url, {
@@ -40,13 +39,13 @@ export default function SongList({ albumId, token }) {
   }
 
   return (
-    <List className="bg-alt-bg-darker flex flex-col items-start">
+    <List className="bg-alt-bg-darker rounded-md flex flex-col items-start">
       {data?.items?.map((item, i) => {
         return (
-          <ListItem className="p-0">
+          <ListItem className="p-0 " key={i} ripple={false}>
             <label
               htmlFor={item.id}
-              className="flex w-full cursor-pointer items-center px-3 py-2"
+              className="flex w-full cursor-pointer items-center px-3 py-2 "
             >
               <ListItemPrefix>
                 <Checkbox
@@ -54,7 +53,7 @@ export default function SongList({ albumId, token }) {
                   ripple={false}
                   className="hover:before:opacity-0"
                   containerProps={{
-                    className: "p-0",
+                    className: "p-0 ",
                   }}
                 />
               </ListItemPrefix>

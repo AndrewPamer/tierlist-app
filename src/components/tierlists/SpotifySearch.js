@@ -8,12 +8,34 @@ import {
   Accordion,
   AccordionHeader,
   AccordionBody,
+  Button,
 } from "@material-tailwind/react";
 import SongList from "./SongsList";
 export default function SpotifySearch({ token, onClick }) {
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(null);
   const handleOpen = (value) => setOpen(open === value ? null : value);
+
+  function Icon({ id, open }) {
+    return (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={2}
+        stroke="currentColor"
+        className={`${
+          id === open ? "rotate-180" : ""
+        } h-5 w-5 transition-transform`}
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+        />
+      </svg>
+    );
+  }
 
   const { data, isError, isLoading } = useSpotifySearch({
     url: "https://api.spotify.com/v1/search?",
@@ -30,8 +52,6 @@ export default function SpotifySearch({ token, onClick }) {
   function handleSearch(e) {
     setSearch(e.target.value);
   }
-
-  console.log(data);
 
   return (
     <section>
@@ -50,8 +70,15 @@ export default function SpotifySearch({ token, onClick }) {
             <div className="bg-alt-bg  p-3 rounded-md mt-2">
               {data?.albums?.items?.map((item, i) => {
                 return (
-                  <Accordion open={open === i} key={item.id}>
-                    <AccordionHeader onClick={() => handleOpen(i)}>
+                  <Accordion
+                    open={open === i}
+                    key={item.id}
+                    icon={<Icon id={i} open={open} />}
+                  >
+                    <AccordionHeader
+                      onClick={() => handleOpen(i)}
+                      // className="text-text "
+                    >
                       <ListItem item={item} onClick={onClick} />
                     </AccordionHeader>
                     <AccordionBody>
@@ -59,7 +86,6 @@ export default function SpotifySearch({ token, onClick }) {
                     </AccordionBody>
                   </Accordion>
                 );
-                return;
               })}
               {/* {data?.tracks?.items?.map((item) => {
                 return <ListItem item={item} onClick={onClick} key={item.id} />;

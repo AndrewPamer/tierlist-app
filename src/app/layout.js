@@ -1,12 +1,72 @@
 import "@/styles/globals.css";
-
+import { ThemeProvider } from "./test.js";
 import { Inter } from "next/font/google";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-inter",
+});
 
 export const metadata = {
   title: "Tier List Maker",
   description: "Tier list maker",
+};
+
+const theme = {
+  accordion: {
+    styles: {
+      base: {
+        header: {
+          initial: {
+            color: "text-text",
+            hover: "hover:text-text",
+          },
+          active: {
+            color: "text-text",
+          },
+        },
+      },
+    },
+  },
+  list: {
+    styles: {
+      base: {
+        list: {
+          color: "text-text",
+        },
+        item: {
+          initial: {
+            bg: "hover:bg-button-bg hover:bg-opacity-80 focus:bg-button-hover focus:bg-opacity-80 active:bg-button-hover active:bg-opacity-80",
+            color:
+              "hover:text-alt-bg-darker focus:text-alt-bg-darker active:text-alt-bg-darker",
+          },
+        },
+      },
+    },
+  },
+  button: {
+    defaultProps: {
+      className: "!text-text",
+    },
+  },
+  checkbox: {
+    defaultProps: {
+      color: "boxTheme",
+    },
+    valid: {
+      colors: ["boxTheme"],
+    },
+    styles: {
+      colors: {
+        boxTheme: {
+          background: "checked:bg-alt-bg",
+          border: "checked:border-text",
+          before: "checked:before:bg-blue-600",
+        },
+      },
+    },
+  },
 };
 
 export default function RootLayout({
@@ -16,9 +76,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`bg-background text-text ${inter.className}`}>
-        {children}
-      </body>
+      <ThemeProvider value={theme}>
+        <body
+          className={`!bg-background !text-text ${inter.className} ${inter.variable}`}
+        >
+          {children}
+        </body>
+      </ThemeProvider>
     </html>
   );
 }
