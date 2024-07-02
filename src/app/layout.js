@@ -47,7 +47,24 @@ const theme = {
   },
   button: {
     defaultProps: {
-      className: "!text-text",
+      color: "theme",
+      ripple: false,
+    },
+    valid: {
+      colors: ["theme"],
+    },
+    styles: {
+      variants: {
+        filled: {
+          theme: {
+            background: "bg-button-bg",
+            color: "text-button-text",
+            hover: "hover:bg-button-hover",
+            focus: "focus:opacity-[0.85] focus:shadow-none",
+            active: "active:opacity-[0.85] active:shadow-none",
+          },
+        },
+      },
     },
   },
   checkbox: {
@@ -64,6 +81,24 @@ const theme = {
           border: "checked:border-text",
           before: "checked:before:bg-blue-600",
         },
+      },
+    },
+  },
+  radio: {
+    defaultProps: {
+      color: "theme",
+    },
+    valid: {
+      colors: ["theme"],
+    },
+    styles: {
+      base: {
+        input: {
+          borderColor: "border-button-hover",
+        },
+      },
+      colors: {
+        theme: {},
       },
     },
   },

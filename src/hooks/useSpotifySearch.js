@@ -16,14 +16,20 @@ async function fetcher([url, token, queryParams]) {
 }
 
 export default function useSpotifySearch({ url, token, search, queryParams }) {
-  const { data, error, isLoading } = useSWR(
+  const { data, error, isLoading, mutate } = useSWR(
     search ? [url, token, queryParams] : null,
-    fetcher
+    fetcher,
+    {
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
   );
 
   return {
     data,
     isLoading,
     isError: error,
+    mutate,
   };
 }

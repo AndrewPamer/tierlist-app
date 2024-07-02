@@ -9,11 +9,21 @@ import {
   AccordionHeader,
   AccordionBody,
   Button,
+  Radio,
+  Card,
+  List,
+  ListItem as LI,
+  ListItemPrefix,
+  Typography,
 } from "@material-tailwind/react";
+import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
+
 import SongList from "./SongsList";
-export default function SpotifySearch({ token, onClick }) {
+export default function SpotifySearch({ token, albumClick, songClick }) {
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(null);
+  const [filter, setFilter] = useState("albums");
+  const [page, setPage] = useState(null);
   const handleOpen = (value) => setOpen(open === value ? null : value);
 
   function Icon({ id, open }) {
@@ -37,17 +47,42 @@ export default function SpotifySearch({ token, onClick }) {
     );
   }
 
-  const { data, isError, isLoading } = useSpotifySearch({
-    url: "https://api.spotify.com/v1/search?",
+  const { data, isError, isLoading, mutate } = useSpotifySearch({
+    url: page ? page : "https://api.spotify.com/v1/search?",
     token,
     search,
-    queryParams: new URLSearchParams({
-      q: search,
-      type: ["album"],
-      market: "US",
-      limit: 10,
-    }).toString(),
+    queryParams: !page
+      ? new URLSearchParams({
+          q: search,
+          type: ["album", "track"],
+          market: "US",
+          limit: 10,
+        }).toString()
+      : "",
   });
+
+  async function getPage(url, filter) {
+    const nextData = await fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const newData = await nextData.json();
+
+    console.log(newData);
+
+    mutate(
+      (prevData) => ({
+        ...prevData,
+        [filter]: newData[filter],
+      }),
+      false
+    );
+  }
+
+  console.log(data);
 
   function handleSearch(e) {
     setSearch(e.target.value);
@@ -61,38 +96,116 @@ export default function SpotifySearch({ token, onClick }) {
           onChange={handleSearch}
           placeholder="Search for an album to add"
         />
-        {isLoading ? (
-          <div className="flex justify-center mt-4">
-            <Spinner className=" h-8 w-8" />
-          </div>
-        ) : (
-          data && (
-            <div className="bg-alt-bg  p-3 rounded-md mt-2">
-              {data?.albums?.items?.map((item, i) => {
-                return (
-                  <Accordion
-                    open={open === i}
-                    key={item.id}
-                    icon={<Icon id={i} open={open} />}
-                  >
-                    <AccordionHeader
-                      onClick={() => handleOpen(i)}
-                      // className="text-text "
-                    >
-                      <ListItem item={item} onClick={onClick} />
-                    </AccordionHeader>
-                    <AccordionBody>
-                      <SongList token={token} albumId={item.id} />
-                    </AccordionBody>
-                  </Accordion>
-                );
-              })}
-              {/* {data?.tracks?.items?.map((item) => {
-                return <ListItem item={item} onClick={onClick} key={item.id} />;
-              })} */}
+        <div className="bg-alt-bg  p-3 rounded-md mt-2">
+          <Card className="">
+            <List className="bg-alt-bg-darker rounded-md  flex-row">
+              <LI className="p-0" ripple={false}>
+                <label
+                  htmlFor="albums"
+                  className="flex w-full cursor-pointer items-center px-3 py-2"
+                >
+                  <ListItemPrefix className="mr-3">
+                    <Radio
+                      name="horizontal-list"
+                      id="albums"
+                      ripple={false}
+                      className="hover:before:opacity-0"
+                      containerProps={{
+                        className: "p-0 ",
+                      }}
+                      defaultChecked
+                      onClick={() => setFilter("albums")}
+                    />
+                  </ListItemPrefix>
+                  <Typography>Albums</Typography>
+                </label>
+              </LI>
+              <LI className="p-0" ripple={false}>
+                <label
+                  htmlFor="songs"
+                  className="flex w-full cursor-pointer items-center px-3 py-2"
+                >
+                  <ListItemPrefix className="mr-3">
+                    <Radio
+                      name="horizontal-list"
+                      id="songs"
+                      ripple={false}
+                      className="hover:before:opacity-0"
+                      containerProps={{
+                        className: "p-0 ",
+                      }}
+                      onClick={() => setFilter("tracks")}
+                    />
+                  </ListItemPrefix>
+                  <Typography>Songs</Typography>
+                </label>
+              </LI>
+            </List>
+          </Card>
+          {isLoading ? (
+            <div className="flex justify-center mt-4">
+              <Spinner className=" h-8 w-8" />
             </div>
-          )
-        )}
+          ) : (
+            <>
+              {filter === "albums" &&
+                data?.albums?.items?.map((item, i) => {
+                  return (
+                    <Accordion
+                      open={open === i}
+                      key={item.id}
+                      icon={<Icon id={i} open={open} />}
+                    >
+                      <AccordionHeader onClick={() => handleOpen(i)}>
+                        <ListItem item={item} />
+                      </AccordionHeader>
+                      <AccordionBody>
+                        <Button
+                          fullWidth
+                          className="mb-3"
+                          onClick={() => albumClick(item)}
+                        >
+                          Add {item.name}
+                        </Button>
+                        <SongList token={token} albumId={item.id} />
+                      </AccordionBody>
+                    </Accordion>
+                  );
+                })}
+
+              {filter === "tracks" &&
+                data?.tracks?.items?.map((item, i) => {
+                  return (
+                    <ListItem
+                      key={i}
+                      item={item}
+                      onClick={songClick}
+                      button={true}
+                    />
+                  );
+                })}
+              <div className="flex justify-center mt-5 gap-5">
+                {data?.[filter]?.previous ? (
+                  <Button
+                    className="flex"
+                    onClick={() => getPage(data[filter].previous, filter)}
+                  >
+                    <ArrowLeftIcon strokeWidth={2} className="h-4 w-4" />{" "}
+                    Previous
+                  </Button>
+                ) : null}
+                {data?.[filter]?.next ? (
+                  <Button
+                    className="flex"
+                    onClick={() => getPage(data[filter].next, filter)}
+                  >
+                    <ArrowRightIcon strokeWidth={2} className="h-4 w-4" /> Next
+                  </Button>
+                ) : null}
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </section>
   );

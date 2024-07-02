@@ -1,16 +1,15 @@
-export default function ListItem({ item, onClick }) {
+import { Button } from "@material-tailwind/react";
+
+export default function ListItem({ onClick = () => {}, item, button = false }) {
   return (
     <div
-      className=" text-left flex items-center gap-2"
-      //onClick={() => onClick(item)}
+      className=" text-left flex items-center  gap-2 p-2"
       key={item.id}
       type="button"
     >
       <img
         className="mb-1 h-14"
-        src={item.images[0].url}
-        // width={640}
-        // height={640}
+        src={item?.images ? item.images[0].url : item.album.images[0].url}
       />
       <div>
         <h3 className="text-md font-bold">{item.name}</h3>
@@ -25,6 +24,14 @@ export default function ListItem({ item, onClick }) {
           })}
         </div>
       </div>
+      {button && (
+        <Button
+          className="	ml-auto	px-3 py-1 text-lg"
+          onClick={() => onClick(item)}
+        >
+          +
+        </Button>
+      )}
     </div>
   );
 }
