@@ -6,7 +6,6 @@ import {
   Popover,
   PopoverHandler,
   PopoverContent,
-  Button,
 } from "@material-tailwind/react";
 
 import SpotifySearch from "@/components/tierlists/SpotifySearch";
@@ -87,6 +86,30 @@ export default function Create() {
     }
   }
 
+  function addSongsToList(songs) {
+    const merge = (a, b, predicate = (a, b) => a === b) => {
+      const c = [...a];
+      b.forEach((bItem) =>
+        c.some((cItem) => predicate(bItem, cItem)) ? null : c.push(bItem)
+      );
+      return c;
+    };
+
+    const mergedSongs = merge(
+      songs,
+      list?.songs || [],
+      (a, b) => a.id === b.id
+    );
+    setList((prevList) => {
+      const newList = { ...prevList };
+      newList.songs = mergedSongs;
+      return newList;
+    });
+    toast.success(
+      `${songs.length} song${songs.length > 1 ? "s" : ""} added to the list`
+    );
+  }
+
   function removeAlbumsFromList(albums) {
     setList((prevList) => {
       const newList = { ...prevList };
@@ -156,6 +179,7 @@ export default function Create() {
           token={data.access_token}
           albumClick={addAlbumToList}
           songClick={addSongToList}
+          addSongs={addSongsToList}
         />
       </Form>
     </main>

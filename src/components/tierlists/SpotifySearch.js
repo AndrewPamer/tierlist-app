@@ -10,17 +10,17 @@ import {
   AccordionHeader,
   AccordionBody,
   Button,
-  Radio,
-  Card,
-  List,
   ListItem as LI,
-  ListItemPrefix,
-  Typography,
 } from "@material-tailwind/react";
 import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 
-import SongList from "./SongsList";
-export default function SpotifySearch({ token, albumClick, songClick }) {
+import SearchAlbumSongs from "./SearchAlbumSongs";
+export default function SpotifySearch({
+  token,
+  albumClick,
+  songClick,
+  addSongs,
+}) {
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(null);
   const [filter, setFilter] = useState("albums");
@@ -119,7 +119,11 @@ export default function SpotifySearch({ token, albumClick, songClick }) {
                         >
                           Add {item.name}
                         </Button>
-                        <SongList token={token} albumId={item.id} />
+                        <SearchAlbumSongs
+                          token={token}
+                          album={item}
+                          addSongs={addSongs}
+                        />
                       </AccordionBody>
                     </Accordion>
                   );
