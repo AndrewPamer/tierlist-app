@@ -1,17 +1,17 @@
 "use client";
 import useSWRImmutable from "swr/immutable";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import {
   Popover,
   PopoverHandler,
   PopoverContent,
+  Button,
 } from "@material-tailwind/react";
 
 import SpotifySearch from "@/components/tierlists/SpotifySearch";
 
 import { ToastContainer, toast, Flip } from "react-toastify";
-import { Spinner } from "@material-tailwind/react";
 import "react-toastify/dist/ReactToastify.css";
 
 import getSpotifyToken from "@/tools/getSpotifyToken";
@@ -19,6 +19,8 @@ import getSpotifyToken from "@/tools/getSpotifyToken";
 import Form from "@/components/Form";
 
 import FriendSearch from "@/components/friends/FriendSearch";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import ListEditPopup from "@/components/tierlists/ListEditPopup";
 
 const formElements = {
   elements: [
@@ -42,12 +44,15 @@ const formElements = {
     },
   ],
   submitButtonText: "Create List",
-  onSubmit: (d) => console.log(d),
+  // onSubmit: (d) => console.log(d),
 };
 
 export default function Create() {
   const [list, setList] = useState({});
   const [col, setCol] = useState([]);
+
+  const listLen = (list?.albums?.length || 0) + (list?.songs?.length || 0);
+  // console.log(listLen);
 
   const { data, error, isLoading } = useSWRImmutable(
     "some string",
@@ -60,12 +65,11 @@ export default function Create() {
     } else {
       setList((prevList) => {
         const newList = { ...prevList };
-        if (!newList.albums) {
-          newList.albums = [];
-        }
-        newList.albums.push(album);
+        newList.albums = [...(newList?.albums || []), album];
+
         return newList;
       });
+      toast.success(`${album.name} has been added to the List`);
     }
   }
 
@@ -75,38 +79,35 @@ export default function Create() {
     } else {
       setList((prevList) => {
         const newList = { ...prevList };
-        if (!newList.songs) {
-          newList.songs = [];
-        }
-        newList.songs.push(song);
+        newList.songs = [...(newList?.songs || []), song];
+
         return newList;
       });
+      toast.success(`${song.name} has been added to the List`);
     }
   }
 
-  function addToList(item) {
-    if (list.some((listEl) => listEl.id === item.id)) {
-      toast.warn(`${item.name} is already in the list`);
-    } else {
-      setList((prevList) => [...prevList, item]);
-      //toast(`Added ${item.name} to the list`);
-    }
+  function removeAlbumsFromList(albums) {
+    setList((prevList) => {
+      const newList = { ...prevList };
+      newList.albums = newList.albums.filter((e) => !albums.includes(e));
+
+      return newList;
+    });
   }
 
-  function removeFromList(item) {
-    setList((prevList) => prevList.filter((listEl) => listEl.id !== item.id));
-    //toast(`Removed ${item.name} from the list`);
+  function removeSongsFromList(songs) {
+    setList((prevList) => {
+      const newList = { ...prevList };
+      newList.songs = newList.songs.filter((e) => !songs.includes(e));
+
+      return newList;
+    });
   }
 
   if (isLoading) {
-    return (
-      <div className="flex justify-center mt-4">
-        <Spinner className=" h-8 w-8" />
-      </div>
-    );
+    return <LoadingSpinner />;
   }
-
-  console.log(list);
 
   return (
     <main>
@@ -141,6 +142,15 @@ export default function Create() {
             <PopoverContent>Search for a friend to Add</PopoverContent>
           </Popover>
         </div>
+
+        {listLen ? (
+          <ListEditPopup
+            listLen={listLen}
+            list={list}
+            removeAlbums={removeAlbumsFromList}
+            removeSongs={removeSongsFromList}
+          />
+        ) : null}
 
         <SpotifySearch
           token={data.access_token}

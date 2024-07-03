@@ -6,8 +6,9 @@ import {
   ListItem,
   ListItemPrefix,
   Typography,
-  Spinner,
 } from "@material-tailwind/react";
+
+import LoadingSpinner from "../LoadingSpinner";
 
 async function fetcher([url, token]) {
   const res = await fetch(url, {
@@ -31,11 +32,7 @@ export default function SongList({ albumId, token }) {
   );
 
   if (isLoading) {
-    return (
-      <div className="flex justify-center mt-4">
-        <Spinner className=" h-8 w-8" />
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   return (

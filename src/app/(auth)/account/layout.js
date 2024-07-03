@@ -66,7 +66,7 @@ export default function AccountLayout({ children }) {
     ["id"],
     null,
     {
-      onSuccess: () => console.log("SDf"),
+      // onSuccess: () => console.log("SDf"),
     }
   );
 

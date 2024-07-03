@@ -2,7 +2,6 @@ import useSWR from "swr";
 import { createClient } from "@/utils/supabase/client";
 
 async function fetch([key, search]) {
-  console.log(search);
   const supabase = createClient();
   const { data, error } = await supabase.rpc("get_friends", {
     search,
@@ -24,7 +23,6 @@ export default function searchForFriends({ search }) {
     }
   );
 
-  console.log(data, error, isLoading);
   return {
     data,
     isLoading,

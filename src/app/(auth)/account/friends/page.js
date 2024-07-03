@@ -39,7 +39,7 @@ export default function Friends() {
     ["userid1", "userid2"],
     {
       callback: (payload) => {
-        console.log(payload);
+        // console.log(payload);
         mutate();
       },
     }

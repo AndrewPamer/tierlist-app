@@ -29,7 +29,6 @@ export default function Login() {
         throw error;
       }
     } catch (e) {
-      console.log(e);
       setResponseMessage(e);
     } finally {
       setDisabled(false);

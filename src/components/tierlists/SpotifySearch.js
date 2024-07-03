@@ -1,9 +1,10 @@
 "use client";
 import { useState } from "react";
-import { Spinner } from "@material-tailwind/react";
 
 import useSpotifySearch from "@/hooks/useSpotifySearch";
 import ListItem from "./ListItem";
+import LoadingSpinner from "../LoadingSpinner";
+import AlbumOrSongRadio from "./AlbumOrSongRadio";
 import {
   Accordion,
   AccordionHeader,
@@ -23,7 +24,6 @@ export default function SpotifySearch({ token, albumClick, songClick }) {
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(null);
   const [filter, setFilter] = useState("albums");
-  const [page, setPage] = useState(null);
   const handleOpen = (value) => setOpen(open === value ? null : value);
 
   function Icon({ id, open }) {
@@ -48,17 +48,15 @@ export default function SpotifySearch({ token, albumClick, songClick }) {
   }
 
   const { data, isError, isLoading, mutate } = useSpotifySearch({
-    url: page ? page : "https://api.spotify.com/v1/search?",
+    url: "https://api.spotify.com/v1/search?",
     token,
     search,
-    queryParams: !page
-      ? new URLSearchParams({
-          q: search,
-          type: ["album", "track"],
-          market: "US",
-          limit: 10,
-        }).toString()
-      : "",
+    queryParams: new URLSearchParams({
+      q: search,
+      type: ["album", "track"],
+      market: "US",
+      limit: 10,
+    }).toString(),
   });
 
   async function getPage(url, filter) {
@@ -71,8 +69,6 @@ export default function SpotifySearch({ token, albumClick, songClick }) {
 
     const newData = await nextData.json();
 
-    console.log(newData);
-
     mutate(
       (prevData) => ({
         ...prevData,
@@ -81,8 +77,6 @@ export default function SpotifySearch({ token, albumClick, songClick }) {
       false
     );
   }
-
-  console.log(data);
 
   function handleSearch(e) {
     setSearch(e.target.value);
@@ -97,55 +91,13 @@ export default function SpotifySearch({ token, albumClick, songClick }) {
           placeholder="Search for an album to add"
         />
         <div className="bg-alt-bg  p-3 rounded-md mt-2">
-          <Card className="">
-            <List className="bg-alt-bg-darker rounded-md  flex-row">
-              <LI className="p-0" ripple={false}>
-                <label
-                  htmlFor="albums"
-                  className="flex w-full cursor-pointer items-center px-3 py-2"
-                >
-                  <ListItemPrefix className="mr-3">
-                    <Radio
-                      name="horizontal-list"
-                      id="albums"
-                      ripple={false}
-                      className="hover:before:opacity-0"
-                      containerProps={{
-                        className: "p-0 ",
-                      }}
-                      defaultChecked
-                      onClick={() => setFilter("albums")}
-                    />
-                  </ListItemPrefix>
-                  <Typography>Albums</Typography>
-                </label>
-              </LI>
-              <LI className="p-0" ripple={false}>
-                <label
-                  htmlFor="songs"
-                  className="flex w-full cursor-pointer items-center px-3 py-2"
-                >
-                  <ListItemPrefix className="mr-3">
-                    <Radio
-                      name="horizontal-list"
-                      id="songs"
-                      ripple={false}
-                      className="hover:before:opacity-0"
-                      containerProps={{
-                        className: "p-0 ",
-                      }}
-                      onClick={() => setFilter("tracks")}
-                    />
-                  </ListItemPrefix>
-                  <Typography>Songs</Typography>
-                </label>
-              </LI>
-            </List>
-          </Card>
+          <AlbumOrSongRadio
+            albumClick={() => setFilter("albums")}
+            songClick={() => setFilter("tracks")}
+          />
+
           {isLoading ? (
-            <div className="flex justify-center mt-4">
-              <Spinner className=" h-8 w-8" />
-            </div>
+            <LoadingSpinner />
           ) : (
             <>
               {filter === "albums" &&

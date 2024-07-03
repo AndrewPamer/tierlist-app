@@ -26,7 +26,7 @@ export default function OutgoingRequests({ supabase, user }) {
     ["id"],
     {
       callback: (payload) => {
-        console.log(payload);
+        // console.log(payload);
         mutate();
       },
     }
