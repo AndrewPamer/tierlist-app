@@ -1,5 +1,3 @@
-"use client";
-import { useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import {
   Popover,
@@ -11,22 +9,9 @@ import {
 
 import DialogPopup from "@/components/DialogPopup";
 
-export default function FriendCard({ name, buttons, color, children }) {
-  const [popup, setPopup] = useState(null);
-
+export default function FriendCard({ name, buttons, color, popup = true }) {
   if (!buttons) {
     return;
-  }
-
-  function showPopup({ popupTitle, popupHeader, popupAction }) {
-    setPopup(
-      <DialogPopup
-        onClose={() => setPopup(null)}
-        title={popupTitle}
-        header={popupHeader}
-        action={popupAction}
-      />
-    );
   }
 
   return (
@@ -41,20 +26,28 @@ export default function FriendCard({ name, buttons, color, children }) {
         <h3>{name}</h3>
       </div>
 
-      <Popover>
-        <PopoverHandler>
-          <Button ripple={false} className="bg-alt-bg-darker">
-            <BsThreeDotsVertical />
-          </Button>
-        </PopoverHandler>
-        <PopoverContent className="p-0 border-none rounded-none	">
-          <List className="p-0 gap-0 ">
-            {buttons.map((data, i) => {
-              return <DialogPopup data={data} key={i} />;
-            })}
-          </List>
-        </PopoverContent>
-      </Popover>
+      {popup ? (
+        <Popover>
+          <PopoverHandler>
+            <Button ripple={false}>
+              <BsThreeDotsVertical />
+            </Button>
+          </PopoverHandler>
+          <PopoverContent className="p-0 border-none rounded-none	">
+            <List className="p-0 gap-0 ">
+              {buttons?.map((data, i) => {
+                return <DialogPopup data={data} key={i} />;
+              })}
+            </List>
+          </PopoverContent>
+        </Popover>
+      ) : buttons.length === 1 ? (
+        <Button onClick={buttons[0].buttonAction}>
+          {buttons[0].buttonTitle}
+        </Button>
+      ) : (
+        <List></List>
+      )}
 
       {/* <Menu>
         <MenuButton className="bg-alt-bg-darker p-1 rounded-full overflow-hidden">
@@ -73,7 +66,6 @@ export default function FriendCard({ name, buttons, color, children }) {
           ))}
         </MenuItems>
       </Menu> */}
-      {popup}
     </div>
   );
 }

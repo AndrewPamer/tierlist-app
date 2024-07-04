@@ -102,6 +102,45 @@ const theme = {
       },
     },
   },
+  input: {
+    defaultProps: {
+      color: "theme",
+    },
+    valid: {
+      colors: ["theme"],
+    },
+    styles: {
+      variants: {
+        outlined: {
+          colors: {
+            input: {
+              theme: {
+                color: "text-text",
+                borderColor: "border-text",
+                borderColorFocused: "focus:border-text",
+              },
+            },
+            label: {
+              theme: {
+                color: "!text-text peer-focus:text-text",
+                before: "before:border-text peer-focus:before:!border-text",
+                after: "after:border-text peer-focus:after:!border-text",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  popover: {
+    styles: {
+      base: {
+        bg: "bg-alt-bg-darker",
+        border: "border border-text",
+        color: "text-text",
+      },
+    },
+  },
 };
 
 export default function RootLayout({

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useContext } from "react";
 
 import {
   Button,
@@ -11,10 +11,13 @@ import {
   Typography,
 } from "@material-tailwind/react";
 
+import { ListContext } from "@/app/(auth)/create/page";
+
 import LoadingSpinner from "../LoadingSpinner";
 import useSongsInAlbum from "@/hooks/useSongsInAlbum";
 
 export default function SearchAlbumSongs({ album, token, addSongs }) {
+  const list = useContext(ListContext);
   const [selectedSongs, setSelectedSongs] = useState([]);
   const { data, isError, isLoading } = useSongsInAlbum({
     albumId: album.id,
@@ -44,15 +47,24 @@ export default function SearchAlbumSongs({ album, token, addSongs }) {
         <Button
           fullWidth
           className="mb-2"
-          onClick={() => addSongs(selectedSongs)}
+          onClick={() => {
+            addSongs(selectedSongs);
+            setSelectedSongs([]);
+          }}
         >
           Add {selectedSongs.length} song{selectedSongs.length > 1 ? "s" : ""}
         </Button>
       )}
       {data?.items?.map((item, i) => {
         const checked = selectedSongs.find((el) => el.id === item.id);
+        const disabled = list?.songs?.find((el) => el.id === item.id);
         return (
-          <ListItem className="p-0 " key={i} ripple={false}>
+          <ListItem
+            className="p-0 "
+            key={i}
+            ripple={false}
+            disabled={disabled ? true : false}
+          >
             <label
               htmlFor={item.id}
               className="flex w-full cursor-pointer items-center px-3 py-2 "
@@ -66,7 +78,7 @@ export default function SearchAlbumSongs({ album, token, addSongs }) {
                     className: "p-0 ",
                   }}
                   onChange={(e) => handleSongSelect(e, item)}
-                  checked={checked ? true : false}
+                  checked={disabled ? true : checked ? true : false}
                 />
               </ListItemPrefix>
               <Typography>{item.name}</Typography>

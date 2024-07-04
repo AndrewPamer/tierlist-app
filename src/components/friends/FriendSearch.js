@@ -1,9 +1,13 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { Input, Typography } from "@material-tailwind/react";
+import FriendCard from "./FriendCard";
+import LoadingSpinner from "../LoadingSpinner";
 import searchForFriends from "@/tools/searchForFriends";
-export default function FriendSearch() {
+export default function FriendSearch({ addCollab }) {
   const [search, setSearch] = useState("");
   const { data, isError, isLoading } = searchForFriends({ search });
+  console.log(data);
 
   function handleSearch(e) {
     setSearch(e.target.value);
@@ -11,11 +15,27 @@ export default function FriendSearch() {
 
   return (
     <section>
-      <input
-        className="bg-input-bg rounded-xl border-2 border-text p-1.5 outline-none"
-        onChange={handleSearch}
-        placeholder="Search for a friend"
-      />
+      <Input label="Search for a friend" onChange={handleSearch} />
+      {isLoading ? (
+        <LoadingSpinner />
+      ) : (
+        data?.map((friend) => {
+          return (
+            <FriendCard
+              key={friend.friend_id}
+              name={friend.friend_username}
+              color={friend.color}
+              buttons={[
+                {
+                  buttonTitle: "+",
+                  buttonAction: () => addCollab(friend),
+                },
+              ]}
+              popup={false}
+            />
+          );
+        })
+      )}
     </section>
   );
 }

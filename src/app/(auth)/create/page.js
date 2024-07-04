@@ -1,11 +1,14 @@
 "use client";
 import useSWRImmutable from "swr/immutable";
-import { useState } from "react";
+import { useState, createContext } from "react";
 
 import {
   Popover,
   PopoverHandler,
   PopoverContent,
+  Card,
+  Typography,
+  Button,
 } from "@material-tailwind/react";
 
 import SpotifySearch from "@/components/tierlists/SpotifySearch";
@@ -20,6 +23,27 @@ import Form from "@/components/Form";
 import FriendSearch from "@/components/friends/FriendSearch";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ListEditPopup from "@/components/tierlists/ListEditPopup";
+
+export const ListContext = createContext();
+
+function RemoveIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
+      className="size-6"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+      />
+    </svg>
+  );
+}
 
 const formElements = {
   elements: [
@@ -48,10 +72,9 @@ const formElements = {
 
 export default function Create() {
   const [list, setList] = useState({});
-  const [col, setCol] = useState([]);
+  const [collabs, setCollabs] = useState([]);
 
   const listLen = (list?.albums?.length || 0) + (list?.songs?.length || 0);
-  // console.log(listLen);
 
   const { data, error, isLoading } = useSWRImmutable(
     "some string",
@@ -128,13 +151,31 @@ export default function Create() {
     });
   }
 
+  function addCollab(friend) {
+    if (
+      collabs?.some(
+        (collabFriend) => collabFriend.friend_id === friend.friend_id
+      )
+    ) {
+      toast.warn(`${friend.friend_username} is already a collaborator`);
+      console.log(collabs);
+    } else {
+      setCollabs((prevCollabs) => [...prevCollabs, friend]);
+    }
+  }
+
+  function removeCollab(friend) {
+    setCollabs((prevCollabs) =>
+      [...prevCollabs].filter((f) => f.friend_id !== friend.friend_id)
+    );
+  }
+
   if (isLoading) {
     return <LoadingSpinner />;
   }
 
   return (
     <main>
-      <FriendSearch />
       <ToastContainer
         position="bottom-right"
         autoClose={2500}
@@ -151,19 +192,45 @@ export default function Create() {
 
       <h1 className="text-3xl font-bold text-center">Create a new List</h1>
       <Form data={formElements}>
-        <div>
-          <span className="text-sm font-bold">Collaborators</span>
-          <Popover>
-            <PopoverHandler>
-              <button
-                type="button"
-                className="flex justify-center items-center bg-green-800 w-8 h-8 rounded-full"
-              >
-                +
-              </button>
-            </PopoverHandler>
-            <PopoverContent>Search for a friend to Add</PopoverContent>
-          </Popover>
+        <div className="flex flex-col">
+          <span className="text-sm font-bold ">Collaborators</span>
+          <div className="flex flex-wrap justify-center items-center gap-3">
+            {collabs?.map((collab) => {
+              return (
+                <Card
+                  key={collab.friend_id}
+                  className="text-text bg-alt-bg flex items-center p-2 relative"
+                >
+                  <div
+                    className="flex justify-center items-center bg-red-400 w-8 h-8 rounded-full"
+                    style={{ backgroundColor: `#${collab.color}` }}
+                  >
+                    {collab.friend_username[0].toUpperCase()}
+                  </div>
+                  <Typography>{collab.friend_username}</Typography>
+                  <Button
+                    className="px-2 py-1 text-[0.7rem] mt-2"
+                    onClick={() => removeCollab(collab)}
+                  >
+                    Remove
+                  </Button>
+                </Card>
+              );
+            })}
+            <Popover>
+              <PopoverHandler>
+                <button
+                  type="button"
+                  className="flex justify-center items-center bg-green-800 w-8 h-8 rounded-full"
+                >
+                  +
+                </button>
+              </PopoverHandler>
+              <PopoverContent className="">
+                <FriendSearch addCollab={addCollab} />
+              </PopoverContent>
+            </Popover>
+          </div>
         </div>
 
         {listLen ? (
@@ -174,13 +241,14 @@ export default function Create() {
             removeSongs={removeSongsFromList}
           />
         ) : null}
-
-        <SpotifySearch
-          token={data.access_token}
-          albumClick={addAlbumToList}
-          songClick={addSongToList}
-          addSongs={addSongsToList}
-        />
+        <ListContext.Provider value={list}>
+          <SpotifySearch
+            token={data.access_token}
+            albumClick={addAlbumToList}
+            songClick={addSongToList}
+            addSongs={addSongsToList}
+          />
+        </ListContext.Provider>
       </Form>
     </main>
   );
