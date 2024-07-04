@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { ListContext } from "@/app/(auth)/create/page";
 
 import useSpotifySearch from "@/hooks/useSpotifySearch";
 import SpotifySearchItem from "./SpotifySearchItem";
@@ -25,6 +26,8 @@ export default function SpotifySearch({
   const [open, setOpen] = useState(null);
   const [filter, setFilter] = useState("albums");
   const handleOpen = (value) => setOpen(open === value ? null : value);
+
+  const list = useContext(ListContext);
 
   function Icon({ id, open }) {
     return (
@@ -134,7 +137,15 @@ export default function SpotifySearch({
                     item={item}
                     onClick={songClick}
                     button={true}
-                  />
+                  >
+                    <Button
+                      className="	ml-auto	px-3 py-1 text-lg"
+                      onClick={() => songClick(item)}
+                      disabled={list?.songs?.find((el) => el.id === item.id)}
+                    >
+                      +
+                    </Button>
+                  </SpotifySearchItem>
                 );
               })}
             <div className="flex justify-center mt-5 gap-5">

@@ -1,14 +1,6 @@
-"use client";
-import { useContext } from "react";
-import { ListContext } from "@/app/(auth)/create/page";
 import { Button } from "@material-tailwind/react";
 
-export default function SpotifySearchItem({
-  onClick = () => {},
-  item,
-  button = false,
-}) {
-  const list = useContext(ListContext);
+export default function SpotifySearchItem({ item, children }) {
   return (
     <div
       className=" text-left flex items-center  gap-2 p-2"
@@ -32,15 +24,7 @@ export default function SpotifySearchItem({
           })}
         </div>
       </div>
-      {button && (
-        <Button
-          className="	ml-auto	px-3 py-1 text-lg"
-          onClick={() => onClick(item)}
-          disabled={list?.songs?.find((el) => el.id === item.id)}
-        >
-          +
-        </Button>
-      )}
+      {children}
     </div>
   );
 }
