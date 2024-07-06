@@ -17,7 +17,7 @@ import LoadingSpinner from "../LoadingSpinner";
 import useSongsInAlbum from "@/hooks/useSongsInAlbum";
 
 export default function SearchAlbumSongs({ album, token, addSongs }) {
-  const list = useContext(ListContext);
+  const { list, listLen } = useContext(ListContext);
   const [selectedSongs, setSelectedSongs] = useState([]);
   const { data, isError, isLoading } = useSongsInAlbum({
     albumId: album.id,
@@ -58,12 +58,14 @@ export default function SearchAlbumSongs({ album, token, addSongs }) {
       {data?.items?.map((item, i) => {
         const checked = selectedSongs.find((el) => el.id === item.id);
         const disabled = list?.songs?.find((el) => el.id === item.id);
+        const overFlow =
+          selectedSongs.length + listLen >= 100 && checked === undefined;
         return (
           <ListItem
             className="p-0 "
             key={i}
             ripple={false}
-            disabled={disabled ? true : false}
+            disabled={disabled || overFlow ? true : false}
           >
             <label
               htmlFor={item.id}

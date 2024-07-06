@@ -100,8 +100,11 @@ export default function ListEditPopup({
         view {listLen} item{listLen > 1 ? "s" : ""}
       </Button>
       <Dialog open={open} handler={handleOpen}>
-        <DialogHeader>Your List</DialogHeader>
-        <DialogBody className="bg-alt-bg flex flex-col gap-2 max-h-[40rem] overflow-scroll">
+        <DialogHeader className="flex flex-col items-start">
+          Your List
+          <Typography variant="small">{listLen} / 100</Typography>
+        </DialogHeader>
+        <DialogBody className=" flex flex-col gap-2 max-h-[40rem] overflow-scroll">
           <AlbumOrSongRadio
             albumClick={() => setEditFilter("albums")}
             songClick={() => setEditFilter("songs")}
@@ -133,22 +136,24 @@ export default function ListEditPopup({
             </Button>
           ) : null}
 
-          <List className="bg-alt-bg-darker rounded-md flex flex-col items-start">
-            {list?.[editFilter]?.map((item, i) => {
-              const checked = selectedItems?.[editFilter]?.find(
-                (el) => el === item
-              );
+          {list?.[editFilter]?.length > 0 && (
+            <List className="bg-alt-bg-darker rounded-md flex flex-col items-start">
+              {list?.[editFilter]?.map((item, i) => {
+                const checked = selectedItems?.[editFilter]?.find(
+                  (el) => el === item
+                );
 
-              return (
-                <ListEditItem
-                  key={item.id}
-                  item={item}
-                  onChange={addToSelectedList}
-                  checked={checked ? true : false}
-                />
-              );
-            })}
-          </List>
+                return (
+                  <ListEditItem
+                    key={item.id}
+                    item={item}
+                    onChange={addToSelectedList}
+                    checked={checked ? true : false}
+                  />
+                );
+              })}
+            </List>
+          )}
         </DialogBody>
         <DialogFooter></DialogFooter>
       </Dialog>

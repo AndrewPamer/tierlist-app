@@ -141,6 +141,39 @@ const theme = {
       },
     },
   },
+  dialog: {
+    styles: {
+      base: {
+        container: {
+          bg: "bg-alt-bg",
+          color: "text-text",
+        },
+      },
+    },
+  },
+  dialogHeader: {
+    styles: {
+      base: {
+        color: "text-text",
+      },
+    },
+  },
+  dialogBody: {
+    styles: {
+      base: {
+        initial: {
+          color: "text-text",
+        },
+      },
+    },
+  },
+  dialogFooter: {
+    styles: {
+      base: {
+        color: "text-text",
+      },
+    },
+  },
 };
 
 export default function RootLayout({

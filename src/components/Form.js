@@ -16,6 +16,7 @@
 }
                 
         */
+import { Input } from "@material-tailwind/react";
 import { useForm } from "react-hook-form";
 
 import { useId } from "react";
@@ -58,7 +59,7 @@ export default function Form({ data, children }) {
                   <span>{el.value}</span>
                 </div>
               ) : (
-                <input
+                <Input
                   {...register(
                     el?.registerTitle ? el.registerTitle : el.title,
                     {
@@ -69,11 +70,10 @@ export default function Form({ data, children }) {
                   )}
                   type={el.type}
                   value={el?.value}
-                  className={
-                    el.type !== "radio"
-                      ? "bg-input-bg rounded-xl border-2 border-text p-1.5 outline-none"
-                      : ""
-                  }
+                  className=" !border-text focus:!border-text"
+                  labelProps={{
+                    className: "before:content-none after:content-none",
+                  }}
                 />
               )}
               <p className="text-error font-bold">

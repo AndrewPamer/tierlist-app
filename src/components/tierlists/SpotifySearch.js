@@ -27,7 +27,7 @@ export default function SpotifySearch({
   const [filter, setFilter] = useState("albums");
   const handleOpen = (value) => setOpen(open === value ? null : value);
 
-  const list = useContext(ListContext);
+  const { list } = useContext(ListContext);
 
   function Icon({ id, open }) {
     return (
@@ -116,6 +116,7 @@ export default function SpotifySearch({
                         fullWidth
                         className="mb-3"
                         onClick={() => albumClick(item)}
+                        disabled={list?.albums?.find((el) => el.id === item.id)}
                       >
                         Add {item.name}
                       </Button>

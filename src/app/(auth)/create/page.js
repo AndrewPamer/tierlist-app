@@ -18,57 +18,15 @@ import "react-toastify/dist/ReactToastify.css";
 
 import getSpotifyToken from "@/tools/getSpotifyToken";
 
-import Form from "@/components/Form";
+import ListCreateForm from "@/components/tierlists/ListCreateForm";
 
 import FriendSearch from "@/components/friends/FriendSearch";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ListEditPopup from "@/components/tierlists/ListEditPopup";
 
+import addTierList from "@/utils/supabase/addTierlist";
+
 export const ListContext = createContext();
-
-function RemoveIcon() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth={1.5}
-      stroke="currentColor"
-      className="size-6"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-      />
-    </svg>
-  );
-}
-
-const formElements = {
-  elements: [
-    {
-      title: "Name",
-      type: "text",
-      required: true,
-    },
-    {
-      registerTitle: "Visibility",
-      title: "Visibility",
-      type: "radio",
-      value: "Public",
-      required: true,
-    },
-    {
-      registerTitle: "Visibility",
-      type: "radio",
-      value: "Private",
-      required: true,
-    },
-  ],
-  submitButtonText: "Create List",
-  // onSubmit: (d) => console.log(d),
-};
 
 export default function Create() {
   const [list, setList] = useState({});
@@ -82,6 +40,12 @@ export default function Create() {
   );
 
   function addAlbumToList(album) {
+    if (listLen === 100) {
+      toast.error(
+        "The list has reached its maximum size. Remove an item to add this one"
+      );
+      return;
+    }
     if (list?.albums?.some((albumEl) => albumEl.id === album.id)) {
       toast.warn(`${album.name} is already in the list`);
     } else {
@@ -91,11 +55,17 @@ export default function Create() {
 
         return newList;
       });
-      toast.success(`${album.name} has been added to the List`);
+      // toast.success(`${album.name} has been added to the List`);
     }
   }
 
   function addSongToList(song) {
+    if (listLen === 100) {
+      toast.error(
+        "The list has reached its maximum size. Remove an item to add this one"
+      );
+      return;
+    }
     if (list?.songs?.some((songEl) => songEl.id === song.id)) {
       toast.warn(`${song.name} is already in the list`);
     } else {
@@ -105,7 +75,7 @@ export default function Create() {
 
         return newList;
       });
-      toast.success(`${song.name} has been added to the List`);
+      // toast.success(`${song.name} has been added to the List`);
     }
   }
 
@@ -123,6 +93,14 @@ export default function Create() {
       list?.songs || [],
       (a, b) => a.id === b.id
     );
+
+    if (mergedSongs?.length + list?.albums?.length > 100) {
+      toast.error(
+        "Cannot add songs as it would exceed the maximum size of the list"
+      );
+      return;
+    }
+
     setList((prevList) => {
       const newList = { ...prevList };
       newList.songs = mergedSongs;
@@ -152,6 +130,9 @@ export default function Create() {
   }
 
   function addCollab(friend) {
+    if (collabs.length >= 10) {
+      return;
+    }
     if (
       collabs?.some(
         (collabFriend) => collabFriend.friend_id === friend.friend_id
@@ -174,6 +155,8 @@ export default function Create() {
     return <LoadingSpinner />;
   }
 
+  console.log(list);
+
   return (
     <main>
       <ToastContainer
@@ -191,9 +174,12 @@ export default function Create() {
       />
 
       <h1 className="text-3xl font-bold text-center">Create a new List</h1>
-      <Form data={formElements}>
-        <div className="flex flex-col">
-          <span className="text-sm font-bold ">Collaborators</span>
+
+      <ListCreateForm onSubmit={(d) => addTierList({ ...d, collabs, list })}>
+        <div className="flex flex-col ">
+          <Typography className="font-bold ">
+            Collaborators {collabs.length ? `(${collabs.length} / 10)` : ""}
+          </Typography>
           <div className="flex flex-wrap justify-center items-center gap-3">
             {collabs?.map((collab) => {
               return (
@@ -217,19 +203,21 @@ export default function Create() {
                 </Card>
               );
             })}
-            <Popover>
-              <PopoverHandler>
-                <button
-                  type="button"
-                  className="flex justify-center items-center bg-green-800 w-8 h-8 rounded-full"
-                >
-                  +
-                </button>
-              </PopoverHandler>
-              <PopoverContent className="">
-                <FriendSearch addCollab={addCollab} />
-              </PopoverContent>
-            </Popover>
+            {collabs.length < 10 ? (
+              <Popover>
+                <PopoverHandler>
+                  <Button
+                    type="button"
+                    className="flex justify-center items-center rounded-full p-0 w-8 h-8"
+                  >
+                    +
+                  </Button>
+                </PopoverHandler>
+                <PopoverContent className="">
+                  <FriendSearch addCollab={addCollab} />
+                </PopoverContent>
+              </Popover>
+            ) : null}
           </div>
         </div>
 
@@ -241,7 +229,7 @@ export default function Create() {
             removeSongs={removeSongsFromList}
           />
         ) : null}
-        <ListContext.Provider value={list}>
+        <ListContext.Provider value={{ list, listLen }}>
           <SpotifySearch
             token={data.access_token}
             albumClick={addAlbumToList}
@@ -249,7 +237,7 @@ export default function Create() {
             addSongs={addSongsToList}
           />
         </ListContext.Provider>
-      </Form>
+      </ListCreateForm>
     </main>
   );
 }
