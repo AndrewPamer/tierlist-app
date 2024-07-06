@@ -12,6 +12,11 @@ import {
   Typography,
   Checkbox,
 } from "@material-tailwind/react";
+import Image from "next/image";
+
+import SortableItem from "../SortableItem";
+import SortableProvider from "./SortableProvider";
+
 import AlbumOrSongRadio from "./AlbumOrSongRadio";
 
 function ListEditItem({ item, onChange, checked }) {
@@ -33,9 +38,12 @@ function ListEditItem({ item, onChange, checked }) {
             checked={checked}
           />
         </ListItemPrefix>
-        <img
-          className="mr-2 h-10"
+        <Image
+          className="mr-2 h-10 w-10"
           src={item?.images ? item.images[0].url : item.album.images[0].url}
+          width={640}
+          height={640}
+          alt={`Cover Image for ${item.name}`}
         />
         <div>
           <Typography className="font-bold">{item.name}</Typography>
@@ -58,6 +66,7 @@ function ListEditItem({ item, onChange, checked }) {
 export default function ListEditPopup({
   listLen,
   list,
+  setList,
   removeAlbums,
   removeSongs,
 }) {
@@ -104,7 +113,7 @@ export default function ListEditPopup({
           Your List
           <Typography variant="small">{listLen} / 100</Typography>
         </DialogHeader>
-        <DialogBody className=" flex flex-col gap-2 max-h-[40rem] overflow-scroll">
+        <DialogBody className=" flex flex-col gap-2">
           <AlbumOrSongRadio
             albumClick={() => setEditFilter("albums")}
             songClick={() => setEditFilter("songs")}
@@ -137,25 +146,32 @@ export default function ListEditPopup({
           ) : null}
 
           {list?.[editFilter]?.length > 0 && (
-            <List className="bg-alt-bg-darker rounded-md flex flex-col items-start">
-              {list?.[editFilter]?.map((item, i) => {
-                const checked = selectedItems?.[editFilter]?.find(
-                  (el) => el === item
-                );
+            <List className="bg-alt-bg-darker rounded-md flex flex-col items-start justify-stretch max-h-[30rem] overflow-scroll">
+              <SortableProvider
+                items={list?.[editFilter]}
+                setItems={setList}
+                type={editFilter}
+              >
+                {list?.[editFilter]?.map((item, i) => {
+                  const checked = selectedItems?.[editFilter]?.find(
+                    (el) => el === item
+                  );
 
-                return (
-                  <ListEditItem
-                    key={item.id}
-                    item={item}
-                    onChange={addToSelectedList}
-                    checked={checked ? true : false}
-                  />
-                );
-              })}
+                  return (
+                    <SortableItem key={item.id} id={item.id}>
+                      <ListEditItem
+                        key={item.id}
+                        item={item}
+                        onChange={addToSelectedList}
+                        checked={!!checked}
+                      />
+                    </SortableItem>
+                  );
+                })}
+              </SortableProvider>
             </List>
           )}
         </DialogBody>
-        <DialogFooter></DialogFooter>
       </Dialog>
     </>
   );

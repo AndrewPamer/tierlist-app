@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useContext } from "react";
+import { useState, useContext, memo } from "react";
 
 import {
   Button,
@@ -16,7 +16,12 @@ import { ListContext } from "@/app/(auth)/create/page";
 import LoadingSpinner from "../LoadingSpinner";
 import useSongsInAlbum from "@/hooks/useSongsInAlbum";
 
-export default function SearchAlbumSongs({ album, token, addSongs }) {
+const SearchAlbumSongs = memo(function SearchAlbumSongs({
+  album,
+  token,
+  addSongs,
+}) {
+  console.log("Search Albums REndered");
   const { list, listLen } = useContext(ListContext);
   const [selectedSongs, setSelectedSongs] = useState([]);
   const { data, isError, isLoading } = useSongsInAlbum({
@@ -90,4 +95,6 @@ export default function SearchAlbumSongs({ album, token, addSongs }) {
       })}
     </List>
   );
-}
+});
+
+export default SearchAlbumSongs;

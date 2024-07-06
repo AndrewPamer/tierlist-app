@@ -225,6 +225,7 @@ export default function Create() {
           <ListEditPopup
             listLen={listLen}
             list={list}
+            setList={setList}
             removeAlbums={removeAlbumsFromList}
             removeSongs={removeSongsFromList}
           />

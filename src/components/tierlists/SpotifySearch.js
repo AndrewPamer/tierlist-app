@@ -1,5 +1,5 @@
 "use client";
-import { useState, useContext } from "react";
+import { useState, useContext, memo } from "react";
 import { ListContext } from "@/app/(auth)/create/page";
 
 import useSpotifySearch from "@/hooks/useSpotifySearch";
@@ -22,10 +22,14 @@ export default function SpotifySearch({
   songClick,
   addSongs,
 }) {
+  console.log("Search rendered");
+  //PUT THE ACCORDION AND SONG INTO OWN COMPONENTS TO REDUCE RE RENDERS
   const [search, setSearch] = useState("");
   const [open, setOpen] = useState(null);
   const [filter, setFilter] = useState("albums");
-  const handleOpen = (value) => setOpen(open === value ? null : value);
+  const handleOpen = (value) => {
+    setOpen(open === value ? null : value);
+  };
 
   const { list } = useContext(ListContext);
 
