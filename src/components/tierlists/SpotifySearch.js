@@ -1,18 +1,13 @@
 "use client";
-import { useState, useContext, memo } from "react";
+import { useState, useContext } from "react";
 import { ListContext } from "@/app/(auth)/create/page";
 
 import useSpotifySearch from "@/hooks/useSpotifySearch";
 import SpotifySearchItem from "./SpotifySearchItem";
 import LoadingSpinner from "../LoadingSpinner";
 import AlbumOrSongRadio from "./AlbumOrSongRadio";
-import {
-  Accordion,
-  AccordionHeader,
-  AccordionBody,
-  Button,
-  Input,
-} from "@material-tailwind/react";
+import AlbumAccordion from "./AlbumAccordion";
+import { Button, Input } from "@material-tailwind/react";
 import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 
 import SearchAlbumSongs from "./SearchAlbumSongs";
@@ -23,36 +18,10 @@ export default function SpotifySearch({
   addSongs,
 }) {
   console.log("Search rendered");
-  //PUT THE ACCORDION AND SONG INTO OWN COMPONENTS TO REDUCE RE RENDERS
   const [search, setSearch] = useState("");
-  const [open, setOpen] = useState(null);
   const [filter, setFilter] = useState("albums");
-  const handleOpen = (value) => {
-    setOpen(open === value ? null : value);
-  };
 
-  const { list } = useContext(ListContext);
-
-  function Icon({ id, open }) {
-    return (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        strokeWidth={2}
-        stroke="currentColor"
-        className={`${
-          id === open ? "rotate-180" : ""
-        } h-5 w-5 transition-transform`}
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-        />
-      </svg>
-    );
-  }
+  const { list, listLen } = useContext(ListContext);
 
   const { data, isError, isLoading, mutate } = useSpotifySearch({
     url: "https://api.spotify.com/v1/search?",
@@ -107,30 +76,30 @@ export default function SpotifySearch({
             {filter === "albums" &&
               data?.albums?.items?.map((item, i) => {
                 return (
-                  <Accordion
-                    open={open === i}
+                  <AlbumAccordion
                     key={item.id}
-                    icon={<Icon id={i} open={open} />}
-                  >
-                    <AccordionHeader onClick={() => handleOpen(i)}>
-                      <SpotifySearchItem item={item} />
-                    </AccordionHeader>
-                    <AccordionBody>
-                      <Button
-                        fullWidth
-                        className="mb-3"
-                        onClick={() => albumClick(item)}
-                        disabled={list?.albums?.find((el) => el.id === item.id)}
-                      >
-                        Add {item.name}
-                      </Button>
-                      <SearchAlbumSongs
-                        token={token}
-                        album={item}
-                        addSongs={addSongs}
-                      />
-                    </AccordionBody>
-                  </Accordion>
+                    i={i}
+                    header={<SpotifySearchItem item={item} />}
+                    body={
+                      <>
+                        <Button
+                          fullWidth
+                          className="mb-3"
+                          onClick={() => albumClick(item)}
+                          disabled={list?.albums?.find(
+                            (el) => el.id === item.id
+                          )}
+                        >
+                          Add {item.name}
+                        </Button>
+                        <SearchAlbumSongs
+                          token={token}
+                          album={item}
+                          addSongs={addSongs}
+                        />
+                      </>
+                    }
+                  />
                 );
               })}
 

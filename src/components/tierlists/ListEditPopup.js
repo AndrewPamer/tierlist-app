@@ -19,9 +19,9 @@ import SortableProvider from "./SortableProvider";
 
 import AlbumOrSongRadio from "./AlbumOrSongRadio";
 
-function ListEditItem({ item, onChange, checked }) {
+export function ListEditItem({ item, onChange, checked }) {
   return (
-    <ListItem className="p-0" ripple={false}>
+    <ListItem className="p-0 overflow-hidden" ripple={false}>
       <label
         htmlFor={item.id}
         className="flex w-full cursor-pointer items-center px-2 py-1 "
@@ -46,7 +46,7 @@ function ListEditItem({ item, onChange, checked }) {
           alt={`Cover Image for ${item.name}`}
         />
         <div>
-          <Typography className="font-bold">{item.name}</Typography>
+          <Typography className="font-bold ">{item.name}</Typography>
           <div>
             {item.artists.map((artist, i) => {
               return (
@@ -146,7 +146,7 @@ export default function ListEditPopup({
           ) : null}
 
           {list?.[editFilter]?.length > 0 && (
-            <List className="bg-alt-bg-darker rounded-md flex flex-col items-start justify-stretch max-h-[30rem] overflow-scroll">
+            <List className="bg-alt-bg-darker rounded-md flex flex-col items-start justify-stretch max-h-[30rem] overflow-x-hidden	 overflow-y-auto">
               <SortableProvider
                 items={list?.[editFilter]}
                 setItems={setList}

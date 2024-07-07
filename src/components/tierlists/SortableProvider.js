@@ -1,3 +1,5 @@
+// "use client";
+// import { useState } from "react";
 import {
   DndContext,
   closestCenter,
@@ -5,6 +7,7 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
+  DragOverlay,
 } from "@dnd-kit/core";
 import {
   arrayMove,
@@ -12,14 +15,26 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import {
+  restrictToVerticalAxis,
+  restrictToWindowEdges,
+  restrictToFirstScrollableAncestor,
+} from "@dnd-kit/modifiers";
+
+// import { ListEditItem } from "./ListEditPopup";
 
 export default function SortableProvider({ items, setItems, type, children }) {
+  // const [activeId, setActiveId] = useState(null);
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
+
+  // function handleDragStart(event) {
+  //   setActiveId(event.active.id);
+  // }
 
   function handleDragEnd(event) {
     const { active, over } = event;
@@ -37,6 +52,7 @@ export default function SortableProvider({ items, setItems, type, children }) {
         return newItems;
       });
     }
+    // setActiveId(null);
   }
 
   return (
@@ -44,10 +60,21 @@ export default function SortableProvider({ items, setItems, type, children }) {
       sensors={sensors}
       collisionDetection={closestCenter}
       onDragEnd={handleDragEnd}
+      // onDragStart={handleDragStart}
+      modifiers={[restrictToVerticalAxis, restrictToFirstScrollableAncestor]}
     >
       <SortableContext items={items} strategy={verticalListSortingStrategy}>
         {children}
       </SortableContext>
+      {/* <DragOverlay modifiers={[restrictToWindowEdges]}>
+        {activeId ? (
+          <ListEditItem
+            item={items.find((el) => el.id === activeId)}
+            onChange={() => null}
+            checked={false}
+          />
+        ) : null}
+      </DragOverlay> */}
     </DndContext>
   );
 }

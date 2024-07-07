@@ -33,44 +33,6 @@ export default function IncomingRequests({ supabase, user }) {
     }
   );
 
-  // useEffect(() => {
-  //   async function getIncoming() {
-  //     try {
-  //       const { data, error } = await supabase.rpc(
-  //         "get_incoming_friend_requests"
-  //       );
-  //       if (error) {
-  //         throw error;
-  //       }
-  //       setIncoming(data);
-  //     } catch (e) {
-  //       console.error(e);
-  //     }
-  //   }
-
-  //   const subscription = supabase
-  //     .channel("incoming_db_changes")
-  //     .on(
-  //       "postgres_changes",
-  //       {
-  //         event: "*",
-  //         schema: "public",
-  //         table: "friendrequests",
-  //         filter: `recipient_id=eq.${user.id}`,
-  //       },
-  //       (payload) => {
-  //         console.log("in");
-  //         getIncoming();
-  //       }
-  //     )
-  //     .subscribe();
-
-  //   getIncoming();
-  //   return () => {
-  //     subscription.unsubscribe();
-  //   };
-  // }, []);
-
   async function acceptRequest(requestid) {
     try {
       const { error } = await supabase.rpc("accept_friend_request", {

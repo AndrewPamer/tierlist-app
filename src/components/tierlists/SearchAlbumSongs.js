@@ -21,8 +21,11 @@ const SearchAlbumSongs = memo(function SearchAlbumSongs({
   token,
   addSongs,
 }) {
-  console.log("Search Albums REndered");
-  const { list, listLen } = useContext(ListContext);
+  console.log("Search Albums Rendered");
+  const {
+    list: { songs },
+    listLen,
+  } = useContext(ListContext);
   const [selectedSongs, setSelectedSongs] = useState([]);
   const { data, isError, isLoading } = useSongsInAlbum({
     albumId: album.id,
@@ -62,7 +65,7 @@ const SearchAlbumSongs = memo(function SearchAlbumSongs({
       )}
       {data?.items?.map((item, i) => {
         const checked = selectedSongs.find((el) => el.id === item.id);
-        const disabled = list?.songs?.find((el) => el.id === item.id);
+        const disabled = songs?.find((el) => el.id === item.id);
         const overFlow =
           selectedSongs.length + listLen >= 100 && checked === undefined;
         return (

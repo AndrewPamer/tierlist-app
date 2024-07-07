@@ -32,44 +32,6 @@ export default function OutgoingRequests({ supabase, user }) {
     }
   );
 
-  // useEffect(() => {
-  //   async function getOutgoingFriendRequests() {
-  //     try {
-  //       const { data, error } = await supabase.rpc(
-  //         "get_outgoing_friend_requests"
-  //       );
-  //       setOutgoing(data);
-  //       if (error) {
-  //         throw error;
-  //       }
-  //     } catch (e) {
-  //       console.error(e);
-  //     }
-  //   }
-
-  //   const subscription = supabase
-  //     .channel("outgoing_db_changes")
-  //     .on(
-  //       "postgres_changes",
-  //       {
-  //         event: "*",
-  //         schema: "public",
-  //         table: "friendrequests",
-  //         filter: `sender_id=eq.${user.id}`,
-  //       },
-  //       (payload) => {
-  //         console.log("out");
-  //         getOutgoingFriendRequests();
-  //       }
-  //     )
-  //     .subscribe();
-
-  //   getOutgoingFriendRequests();
-  //   return () => {
-  //     subscription.unsubscribe();
-  //   };
-  // }, []);
-
   async function cancelRequest(request_id) {
     try {
       const { error } = await supabase.rpc("cancel_outgoing_friend_request", {

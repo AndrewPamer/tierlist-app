@@ -6,7 +6,7 @@ export default function SortableItem({ id, children }) {
     useSortable({ id });
 
   const style = {
-    transform: CSS.Transform.toString(transform),
+    transform: CSS.Translate.toString(transform),
     transition,
   };
 

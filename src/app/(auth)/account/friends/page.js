@@ -15,6 +15,7 @@ import IncomingRequests from "@/components/friends/IncomingRequests";
 import OutgoingRequests from "@/components/friends/OutgoingRequests";
 
 export default function Friends() {
+  console.log("Friends ran");
   const supabase = createClient();
   const user = getAuthContext();
 
