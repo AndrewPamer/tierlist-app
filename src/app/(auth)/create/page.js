@@ -40,6 +40,7 @@ export default function Create() {
   );
 
   function addAlbumToList(album) {
+    console.log(album);
     if (listLen === 100) {
       toast.error(
         "The list has reached its maximum size. Remove an item to add this one"
@@ -52,6 +53,11 @@ export default function Create() {
       setList((prevList) => {
         const newList = { ...prevList };
         newList.albums = [...(newList?.albums || []), album];
+        newList.songs = [
+          ...(newList?.songs || []).filter(
+            (song) => song.album.id !== album.id
+          ),
+        ];
 
         return newList;
       });
@@ -151,11 +157,37 @@ export default function Create() {
     );
   }
 
+  async function handleSubmit(data) {
+    if (listLen === 0) {
+      toast.error("A list must contain at least one album or song");
+    } else {
+      try {
+        const formattedAlbums = data.list?.albums?.map((album) => {
+          return album.id;
+        });
+        const formattedSongs = data.list?.songs?.map((song) => {
+          return song.id;
+        });
+        const formattedCollabs = data.collabs?.map((collab) => {
+          return collab.friend_id;
+        });
+        const formattedData = {
+          ...data,
+          collabs: formattedCollabs,
+          list: { albums: formattedAlbums, songs: formattedSongs },
+        };
+
+        await addTierList(formattedData);
+      } catch (e) {
+        toast.error(`Error creating the list: ${e.message}`);
+        console.log(e.message);
+      }
+    }
+  }
+
   if (isLoading) {
     return <LoadingSpinner />;
   }
-
-  console.log(list);
 
   return (
     <main>
@@ -175,7 +207,7 @@ export default function Create() {
 
       <h1 className="text-3xl font-bold text-center">Create a new List</h1>
 
-      <ListCreateForm onSubmit={(d) => addTierList({ ...d, collabs, list })}>
+      <ListCreateForm onSubmit={(d) => handleSubmit({ ...d, collabs, list })}>
         <div className="flex flex-col ">
           <Typography className="font-bold ">
             Collaborators {collabs.length ? `(${collabs.length} / 10)` : ""}

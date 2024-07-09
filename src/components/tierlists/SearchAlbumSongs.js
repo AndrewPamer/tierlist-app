@@ -23,7 +23,7 @@ const SearchAlbumSongs = memo(function SearchAlbumSongs({
 }) {
   console.log("Search Albums Rendered");
   const {
-    list: { songs },
+    list: { songs, albums },
     listLen,
   } = useContext(ListContext);
   const [selectedSongs, setSelectedSongs] = useState([]);
@@ -32,11 +32,13 @@ const SearchAlbumSongs = memo(function SearchAlbumSongs({
     token,
   });
 
+  const albumInList = albums?.some((al) => al.id === album.id);
+
   function handleSongSelect(e, song) {
     if (e.target.checked) {
       setSelectedSongs((prevSongs) => [
         ...prevSongs,
-        { ...song, images: album.images },
+        { ...song, album: album },
       ]);
     } else {
       setSelectedSongs((prevSongs) =>
@@ -51,7 +53,7 @@ const SearchAlbumSongs = memo(function SearchAlbumSongs({
 
   return (
     <List className="bg-alt-bg-darker rounded-md flex flex-col items-start">
-      {selectedSongs.length > 0 && (
+      {selectedSongs.length > 0 && !albumInList && (
         <Button
           fullWidth
           className="mb-2"
@@ -65,7 +67,7 @@ const SearchAlbumSongs = memo(function SearchAlbumSongs({
       )}
       {data?.items?.map((item, i) => {
         const checked = selectedSongs.find((el) => el.id === item.id);
-        const disabled = songs?.find((el) => el.id === item.id);
+        const disabled = songs?.find((el) => el.id === item.id) || albumInList;
         const overFlow =
           selectedSongs.length + listLen >= 100 && checked === undefined;
         return (

@@ -115,7 +115,10 @@ export default function SpotifySearch({
                     <Button
                       className="	ml-auto	px-3 py-1 text-lg"
                       onClick={() => songClick(item)}
-                      disabled={list?.songs?.find((el) => el.id === item.id)}
+                      disabled={
+                        list?.songs?.find((el) => el.id === item.id) ||
+                        list?.albums?.some((al) => al.id === item.album.id)
+                      }
                     >
                       +
                     </Button>
