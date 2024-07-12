@@ -15,13 +15,21 @@ export default async function addTierList(tierlistData) {
       .insert({
         creator_id: id,
         name: tierlistData.name,
-        public: tierlistData.visibility === "Public",
       })
       .select();
     if (error) {
       throw error;
     }
     const listID = data[0].id;
+    //2. Set the privacy
+    const { error: privacyError } = await supabase.from("listprivacy").insert({
+      list_id: listID,
+      public: tierlistData.visibility === "Public",
+    });
+    if (privacyError) {
+      console.log(privacyError);
+      throw privacyError;
+    }
     //2. Add the collaborators
     if (tierlistData.collabs.length > 0) {
       const { error } = await supabase.from("listcollaborators").insert(
@@ -37,7 +45,7 @@ export default async function addTierList(tierlistData) {
       throw error;
     }
     //3. Add the songs
-    if (tierlistData.list.songs.length > 0) {
+    if (tierlistData.list?.songs?.length > 0) {
       const { error } = await supabase.from("listsongs").insert(
         tierlistData.list.songs.map((song) => {
           return {
@@ -52,7 +60,7 @@ export default async function addTierList(tierlistData) {
     }
 
     //4. Add the albums
-    if (tierlistData.list.albums.length > 0) {
+    if (tierlistData.list?.albums?.length > 0) {
       const { error } = await supabase.from("listalbums").insert(
         tierlistData.list.albums.map((album) => {
           return {

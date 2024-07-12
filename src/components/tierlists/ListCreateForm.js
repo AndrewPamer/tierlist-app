@@ -115,7 +115,7 @@ export default function ListCreateForm({ onSubmit, children }) {
         </div>
       </div>
       {children}
-      <Button type="submit" disabled={isSubmitting}>
+      <Button type="submit" disabled={isSubmitting || isSubmitSuccessful}>
         {isSubmitting ? "Creating List..." : "Create List"}
       </Button>
     </form>
