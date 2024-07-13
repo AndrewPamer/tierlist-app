@@ -4,6 +4,12 @@ import { redirect } from "next/navigation";
 export default async function addTierList(tierlistData) {
   const supabase = createClient();
   try {
+    if (
+      (tierlistData.list?.songs?.length ?? 0) === 0 &&
+      (tierlistData.list?.albums?.length ?? 0) === 0
+    ) {
+      throw new Error("A list must contain at least one album or song");
+    }
     const {
       data: {
         user: { id },

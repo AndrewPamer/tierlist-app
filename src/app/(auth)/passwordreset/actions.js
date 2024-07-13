@@ -1,23 +1,16 @@
 "use server";
+
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/utils/supabase/server";
 
-export async function login({ email, password }) {
+export async function resetpassword({ password }) {
   const supabase = createClient();
   try {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
+    const { error } = await supabase.auth.updateUser({
+      password: password,
     });
-
-    if (data?.weakPassword) {
-      throw new Error(
-        "Unable to log in. Your password needs to be updated. Try creating a new password and trying again."
-      );
-    }
-
     if (error) {
       throw error;
     }
@@ -27,5 +20,5 @@ export async function login({ email, password }) {
     };
   }
   revalidatePath("/", "layout");
-  redirect("/home");
+  redirect("/home?alert=passwordreset");
 }

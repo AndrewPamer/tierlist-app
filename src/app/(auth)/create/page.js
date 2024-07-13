@@ -158,30 +158,25 @@ export default function Create() {
   }
 
   async function handleSubmit(data) {
-    if (listLen === 0) {
-      toast.error("A list must contain at least one album or song");
-    } else {
-      try {
-        const formattedAlbums = data.list?.albums?.map((album) => {
-          return album.id;
-        });
-        const formattedSongs = data.list?.songs?.map((song) => {
-          return song.id;
-        });
-        const formattedCollabs = data.collabs?.map((collab) => {
-          return collab.friend_id;
-        });
-        const formattedData = {
-          ...data,
-          collabs: formattedCollabs,
-          list: { albums: formattedAlbums, songs: formattedSongs },
-        };
+    try {
+      const formattedAlbums = data.list?.albums?.map((album) => {
+        return album.id;
+      });
+      const formattedSongs = data.list?.songs?.map((song) => {
+        return song.id;
+      });
+      const formattedCollabs = data.collabs?.map((collab) => {
+        return collab.friend_id;
+      });
+      const formattedData = {
+        ...data,
+        collabs: formattedCollabs,
+        list: { albums: formattedAlbums, songs: formattedSongs },
+      };
 
-        await addTierList(formattedData);
-      } catch (e) {
-        toast.error(`Error creating the list: ${e.message}`);
-        console.log(e.message);
-      }
+      await addTierList(formattedData);
+    } catch (e) {
+      toast.error(`Error creating the list: ${e.message}`);
     }
   }
 

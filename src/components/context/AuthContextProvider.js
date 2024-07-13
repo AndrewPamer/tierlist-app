@@ -1,6 +1,7 @@
 "use client";
 import { useContext, createContext, useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
+import LoadingSpinner from "../LoadingSpinner";
 const AuthContext = createContext();
 
 export function getAuthContext() {
@@ -29,7 +30,7 @@ export function AuthContextProvider({ children }) {
 
   return (
     <AuthContext.Provider value={userData}>
-      {loading ? "loading..." : children}
+      {loading ? <LoadingSpinner>Loading User...</LoadingSpinner> : children}
     </AuthContext.Provider>
   );
 }

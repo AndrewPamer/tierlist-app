@@ -77,6 +77,7 @@ export default function SignUp() {
               },
             })}
             type="password"
+            autoComplete="new-password"
             className="bg-input-bg rounded-xl border-2 border-text p-1.5 outline-none"
           />
           <p className="text-error font-bold">{errors.password?.message}</p>
@@ -93,6 +94,7 @@ export default function SignUp() {
               },
             })}
             type="password"
+            autoComplete="new-password"
             className="bg-input-bg rounded-xl border-2 border-text p-1.5 outline-none"
           />
           <p className="text-error font-bold">{errors.passwordConf?.message}</p>

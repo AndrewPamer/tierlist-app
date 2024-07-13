@@ -5,10 +5,14 @@ import { useForm } from "react-hook-form";
 import Link from "next/link";
 import { login } from "./actions";
 import { BsExclamationTriangle } from "react-icons/bs";
+import { createClient } from "@/utils/supabase/client";
 
 export default function Login() {
+  const supabase = createClient();
   const [disabled, setDisabled] = useState(false);
   const [responseMessage, setResponseMessage] = useState(null);
+  const [passwordReset, setPasswordReset] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -35,6 +39,23 @@ export default function Login() {
     }
   }
 
+  async function handleReset({ email }) {
+    setDisabled(true);
+    try {
+      const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/passwordreset`,
+      });
+      console.log(data, error);
+      if (error) {
+        throw error;
+      }
+    } catch (e) {
+      setResponseMessage(e.message);
+    } finally {
+      setDisabled(false);
+    }
+  }
+
   return (
     <div className="flex flex-col items-stretch">
       <p className="text-sm">
@@ -50,7 +71,9 @@ export default function Login() {
         </div>
       )}
       <form
-        onSubmit={handleSubmit((data) => handleLogin(data))}
+        onSubmit={handleSubmit((data) =>
+          !passwordReset ? handleLogin(data) : handleReset(data)
+        )}
         className="flex flex-col gap-7"
       >
         <label className="flex flex-col gap-1">
@@ -61,23 +84,52 @@ export default function Login() {
             className="bg-input-bg rounded-xl border-2 border-text p-1.5 outline-none"
           />
           <p className="text-error font-bold">{errors.email?.message}</p>
+          {passwordReset && (
+            <small className="text-sm hover:underline">
+              <button
+                onClick={() => setPasswordReset(!passwordReset)}
+                type="button"
+                className=" justify-self-start"
+              >
+                Return to Login
+              </button>
+            </small>
+          )}
         </label>
-        <label className="flex flex-col gap-1">
-          <span className="text-sm font-bold">Password</span>
-          <input
-            {...register("password", { required: "Password is required" })}
-            type="password"
-            className="bg-input-bg rounded-xl border-2 border-text p-1.5 outline-none"
-          />
-          <p className="text-error font-bold">{errors.password?.message}</p>
-        </label>
+        {!passwordReset && (
+          <label className="flex flex-col gap-1">
+            <span className="text-sm font-bold">Password</span>
+            <input
+              {...register("password", { required: "Password is required" })}
+              type="password"
+              autoComplete="current-password"
+              className="bg-input-bg rounded-xl border-2 border-text p-1.5 outline-none"
+            />
+            <p className="text-error font-bold">{errors.password?.message}</p>
+            <small className="text-sm hover:underline">
+              <button
+                onClick={() => setPasswordReset(!passwordReset)}
+                type="button"
+                className=" justify-self-start"
+              >
+                Forgot your password?
+              </button>
+            </small>
+          </label>
+        )}
         <button
           className="font-bold bg-button-bg text-button-text text-1xl p-2.5 rounded-xl hover:bg-button-hover mt-10"
           // disabled={isSubmitting || isSubmitted}
           disabled={disabled}
         >
           {/* {isSubmitting || isSubmitted ? "Logging in..." : "Log in"} */}
-          {disabled ? "Logging in..." : "Log In"}
+          {passwordReset
+            ? disabled
+              ? "Sending..."
+              : "Send Reset Email"
+            : disabled
+            ? "Logging in..."
+            : "Log In"}
         </button>
       </form>
     </div>
