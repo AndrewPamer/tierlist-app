@@ -32,6 +32,8 @@ const SearchAlbumSongs = memo(function SearchAlbumSongs({
     token,
   });
 
+  console.log(data);
+
   const albumInList = albums?.some((al) => al.id === album.id);
 
   function handleSongSelect(e, song) {

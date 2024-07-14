@@ -29,6 +29,7 @@ import addTierList from "@/utils/supabase/addTierlist";
 export const ListContext = createContext();
 
 export default function Create() {
+  const [disabled, setDisabled] = useState(false);
   const [list, setList] = useState({});
   const [collabs, setCollabs] = useState([]);
 
@@ -158,6 +159,7 @@ export default function Create() {
   }
 
   async function handleSubmit(data) {
+    setDisabled(true);
     try {
       const formattedAlbums = data.list?.albums?.map((album) => {
         return album.id;
@@ -177,6 +179,7 @@ export default function Create() {
       await addTierList(formattedData);
     } catch (e) {
       toast.error(`Error creating the list: ${e.message}`);
+      setDisabled(false);
     }
   }
 
@@ -202,7 +205,10 @@ export default function Create() {
 
       <h1 className="text-3xl font-bold text-center">Create a new List</h1>
 
-      <ListCreateForm onSubmit={(d) => handleSubmit({ ...d, collabs, list })}>
+      <ListCreateForm
+        onSubmit={(d) => handleSubmit({ ...d, collabs, list })}
+        disabled={disabled}
+      >
         <div className="flex flex-col ">
           <Typography className="font-bold ">
             Collaborators {collabs.length ? `(${collabs.length} / 10)` : ""}

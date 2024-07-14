@@ -3,15 +3,11 @@ import {
   Typography,
   Radio,
   Button,
-  IconButton,
-  Popover,
-  PopoverHandler,
-  PopoverContent,
   Tooltip,
 } from "@material-tailwind/react";
 
 import { useForm } from "react-hook-form";
-export default function ListCreateForm({ onSubmit, children }) {
+export default function ListCreateForm({ onSubmit, disabled, children }) {
   const {
     register,
     handleSubmit,
@@ -116,8 +112,8 @@ export default function ListCreateForm({ onSubmit, children }) {
         </div>
       </div>
       {children}
-      <Button type="submit" disabled={isSubmitting || isSubmitSuccessful}>
-        {isSubmitting ? "Creating List..." : "Create List"}
+      <Button type="submit" disabled={disabled}>
+        {disabled ? "Creating List..." : "Create List"}
       </Button>
     </form>
   );

@@ -51,6 +51,8 @@ const theme = {
       ripple: false,
     },
     valid: {
+      variants: ["filled", "outlined", "gradient", "text"],
+
       colors: ["theme"],
     },
     styles: {
@@ -62,6 +64,13 @@ const theme = {
             hover: "hover:bg-button-hover",
             focus: "focus:opacity-[0.85] focus:shadow-none",
             active: "active:opacity-[0.85] active:shadow-none",
+          },
+        },
+        text: {
+          theme: {
+            color: "text-text",
+            hover: "hover:text-button-hover",
+            active: "active:text-button-hover",
           },
         },
       },

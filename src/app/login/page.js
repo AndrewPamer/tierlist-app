@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { Typography, Card, Input, Button } from "@material-tailwind/react";
 
 import Link from "next/link";
 import { login } from "./actions";
@@ -36,7 +37,6 @@ export default function Login() {
       }
     } catch (e) {
       setResponseMessage(e);
-    } finally {
       setDisabled(false);
     }
   }
@@ -76,6 +76,103 @@ export default function Login() {
         theme="dark"
         transition={Flip}
       />
+      <Card color="transparent" shadow={false} className="text-text">
+        <Typography variant="small" className="font-bold">
+          <Link href="/" className="p-2 inline-block" replace>
+            Cancel
+          </Link>
+        </Typography>
+        <Typography variant="h1" className="text-3xl text-center">
+          Login
+        </Typography>
+        {responseMessage && (
+          <div className="flex justify-center items-center gap-2 text-error font-bold border-2 rounded-lg	p-2 mb-5 border-error">
+            <BsExclamationTriangle size={30} />
+            <h3 className="text-xl">{responseMessage}</h3>
+          </div>
+        )}
+        <form
+          onSubmit={handleSubmit((data) =>
+            !passwordReset ? handleLogin(data) : handleReset(data)
+          )}
+          className="mt-5 flex flex-col gap-6"
+        >
+          <div>
+            <Typography className="font-bold">Email</Typography>
+            <Input
+              {...register("email", {
+                required: "Email is required",
+              })}
+              className="!border-text focus:!border-text"
+              type="email"
+              labelProps={{
+                className: "before:content-none after:content-none",
+              }}
+            />
+            {passwordReset && (
+              <Button
+                type="button"
+                variant="text"
+                className="p-1"
+                onClick={() => setPasswordReset(!passwordReset)}
+              >
+                Return To Login
+              </Button>
+            )}
+
+            <Typography className="text-error font-bold">
+              {errors.email?.message}
+            </Typography>
+          </div>
+          {!passwordReset && (
+            <div>
+              <Typography className="font-bold">Password</Typography>
+              <Input
+                {...register("password", {
+                  required: "Password is required",
+                })}
+                className="!border-text focus:!border-text"
+                type="password"
+                autoComplete="current-password"
+                labelProps={{
+                  className: "before:content-none after:content-none",
+                }}
+              />
+              <Button
+                type="button"
+                variant="text"
+                className="p-1"
+                onClick={() => setPasswordReset(!passwordReset)}
+              >
+                Forgot Your Password?
+              </Button>
+
+              <Typography className="text-error font-bold">
+                {errors.password?.message}
+              </Typography>
+            </div>
+          )}
+          <Button
+            type="submit"
+            disabled={disabled || isSubmitSuccessful}
+            fullWidth
+            className="mt-5"
+          >
+            {passwordReset
+              ? disabled
+                ? "Sending..."
+                : "Send Reset Email"
+              : disabled
+              ? "Logging in..."
+              : "Log In"}
+          </Button>
+        </form>
+      </Card>
+    </main>
+  );
+}
+
+/*
       <div className="flex flex-col items-stretch">
         <p className="text-sm">
           <Link href="/" className="p-2 inline-block" replace>
@@ -138,20 +235,15 @@ export default function Login() {
           )}
           <button
             className="font-bold bg-button-bg text-button-text text-1xl p-2.5 rounded-xl hover:bg-button-hover mt-10"
-            // disabled={isSubmitting || isSubmitted}
             disabled={disabled}
           >
-            {/* {isSubmitting || isSubmitted ? "Logging in..." : "Log in"} */}
-            {passwordReset
+            { {passwordReset
               ? disabled
                 ? "Sending..."
                 : "Send Reset Email"
               : disabled
               ? "Logging in..."
-              : "Log In"}
-          </button>
-        </form>
-      </div>
-    </main>
-  );
-}
+              : "Log In"} }
+              </button>
+              </form>
+            </div> */
