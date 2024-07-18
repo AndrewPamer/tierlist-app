@@ -1,7 +1,8 @@
-"use server";
+export const revalidate = 3600;
 export default async function getSpotifyToken(url) {
   try {
     const res = await fetch("https://accounts.spotify.com/api/token", {
+      cache: "force-cache",
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",

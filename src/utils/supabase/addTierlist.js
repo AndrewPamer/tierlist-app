@@ -81,6 +81,6 @@ export default async function addTierList(tierlistData) {
     }
     redirect(`/lists/${listID}`);
   } catch (e) {
-    throw e;
+    return { error: { message: e.message } };
   }
 }

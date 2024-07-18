@@ -17,10 +17,7 @@ async function fetch([key, search]) {
 export default function searchForFriends({ search }) {
   const { data, error, isLoading } = useSWR(
     search ? ["searchForFriends", search] : null,
-    fetch,
-    {
-      revalidateOnFocus: false,
-    }
+    fetch
   );
 
   return {

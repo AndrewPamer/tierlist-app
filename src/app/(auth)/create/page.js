@@ -1,191 +1,194 @@
-"use client";
-import useSWRImmutable from "swr/immutable";
-import { useState, createContext } from "react";
-
-import {
-  Popover,
-  PopoverHandler,
-  PopoverContent,
-  Card,
-  Typography,
-  Button,
-} from "@material-tailwind/react";
-
-import SpotifySearch from "@/components/tierlists/SpotifySearch";
-
-import { ToastContainer, toast, Flip } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-
+import { ListContextProvider } from "@/components/context/ListContextProvider";
+import { CollabContextProvider } from "@/components/context/CollabContextProvider";
 import getSpotifyToken from "@/tools/getSpotifyToken";
+// import {
+//   Popover,
+//   PopoverHandler,
+//   PopoverContent,
+//   Card,
+//   Typography,
+//   Button,
+// } from "@material-tailwind/react";
+
+import { Typography } from "@/components/TailwindComponents";
+
+// import SpotifySearch from "@/components/tierlists/SpotifySearch";
+
+// import { ToastContainer, toast, Flip } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
 
 import ListCreateForm from "@/components/tierlists/ListCreateForm";
 
-import FriendSearch from "@/components/friends/FriendSearch";
-import LoadingSpinner from "@/components/LoadingSpinner";
+// import FriendSearch from "@/components/friends/FriendSearch";
+// import LoadingSpinner from "@/components/LoadingSpinner";
 import ListEditPopup from "@/components/tierlists/ListEditPopup";
 
-import addTierList from "@/utils/supabase/addTierlist";
+// import addTierList from "@/utils/supabase/addTierlist";
+// import SpotifySearchWrapper from "@/components/tierlists/SpotifySearchWrapper";
 
-export const ListContext = createContext();
+export default async function CreatePage() {
+  const { access_token: token } = await getSpotifyToken();
+  // const [disabled, setDisabled] = useState(false);
+  // const [list, setList] = useState({});
+  // const [collabs, setCollabs] = useState([]);
 
-export default function Create() {
-  const [disabled, setDisabled] = useState(false);
-  const [list, setList] = useState({});
-  const [collabs, setCollabs] = useState([]);
+  // const listLen = (list?.albums?.length || 0) + (list?.songs?.length || 0);
 
-  const listLen = (list?.albums?.length || 0) + (list?.songs?.length || 0);
+  // function addAlbumToList(album) {
+  //   console.log(album);
+  //   if (listLen === 100) {
+  //     toast.error(
+  //       "The list has reached its maximum size. Remove an item to add this one"
+  //     );
+  //     return;
+  //   }
+  //   if (list?.albums?.some((albumEl) => albumEl.id === album.id)) {
+  //     toast.warn(`${album.name} is already in the list`);
+  //   } else {
+  //     setList((prevList) => {
+  //       const newList = { ...prevList };
+  //       newList.albums = [...(newList?.albums || []), album];
+  //       newList.songs = [
+  //         ...(newList?.songs || []).filter(
+  //           (song) => song.album.id !== album.id
+  //         ),
+  //       ];
 
-  const { data, error, isLoading } = useSWRImmutable(
-    "some string",
-    getSpotifyToken
+  //       return newList;
+  //     });
+  //     // toast.success(`${album.name} has been added to the List`);
+  //   }
+  // }
+
+  // function addSongToList(song) {
+  //   if (listLen === 100) {
+  //     toast.error(
+  //       "The list has reached its maximum size. Remove an item to add this one"
+  //     );
+  //     return;
+  //   }
+  //   if (list?.songs?.some((songEl) => songEl.id === song.id)) {
+  //     toast.warn(`${song.name} is already in the list`);
+  //   } else {
+  //     setList((prevList) => {
+  //       const newList = { ...prevList };
+  //       newList.songs = [...(newList?.songs || []), song];
+
+  //       return newList;
+  //     });
+  //     // toast.success(`${song.name} has been added to the List`);
+  //   }
+  // }
+
+  // function addSongsToList(songs) {
+  //   const merge = (a, b, predicate = (a, b) => a === b) => {
+  //     const c = [...a];
+  //     b.forEach((bItem) =>
+  //       c.some((cItem) => predicate(bItem, cItem)) ? null : c.push(bItem)
+  //     );
+  //     return c;
+  //   };
+
+  //   const mergedSongs = merge(
+  //     songs,
+  //     list?.songs || [],
+  //     (a, b) => a.id === b.id
+  //   );
+
+  //   if (mergedSongs?.length + list?.albums?.length > 100) {
+  //     toast.error(
+  //       "Cannot add songs as it would exceed the maximum size of the list"
+  //     );
+  //     return;
+  //   }
+
+  //   setList((prevList) => {
+  //     const newList = { ...prevList };
+  //     newList.songs = mergedSongs;
+  //     return newList;
+  //   });
+  //   toast.success(
+  //     `${songs.length} song${songs.length > 1 ? "s" : ""} added to the list`
+  //   );
+  // }
+
+  // function removeAlbumsFromList(albums) {
+  //   setList((prevList) => {
+  //     const newList = { ...prevList };
+  //     newList.albums = newList.albums.filter((e) => !albums.includes(e));
+
+  //     return newList;
+  //   });
+  // }
+
+  // function removeSongsFromList(songs) {
+  //   setList((prevList) => {
+  //     const newList = { ...prevList };
+  //     newList.songs = newList.songs.filter((e) => !songs.includes(e));
+
+  //     return newList;
+  //   });
+  // }
+
+  // function addCollab(friend) {
+  //   if (collabs.length >= 10) {
+  //     return;
+  //   }
+  //   if (
+  //     collabs?.some(
+  //       (collabFriend) => collabFriend.friend_id === friend.friend_id
+  //     )
+  //   ) {
+  //     toast.warn(`${friend.friend_username} is already a collaborator`);
+  //     console.log(collabs);
+  //   } else {
+  //     setCollabs((prevCollabs) => [...prevCollabs, friend]);
+  //   }
+  // }
+
+  // function removeCollab(friend) {
+  //   setCollabs((prevCollabs) =>
+  //     [...prevCollabs].filter((f) => f.friend_id !== friend.friend_id)
+  //   );
+  // }
+
+  // async function handleSubmit(data) {
+  //   setDisabled(true);
+  //   try {
+  //     const formattedAlbums = data.list?.albums?.map((album) => {
+  //       return album.id;
+  //     });
+  //     const formattedSongs = data.list?.songs?.map((song) => {
+  //       return song.id;
+  //     });
+  //     const formattedCollabs = data.collabs?.map((collab) => {
+  //       return collab.friend_id;
+  //     });
+  //     const formattedData = {
+  //       ...data,
+  //       collabs: formattedCollabs,
+  //       list: { albums: formattedAlbums, songs: formattedSongs },
+  //     };
+
+  //     await addTierList(formattedData);
+  //   } catch (e) {
+  //     toast.error(`Error creating the list: ${e.message}`);
+  //     setDisabled(false);
+  //   }
+  // }
+
+  return (
+    <main>
+      <Typography variant="h1" className="text-3xl text-center">
+        Create a new List
+      </Typography>
+      <ListContextProvider>
+        <CollabContextProvider>
+          <ListCreateForm></ListCreateForm>
+        </CollabContextProvider>
+      </ListContextProvider>
+    </main>
   );
-
-  function addAlbumToList(album) {
-    console.log(album);
-    if (listLen === 100) {
-      toast.error(
-        "The list has reached its maximum size. Remove an item to add this one"
-      );
-      return;
-    }
-    if (list?.albums?.some((albumEl) => albumEl.id === album.id)) {
-      toast.warn(`${album.name} is already in the list`);
-    } else {
-      setList((prevList) => {
-        const newList = { ...prevList };
-        newList.albums = [...(newList?.albums || []), album];
-        newList.songs = [
-          ...(newList?.songs || []).filter(
-            (song) => song.album.id !== album.id
-          ),
-        ];
-
-        return newList;
-      });
-      // toast.success(`${album.name} has been added to the List`);
-    }
-  }
-
-  function addSongToList(song) {
-    if (listLen === 100) {
-      toast.error(
-        "The list has reached its maximum size. Remove an item to add this one"
-      );
-      return;
-    }
-    if (list?.songs?.some((songEl) => songEl.id === song.id)) {
-      toast.warn(`${song.name} is already in the list`);
-    } else {
-      setList((prevList) => {
-        const newList = { ...prevList };
-        newList.songs = [...(newList?.songs || []), song];
-
-        return newList;
-      });
-      // toast.success(`${song.name} has been added to the List`);
-    }
-  }
-
-  function addSongsToList(songs) {
-    const merge = (a, b, predicate = (a, b) => a === b) => {
-      const c = [...a];
-      b.forEach((bItem) =>
-        c.some((cItem) => predicate(bItem, cItem)) ? null : c.push(bItem)
-      );
-      return c;
-    };
-
-    const mergedSongs = merge(
-      songs,
-      list?.songs || [],
-      (a, b) => a.id === b.id
-    );
-
-    if (mergedSongs?.length + list?.albums?.length > 100) {
-      toast.error(
-        "Cannot add songs as it would exceed the maximum size of the list"
-      );
-      return;
-    }
-
-    setList((prevList) => {
-      const newList = { ...prevList };
-      newList.songs = mergedSongs;
-      return newList;
-    });
-    toast.success(
-      `${songs.length} song${songs.length > 1 ? "s" : ""} added to the list`
-    );
-  }
-
-  function removeAlbumsFromList(albums) {
-    setList((prevList) => {
-      const newList = { ...prevList };
-      newList.albums = newList.albums.filter((e) => !albums.includes(e));
-
-      return newList;
-    });
-  }
-
-  function removeSongsFromList(songs) {
-    setList((prevList) => {
-      const newList = { ...prevList };
-      newList.songs = newList.songs.filter((e) => !songs.includes(e));
-
-      return newList;
-    });
-  }
-
-  function addCollab(friend) {
-    if (collabs.length >= 10) {
-      return;
-    }
-    if (
-      collabs?.some(
-        (collabFriend) => collabFriend.friend_id === friend.friend_id
-      )
-    ) {
-      toast.warn(`${friend.friend_username} is already a collaborator`);
-      console.log(collabs);
-    } else {
-      setCollabs((prevCollabs) => [...prevCollabs, friend]);
-    }
-  }
-
-  function removeCollab(friend) {
-    setCollabs((prevCollabs) =>
-      [...prevCollabs].filter((f) => f.friend_id !== friend.friend_id)
-    );
-  }
-
-  async function handleSubmit(data) {
-    setDisabled(true);
-    try {
-      const formattedAlbums = data.list?.albums?.map((album) => {
-        return album.id;
-      });
-      const formattedSongs = data.list?.songs?.map((song) => {
-        return song.id;
-      });
-      const formattedCollabs = data.collabs?.map((collab) => {
-        return collab.friend_id;
-      });
-      const formattedData = {
-        ...data,
-        collabs: formattedCollabs,
-        list: { albums: formattedAlbums, songs: formattedSongs },
-      };
-
-      await addTierList(formattedData);
-    } catch (e) {
-      toast.error(`Error creating the list: ${e.message}`);
-      setDisabled(false);
-    }
-  }
-
-  if (isLoading) {
-    return <LoadingSpinner />;
-  }
 
   return (
     <main>
@@ -264,12 +267,11 @@ export default function Create() {
           />
         ) : null}
         <ListContext.Provider value={{ list, listLen }}>
-          <SpotifySearch
-            token={data.access_token}
+          {/* <SpotifySearchWrapper
             albumClick={addAlbumToList}
             songClick={addSongToList}
             addSongs={addSongsToList}
-          />
+          /> */}
         </ListContext.Provider>
       </ListCreateForm>
     </main>

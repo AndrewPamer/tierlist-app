@@ -1,6 +1,8 @@
 import Link from "next/link";
-
+import UserLists from "@/components/home/UserLists";
+import CollabLists from "@/components/home/CollabLists";
 import { createClient } from "@/utils/supabase/server";
+import { Button } from "@/components/TailwindComponents";
 
 async function getUserData() {
   const supabase = createClient();
@@ -12,6 +14,9 @@ async function getUserData() {
     .select()
     .eq("id", user?.id)
     .single();
+  if (error) {
+    throw new Error("Error fetching user profile");
+  }
 
   return data;
 }
@@ -19,7 +24,7 @@ async function getUserData() {
 export default async function Home() {
   const userData = await getUserData();
   return (
-    <div>
+    <div className="flex flex-col gap-5">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl	font-bold">Hello, {userData.username}</h1>
         <Link href="/account">
@@ -31,7 +36,12 @@ export default async function Home() {
           </button>
         </Link>
       </div>
-      <Link href="/create">Create a new List</Link>
+      <UserLists />
+      <CollabLists />
+
+      <Link href="/create">
+        <Button fullWidth>Create a new List</Button>
+      </Link>
     </div>
   );
 }

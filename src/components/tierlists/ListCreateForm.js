@@ -1,3 +1,6 @@
+"use client";
+import { useState } from "react";
+import { toast } from "react-toastify";
 import {
   Input,
   Typography,
@@ -5,14 +8,47 @@ import {
   Button,
   Tooltip,
 } from "@material-tailwind/react";
-
+import { getListContext } from "../context/ListContextProvider";
+import { getCollabContext } from "../context/CollabContextProvider";
 import { useForm } from "react-hook-form";
-export default function ListCreateForm({ onSubmit, disabled, children }) {
+import addTierList from "@/utils/supabase/addTierlist";
+export default function ListCreateForm({ children }) {
+  const { list } = getListContext();
+  const { collabs } = getCollabContext();
+  const [disabled, setDisabled] = useState(false);
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting, isSubmitted, isSubmitSuccessful },
   } = useForm();
+
+  async function onSubmit(data) {
+    setDisabled(true);
+    try {
+      const formattedAlbums = list?.albums?.map((album) => {
+        return album.id;
+      });
+      const formattedSongs = list?.songs?.map((song) => {
+        return song.id;
+      });
+      const formattedCollabs = collabs?.map((collab) => {
+        return collab.friend_id;
+      });
+      const formattedData = {
+        ...data,
+        collabs: formattedCollabs,
+        list: { albums: formattedAlbums, songs: formattedSongs },
+      };
+
+      const { error } = await addTierList(formattedData);
+      if (error) {
+        throw error;
+      }
+    } catch (e) {
+      toast.error(`Error creating the list: ${e.message}`);
+      setDisabled(false);
+    }
+  }
 
   return (
     <form
