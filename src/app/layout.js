@@ -1,7 +1,6 @@
 import "@/styles/globals.css";
 import { ThemeProvider } from "../components/TailwindComponents";
 import { Inter } from "next/font/google";
-
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
