@@ -15,6 +15,7 @@ export function ListContextProvider({ children }) {
 
   const dataSuite = {
     list,
+    setList,
     listLen,
     addAlbumToList: (album) => {
       console.log(album);

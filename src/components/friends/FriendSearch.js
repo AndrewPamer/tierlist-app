@@ -5,12 +5,11 @@ import FriendCard from "./FriendCard";
 import LoadingSpinner from "../LoadingSpinner";
 import searchForFriends from "@/tools/searchForFriends";
 export default function FriendSearch({ addCollab }) {
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(null);
   const { data, isError, isLoading } = searchForFriends({ search });
-  console.log(data);
 
   function handleSearch(e) {
-    setSearch(e.target.value);
+    setSearch(e.target.value === "" ? null : e.target.value);
   }
 
   return (

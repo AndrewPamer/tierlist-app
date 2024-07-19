@@ -3,6 +3,7 @@ import { createClient } from "./server";
 import { redirect } from "next/navigation";
 export default async function addTierList(tierlistData) {
   const supabase = createClient();
+  let redirectPath = "";
   try {
     if (
       (tierlistData.list?.songs?.length ?? 0) === 0 &&
@@ -79,8 +80,10 @@ export default async function addTierList(tierlistData) {
     if (error) {
       throw error;
     }
-    redirect(`/lists/${listID}`);
+    redirectPath = `/lists/${listID}`;
   } catch (e) {
+    console.log(e);
     return { error: { message: e.message } };
   }
+  redirect(redirectPath);
 }

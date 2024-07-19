@@ -11,7 +11,7 @@ import {
   Typography,
 } from "@material-tailwind/react";
 
-import { ListContext } from "@/app/(auth)/create/page";
+import { getListContext } from "../context/ListContextProvider";
 
 import LoadingSpinner from "../LoadingSpinner";
 import useSongsInAlbum from "@/hooks/useSongsInAlbum";
@@ -21,18 +21,21 @@ const SearchAlbumSongs = memo(function SearchAlbumSongs({
   token,
   addSongs,
 }) {
-  console.log("Search Albums Rendered");
   const {
     list: { songs, albums },
     listLen,
-  } = useContext(ListContext);
+    addAlbumToList,
+    addSongToList,
+    addSongsToList,
+    removeAlbumsFromList,
+    removeSongsFromList,
+  } = getListContext();
+
   const [selectedSongs, setSelectedSongs] = useState([]);
   const { data, isError, isLoading } = useSongsInAlbum({
     albumId: album.id,
     token,
   });
-
-  console.log(data);
 
   const albumInList = albums?.some((al) => al.id === album.id);
 
@@ -60,7 +63,7 @@ const SearchAlbumSongs = memo(function SearchAlbumSongs({
           fullWidth
           className="mb-2"
           onClick={() => {
-            addSongs(selectedSongs);
+            addSongsToList(selectedSongs);
             setSelectedSongs([]);
           }}
         >

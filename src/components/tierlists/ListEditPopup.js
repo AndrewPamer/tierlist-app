@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { getListContext } from "../context/ListContextProvider";
 import {
   Button,
   Dialog,
@@ -63,13 +64,9 @@ export function ListEditItem({ item, onChange, checked }) {
   );
 }
 
-export default function ListEditPopup({
-  listLen,
-  list,
-  setList,
-  removeAlbums,
-  removeSongs,
-}) {
+export default function ListEditPopup() {
+  const { list, setList, listLen, removeAlbumsFromList, removeSongsFromList } =
+    getListContext();
   const [open, setOpen] = useState(false);
   const [editFilter, setEditFilter] = useState("albums");
   const [selectedItems, setSelectedItems] = useState({});
@@ -105,9 +102,11 @@ export default function ListEditPopup({
 
   return (
     <>
-      <Button onClick={handleOpen}>
-        view {listLen} item{listLen > 1 ? "s" : ""}
-      </Button>
+      {listLen > 0 && (
+        <Button onClick={handleOpen}>
+          view {listLen} item{listLen > 1 ? "s" : ""}
+        </Button>
+      )}
       <Dialog open={open} handler={handleOpen}>
         <DialogHeader className="flex flex-col items-start">
           Your List
@@ -123,14 +122,14 @@ export default function ListEditPopup({
               onClick={
                 editFilter === "albums"
                   ? () => {
-                      removeAlbums(selectedItems?.albums);
+                      removeAlbumsFromList(selectedItems?.albums);
                       setSelectedItems((prevItems) => ({
                         ...prevItems,
                         albums: [],
                       }));
                     }
                   : () => {
-                      removeSongs(selectedItems?.songs);
+                      removeSongsFromList(selectedItems?.songs);
                       setSelectedItems((prevItems) => ({
                         ...prevItems,
                         songs: [],

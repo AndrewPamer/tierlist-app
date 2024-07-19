@@ -1,7 +1,6 @@
 "use client";
-import { useState, useContext } from "react";
-import { ListContext } from "@/app/(auth)/create/page";
-
+import { useState } from "react";
+import { getListContext } from "../context/ListContextProvider";
 import useSpotifySearch from "@/hooks/useSpotifySearch";
 import SpotifySearchItem from "./SpotifySearchItem";
 import LoadingSpinner from "../LoadingSpinner";
@@ -11,17 +10,10 @@ import { Button, Input } from "@material-tailwind/react";
 import { ArrowRightIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 
 import SearchAlbumSongs from "./SearchAlbumSongs";
-export default function SpotifySearch({
-  token,
-  albumClick,
-  songClick,
-  addSongs,
-}) {
-  console.log("Search rendered");
+export default function SpotifySearch({ token }) {
+  const { list, addAlbumToList, addSongToList } = getListContext();
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("albums");
-
-  const { list, listLen } = useContext(ListContext);
 
   const { data, isError, isLoading, mutate } = useSpotifySearch({
     url: "https://api.spotify.com/v1/search?",
@@ -85,18 +77,14 @@ export default function SpotifySearch({
                         <Button
                           fullWidth
                           className="mb-3"
-                          onClick={() => albumClick(item)}
+                          onClick={() => addAlbumToList(item)}
                           disabled={list?.albums?.find(
                             (el) => el.id === item.id
                           )}
                         >
                           Add {item.name}
                         </Button>
-                        <SearchAlbumSongs
-                          token={token}
-                          album={item}
-                          addSongs={addSongs}
-                        />
+                        <SearchAlbumSongs token={token} album={item} />
                       </>
                     }
                   />
@@ -106,15 +94,10 @@ export default function SpotifySearch({
             {filter === "tracks" &&
               data?.tracks?.items?.map((item, i) => {
                 return (
-                  <SpotifySearchItem
-                    key={i}
-                    item={item}
-                    onClick={songClick}
-                    button={true}
-                  >
+                  <SpotifySearchItem key={i} item={item} button={true}>
                     <Button
                       className="	ml-auto	px-3 py-1 text-lg"
-                      onClick={() => songClick(item)}
+                      onClick={() => addSongToList(item)}
                       disabled={
                         list?.songs?.find((el) => el.id === item.id) ||
                         list?.albums?.some((al) => al.id === item.album.id)
