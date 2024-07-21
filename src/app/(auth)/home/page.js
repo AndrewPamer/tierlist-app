@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+
 import Link from "next/link";
 import UserLists from "@/components/home/UserLists";
 import CollabLists from "@/components/home/CollabLists";
@@ -36,8 +38,12 @@ export default async function Home() {
           </button>
         </Link>
       </div>
-      <UserLists />
-      <CollabLists />
+      <Suspense fallback={<p>Loading Lists</p>}>
+        <UserLists />
+      </Suspense>
+      <Suspense fallback={<p>Loading Lists</p>}>
+        <CollabLists />
+      </Suspense>
 
       <Link href="/create">
         <Button fullWidth>Create a new List</Button>

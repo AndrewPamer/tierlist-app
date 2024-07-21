@@ -42,7 +42,6 @@ async function getItemIDs(listID) {
 export default async function ListImageCollage({ listID }) {
   const itemsIDs = await getItemIDs(listID);
   const spotifyToken = await getSpotifyToken();
-  console.log(spotifyToken);
   return (
     <div className="grid grid-cols-2 grid-rows-2  ">
       {itemsIDs.map((item, i) => {

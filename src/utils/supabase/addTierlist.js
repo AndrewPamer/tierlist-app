@@ -34,7 +34,6 @@ export default async function addTierList(tierlistData) {
       public: tierlistData.visibility === "Public",
     });
     if (privacyError) {
-      console.log(privacyError);
       throw privacyError;
     }
     //2. Add the collaborators
@@ -82,7 +81,6 @@ export default async function addTierList(tierlistData) {
     }
     redirectPath = `/lists/${listID}`;
   } catch (e) {
-    console.log(e);
     return { error: { message: e.message } };
   }
   redirect(redirectPath);

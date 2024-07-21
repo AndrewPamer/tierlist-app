@@ -22,7 +22,6 @@ export function CollabContextProvider({ children }) {
         )
       ) {
         toast.warn(`${friend.friend_username} is already a collaborator`);
-        console.log(collabs);
       } else {
         setCollabs((prevCollabs) => [...prevCollabs, friend]);
       }

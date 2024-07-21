@@ -18,7 +18,6 @@ export function ListContextProvider({ children }) {
     setList,
     listLen,
     addAlbumToList: (album) => {
-      console.log(album);
       if (listLen === 100) {
         toast.error(
           "The list has reached its maximum size. Remove an item to add this one"

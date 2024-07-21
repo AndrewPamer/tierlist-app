@@ -1,3 +1,5 @@
+import { SpeedInsights } from "@vercel/speed-insights/next";
+
 import "@/styles/globals.css";
 import { ThemeProvider } from "../components/TailwindComponents";
 import { Inter } from "next/font/google";
@@ -196,6 +198,7 @@ export default function RootLayout({
           className={`!bg-background !text-text ${inter.className} ${inter.variable}`}
         >
           {children}
+          <SpeedInsights />
         </body>
       </ThemeProvider>
     </html>

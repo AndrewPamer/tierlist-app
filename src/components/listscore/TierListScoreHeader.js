@@ -12,7 +12,7 @@ export default function TierListScoreHeader({ list, collaborators }) {
           collaborators?.length > 0 ? "justify-between" : "justify-center"
         }`}
       >
-        <div className="flex flex-col gap-1 items-center border p-1 rounded-lg bg-alt-bg">
+        <div className="flex flex-col gap-1 items-center  p-1 rounded-lg bg-alt-bg">
           <Tooltip content={creatorProfile.username}>
             <div
               className="flex justify-center items-center bg-red-400 w-8 h-8 rounded-full border"
@@ -24,7 +24,7 @@ export default function TierListScoreHeader({ list, collaborators }) {
           <Typography variant="small">Creator</Typography>
         </div>
         {collaborators?.length > 0 && (
-          <div className="flex flex-col gap-1 items-center border p-1 rounded-lg bg-alt-bg">
+          <div className="flex flex-col gap-1 items-center  p-1 rounded-lg bg-alt-bg">
             <div className="flex items-center -space-x-2  ">
               {collaborators.map((collab) => {
                 const user = collab.profiles;

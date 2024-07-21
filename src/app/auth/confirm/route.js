@@ -39,7 +39,6 @@ export async function GET(request) {
   const token_hash = searchParams.get("token_hash");
   const type = searchParams.get("type");
   const next = searchParams.get("next") ?? "/";
-  console.log(next);
 
   if (token_hash && type) {
     const supabase = createClient();

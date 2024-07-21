@@ -19,6 +19,7 @@
     "@supabase-cache-helpers/postgrest-swr": "^1.7.5",
     "@supabase/ssr": "^0.3.0",
     "@supabase/supabase-js": "^2.43.4",
+    "@vercel/speed-insights": "^1.0.12",
     "next": "^14.2.3",
     "plaiceholder": "^3.0.0",
     "react": "^18.3.1",
