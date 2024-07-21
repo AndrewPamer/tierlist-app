@@ -3,7 +3,7 @@ import UserListCard from "./UserListCard";
 
 export default function HomePageListCard({ header, lists }) {
   return (
-    <Card className="bg-alt-bg text-text">
+    <Card className="bg-alt-bg text-text ">
       <CardHeader
         floated={false}
         className="bg-transparent text-text"
