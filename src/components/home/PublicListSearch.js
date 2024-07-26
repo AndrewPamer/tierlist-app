@@ -9,6 +9,8 @@ import {
   CardBody,
 } from "@material-tailwind/react";
 import { useQuery } from "@supabase-cache-helpers/postgrest-swr";
+import HomePageListCard from "./HomePageListCard";
+import LoadingSpinner from "../LoadingSpinner";
 export default function PublicListSearch() {
   const supabase = createClient();
   const [search, setSearch] = useState(null);
@@ -21,9 +23,9 @@ export default function PublicListSearch() {
     }
   }
 
-  const { data, error } = useQuery(
+  const { data, error, isLoading } = useQuery(
     supabase.rpc("public_list_search", {
-      name: search,
+      search: search,
     })
   );
 
@@ -42,6 +44,13 @@ export default function PublicListSearch() {
       </CardHeader>
       <CardBody>
         <Input label="List Name" onChange={(e) => handleSearch(e)} />
+        {isLoading ? (
+          <LoadingSpinner />
+        ) : data?.length === 0 ? (
+          <Typography>No Result</Typography>
+        ) : (
+          <HomePageListCard header={""} lists={data} />
+        )}
       </CardBody>
     </Card>
   );

@@ -2,7 +2,7 @@ import { Typography, Card, CardBody, CardHeader } from "../TailwindComponents";
 import ListImageCollage from "./ListImageCollage";
 import Link from "next/link";
 
-export default async function UserListCard({ list }) {
+export default function UserListCard({ list }) {
   return (
     <Link href={`/lists/${list.id}`} className="flex">
       <Card className="bg-alt-bg-darker text-text flex flex-col justify-between h-72	w-52 hover:bg-button-hover hover:text-button-text active:bg-button-hover">

@@ -1,7 +1,13 @@
-import { createClient } from "@/utils/supabase/server";
+"use client";
+// import { createClient } from "@/utils/supabase/server";
+import { createClient } from "@/utils/supabase/client";
 import getSpotifyToken from "@/tools/getSpotifyToken";
 import ListItemImage from "./ListItemImage";
-async function getItemIDs(listID) {
+import LoadingSpinner from "../LoadingSpinner";
+
+import useSWR from "swr";
+
+async function getItemIDs([listID]) {
   const itemsIDs = [];
   const supabase = createClient();
 
@@ -39,9 +45,18 @@ async function getItemIDs(listID) {
   return itemsIDs;
 }
 
-export default async function ListImageCollage({ listID }) {
-  const itemsIDs = await getItemIDs(listID);
-  const spotifyToken = await getSpotifyToken();
+export default function ListImageCollage({ listID }) {
+  const { data: itemsIDs, error, isLoading } = useSWR([listID], getItemIDs);
+  const {
+    data: spotifyToken,
+    error: spotifyError,
+    isLoading: spotifyLoading,
+  } = useSWR("String", getSpotifyToken);
+
+  if (isLoading || spotifyLoading) {
+    return;
+  }
+
   return (
     <div className="grid grid-cols-2 grid-rows-2  ">
       {itemsIDs.map((item, i) => {
