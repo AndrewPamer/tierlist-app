@@ -32,10 +32,7 @@ const SearchAlbumSongs = memo(function SearchAlbumSongs({
   } = getListContext();
 
   const [selectedSongs, setSelectedSongs] = useState([]);
-  const { data, isError, isLoading } = useSongsInAlbum({
-    albumId: album.id,
-    token,
-  });
+  const { data, isError, isLoading } = useSongsInAlbum(album.id);
 
   const albumInList = albums?.some((al) => al.id === album.id);
 

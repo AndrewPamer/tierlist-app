@@ -36,10 +36,7 @@ export default async function List({ params: { id } }) {
   const data = await getListData(id);
   return (
     <main>
-      <Link
-        href="/home"
-        className="border px-2 py-1 rounded-full hover:underline"
-      >
+      <Link href="/home" className=" px-2 py-1 hover:underline">
         Back to Home
       </Link>
       <TierListScoreHeader
@@ -47,11 +44,10 @@ export default async function List({ params: { id } }) {
         collaborators={data.collaborators}
       />
       <div className="bg-alt-bg p-3 rounded-md mt-10">
-        <TierListScoreToDo />
+        <TierListScoreToDo id={id} />
         <TierListScoreInProgress />
         <TierListScoreCompleted />
       </div>
-      {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
     </main>
   );
 }

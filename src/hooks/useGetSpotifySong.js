@@ -16,9 +16,9 @@ async function fetcher(url) {
   return res.json();
 }
 
-export default function useSongsInAlbum(albumID) {
+export default function useGetSpotifySong(songID) {
   const { data, error, isLoading } = useSWR(
-    `https://api.spotify.com/v1/albums/${albumID}/tracks`,
+    `https://api.spotify.com/v1/tracks/${songID}`,
     fetcher
   );
 
