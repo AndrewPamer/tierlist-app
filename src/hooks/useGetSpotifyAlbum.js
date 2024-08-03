@@ -19,7 +19,11 @@ async function fetcher(url) {
 export default function useGetSpotifyAlbum(albumID) {
   const { data, error, isLoading } = useSWR(
     `https://api.spotify.com/v1/albums/${albumID}`,
-    fetcher
+    fetcher,
+    {
+      revalidateOnReconnect: false,
+      revalidateOnFocus: false,
+    }
   );
 
   return {

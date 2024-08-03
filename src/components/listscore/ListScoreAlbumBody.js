@@ -8,10 +8,11 @@ import {
   MenuList,
   MenuItem,
 } from "@material-tailwind/react";
+import ItemScore from "./ItemScore";
 import useSongsInAlbum from "@/hooks/useSongsInAlbum";
 import LoadingSpinner from "../LoadingSpinner";
-export default function ListScoreAlbumBody({ albumID }) {
-  const { data, isLoading } = useSongsInAlbum(albumID);
+export default function ListScoreAlbumBody({ album }) {
+  const { data, isLoading } = useSongsInAlbum(album.spotify_id);
   if (isLoading) {
     return <LoadingSpinner />;
   }
@@ -22,16 +23,7 @@ export default function ListScoreAlbumBody({ albumID }) {
         return (
           <ListItem className="p-1 flex justify-between" key={i} ripple={false}>
             <Typography>{item.name}</Typography>
-            <Menu>
-              <MenuHandler>
-                <Button className="p-2  ">Score</Button>
-              </MenuHandler>
-              <MenuList className="max-h-72">
-                {Array.from({ length: 20 }).map((_, i) => {
-                  return <MenuItem>{i + 1}</MenuItem>;
-                })}
-              </MenuList>
-            </Menu>
+            <ItemScore albumID={album.album_id} songID={item.id} />
           </ListItem>
         );
       })}
