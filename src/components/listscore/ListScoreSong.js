@@ -1,52 +1,29 @@
-import {
-  Menu,
-  Button,
-  MenuHandler,
-  MenuList,
-  MenuItem,
-  ListItem,
-} from "@material-tailwind/react";
-import useGetSpotifySong from "@/hooks/useGetSpotifySong";
+import { ListItem } from "@/components/TailwindComponents";
 import SpotifySearchItem from "../tierlists/SpotifySearchItem";
-import LoadingSpinner from "../LoadingSpinner";
-import useGetSongScore from "@/hooks/useGetSongScore";
-import UpdateSongScore from "@/tools/UpdateSongScore";
-export default function ListScoreSong({ song }) {
-  const { data: spotifyData, isLoading: spotifyLoading } = useGetSpotifySong(
-    song.spotify_id
-  );
-
-  const { data, isLoading, error, upsert } = useGetSongScore(song.song_id);
-
-  if (spotifyLoading || isLoading) {
-    return <LoadingSpinner />;
+import getSpotifyToken from "@/tools/getSpotifyToken";
+import ItemScore from "./ItemScore";
+async function getSong(id) {
+  const { access_token } = await getSpotifyToken();
+  const res = await fetch(`https://api.spotify.com/v1/tracks/${id}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${access_token}`,
+    },
+  });
+  if (!res.ok) {
+    throw new Error(`HTTP Error: ${res.status}`);
   }
+
+  return res.json();
+}
+export default async function ListScoreSong({ song }) {
+  console.log(song);
+  const data = await getSong(song.spotify_id);
 
   return (
     <ListItem className="p-1 flex justify-between" ripple={false}>
-      <SpotifySearchItem item={spotifyData} />
-
-      <Menu>
-        <MenuHandler>
-          <Button className="p-1.5 w-16">
-            {data?.length ? data[0].score : "Score"}
-          </Button>
-        </MenuHandler>
-        <MenuList className="max-h-72 bg-alt-bg text-text border-text">
-          {Array.from({ length: 21 }).map((_, i) => {
-            return (
-              <MenuItem
-                key={i}
-                onClick={() =>
-                  UpdateSongScore({ song_id: song.song_id, score: i, upsert })
-                }
-              >
-                {i}
-              </MenuItem>
-            );
-          })}
-        </MenuList>
-      </Menu>
+      <SpotifySearchItem item={data} />
+      <ItemScore songID={song.song_id} albumSong={false} />
     </ListItem>
   );
 }

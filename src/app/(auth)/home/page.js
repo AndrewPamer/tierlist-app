@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import UserLists from "@/components/home/UserLists";
 import CollabLists from "@/components/home/CollabLists";
-import PublicListSearch from "@/components/home/PublicListSearch";
+// import PublicListSearch from "@/components/home/PublicListSearch";
 import { createClient } from "@/utils/supabase/server";
 import { Button } from "@/components/TailwindComponents";
 import HomePageListCardPlaceholder from "@/components/home/HomePageListCardPlaceholder";
@@ -40,13 +40,13 @@ export default async function Home() {
           </button>
         </Link>
       </div>
-      <Suspense fallback={<HomePageListCardPlaceholder />}>
-        <UserLists />
-      </Suspense>
-      <Suspense fallback={<HomePageListCardPlaceholder />}>
-        <CollabLists />
-      </Suspense>
-      <PublicListSearch />
+      {/* <Suspense fallback={<HomePageListCardPlaceholder />}> */}
+      <UserLists />
+      {/* </Suspense> */}
+      {/* <Suspense fallback={<HomePageListCardPlaceholder />}> */}
+      <CollabLists />
+      {/* </Suspense> */}
+      {/* <PublicListSearch /> */}
 
       <Link href="/create">
         <Button fullWidth>Create a new List</Button>

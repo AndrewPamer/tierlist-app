@@ -1,21 +1,22 @@
-import {
-  List,
-  ListItem,
-  Typography,
-  Menu,
-  Button,
-  MenuHandler,
-  MenuList,
-  MenuItem,
-} from "@material-tailwind/react";
+import { List, ListItem, Typography } from "@/components/TailwindComponents";
+import getSpotifyToken from "@/tools/getSpotifyToken";
 import ItemScore from "./ItemScore";
-import useSongsInAlbum from "@/hooks/useSongsInAlbum";
-import LoadingSpinner from "../LoadingSpinner";
-export default function ListScoreAlbumBody({ album }) {
-  const { data, isLoading } = useSongsInAlbum(album.spotify_id);
-  if (isLoading) {
-    return <LoadingSpinner />;
+async function getAlbumSongs(id) {
+  const { access_token } = await getSpotifyToken();
+  const res = await fetch(`https://api.spotify.com/v1/albums/${id}/tracks`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${access_token}`,
+    },
+  });
+  if (!res.ok) {
+    throw new Error(`HTTP Error: ${res.status}`);
   }
+
+  return res.json();
+}
+export default async function ListScoreAlbumBody({ album }) {
+  const data = await getAlbumSongs(album.spotify_id);
 
   return (
     <List className="bg-alt-bg-darker rounded-md flex flex-col items-start">

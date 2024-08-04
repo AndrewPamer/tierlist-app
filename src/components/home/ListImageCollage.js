@@ -1,13 +1,12 @@
-"use client";
-// import { createClient } from "@/utils/supabase/server";
-import { createClient } from "@/utils/supabase/client";
-import getSpotifyToken from "@/tools/getSpotifyToken";
+// "use client";
+import { createClient } from "@/utils/supabase/server";
+// import { createClient } from "@/utils/supabase/client";
 import ListItemImage from "./ListItemImage";
-import LoadingSpinner from "../LoadingSpinner";
+// import LoadingSpinner from "../LoadingSpinner";
 
-import useSWR from "swr";
+// import useSWR from "swr";
 
-async function getItemIDs([listID]) {
+async function getItemIDs(listID) {
   const itemsIDs = [];
   const supabase = createClient();
 
@@ -45,27 +44,23 @@ async function getItemIDs([listID]) {
   return itemsIDs;
 }
 
-export default function ListImageCollage({ listID }) {
-  const { data: itemsIDs, error, isLoading } = useSWR([listID], getItemIDs);
-  const {
-    data: spotifyToken,
-    error: spotifyError,
-    isLoading: spotifyLoading,
-  } = useSWR("String", getSpotifyToken);
+export default async function ListImageCollage({ listID }) {
+  const data = await getItemIDs(listID);
 
-  if (isLoading || spotifyLoading) {
-    return;
-  }
+  // const { data: itemsIDs, error, isLoading } = useSWR([listID], getItemIDs);
+
+  // if (isLoading) {
+  //   return;
+  // }
 
   return (
     <div className="grid grid-cols-2 grid-rows-2  ">
-      {itemsIDs.map((item, i) => {
+      {data.map((item, i) => {
         return (
           <ListItemImage
             key={item.id}
             item={item}
-            token={spotifyToken}
-            className={itemsIDs.length === 1 ? "row-span-2 col-span-2" : ""}
+            className={data.length === 1 ? "row-span-2 col-span-2" : ""}
           />
         );
       })}

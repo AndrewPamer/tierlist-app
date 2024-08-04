@@ -1,3 +1,4 @@
+"use client";
 import {
   Menu,
   Button,
@@ -8,11 +9,15 @@ import {
 import LoadingSpinner from "../LoadingSpinner";
 import useGetAlbumSongScore from "@/hooks/useGetAlbumSongScore";
 import UpdateAlbumSongScore from "@/tools/UpdateAlbumSongScore";
-export default function ItemScore({ albumID, songID }) {
-  const { data, isLoading, error, upsert } = useGetAlbumSongScore({
-    album_id: albumID,
-    spotify_id: songID,
-  });
+import useGetSongScore from "@/hooks/useGetSongScore";
+import UpdateSongScore from "@/tools/UpdateSongScore";
+export default function ItemScore({ albumID, songID, albumSong = true }) {
+  const { data, isLoading, error, upsert } = albumSong
+    ? useGetAlbumSongScore({
+        album_id: albumID,
+        spotify_id: songID,
+      })
+    : useGetSongScore(songID);
 
   if (isLoading) {
     return <LoadingSpinner />;
@@ -29,12 +34,18 @@ export default function ItemScore({ albumID, songID }) {
           return (
             <MenuItem
               onClick={() =>
-                UpdateAlbumSongScore({
-                  album_id: albumID,
-                  spotify_id: songID,
-                  score: i,
-                  upsert,
-                })
+                albumSong
+                  ? UpdateAlbumSongScore({
+                      album_id: albumID,
+                      spotify_id: songID,
+                      score: i,
+                      upsert,
+                    })
+                  : UpdateSongScore({
+                      song_id: songID,
+                      score: i,
+                      upsert,
+                    })
               }
               key={i}
             >

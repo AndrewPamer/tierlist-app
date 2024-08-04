@@ -1,10 +1,11 @@
 import useSWR from "swr";
-
-async function fetcher([url, token]) {
+import getSpotifyToken from "@/tools/getSpotifyToken";
+async function fetcher(url) {
+  const { access_token } = await getSpotifyToken();
   const res = await fetch(url, {
     method: "GET",
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${access_token}`,
     },
   });
 
@@ -17,8 +18,12 @@ async function fetcher([url, token]) {
 
 export default function useGetCoverArt({ ID, type, token }) {
   const { data, error, isLoading } = useSWR(
-    [`https://api.spotify.com/v1/${type}/${ID}`, token],
-    fetcher
+    `https://api.spotify.com/v1/${type}/${ID}`,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
   );
 
   return {

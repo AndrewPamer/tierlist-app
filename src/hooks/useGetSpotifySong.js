@@ -19,7 +19,11 @@ async function fetcher(url) {
 export default function useGetSpotifySong(songID) {
   const { data, error, isLoading } = useSWR(
     `https://api.spotify.com/v1/tracks/${songID}`,
-    fetcher
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
   );
 
   return {
