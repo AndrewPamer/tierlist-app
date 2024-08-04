@@ -1,6 +1,7 @@
 import { List, ListItem, Typography } from "@/components/TailwindComponents";
 import getSpotifyToken from "@/tools/getSpotifyToken";
 import ItemScore from "./ItemScore";
+import CollabsScore from "./CollabsScore";
 async function getAlbumSongs(id) {
   const { access_token } = await getSpotifyToken();
   const res = await fetch(`https://api.spotify.com/v1/albums/${id}/tracks`, {
@@ -24,6 +25,7 @@ export default async function ListScoreAlbumBody({ album }) {
         return (
           <ListItem className="p-1 flex justify-between" key={i} ripple={false}>
             <Typography>{item.name}</Typography>
+            <CollabsScore albumID={album.album_id} songID={item.id} />
             <ItemScore albumID={album.album_id} songID={item.id} />
           </ListItem>
         );

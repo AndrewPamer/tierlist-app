@@ -40,12 +40,12 @@ export default async function Home() {
           </button>
         </Link>
       </div>
-      {/* <Suspense fallback={<HomePageListCardPlaceholder />}> */}
-      <UserLists />
-      {/* </Suspense> */}
-      {/* <Suspense fallback={<HomePageListCardPlaceholder />}> */}
-      <CollabLists />
-      {/* </Suspense> */}
+      <Suspense fallback={<HomePageListCardPlaceholder />}>
+        <UserLists />
+      </Suspense>
+      <Suspense fallback={<HomePageListCardPlaceholder />}>
+        <CollabLists />
+      </Suspense>
       {/* <PublicListSearch /> */}
 
       <Link href="/create">

@@ -30,7 +30,7 @@ export function AuthContextProvider({ children }) {
 
   return (
     <AuthContext.Provider value={userData}>
-      {false ? <LoadingSpinner>Loading User...</LoadingSpinner> : children}
+      {loading ? <LoadingSpinner>Loading User...</LoadingSpinner> : children}
     </AuthContext.Provider>
   );
 }
