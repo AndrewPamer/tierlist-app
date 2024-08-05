@@ -1,4 +1,6 @@
 import { Typography, Card, CardBody, CardHeader } from "../TailwindComponents";
+import { Suspense } from "react";
+import UserListCardPlaceholder from "./UserListCardPlaceholder";
 import UserListCard from "./UserListCard";
 
 export default function HomePageListCard({ header, lists }) {
@@ -13,7 +15,11 @@ export default function HomePageListCard({ header, lists }) {
       </CardHeader>
       <CardBody className=" flex gap-2 overflow-x-auto ">
         {lists.map((listItem) => {
-          return <UserListCard key={listItem.id} list={listItem} />;
+          return (
+            <Suspense key={listItem.id} fallback={<UserListCardPlaceholder />}>
+              <UserListCard list={listItem} />
+            </Suspense>
+          );
         })}
       </CardBody>
     </Card>
