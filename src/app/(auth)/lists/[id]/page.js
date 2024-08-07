@@ -14,7 +14,9 @@ async function getListData(id) {
     .eq("id", id);
   const { data: collabsData, error: collabsError } = await supabase
     .from("listcollaborators")
-    .select("profiles(id, username, color)")
+    .select(
+      "profiles(id, username, color, listalbumsongscore(album_id, spotify_id, score), listalbumscore(id, score), listsongscore(id, score))"
+    )
     .eq("list_id", id);
   const { data: songsData, error: songsError } = await supabase
     .from("listsongs")
@@ -24,6 +26,8 @@ async function getListData(id) {
     .from("listalbums")
     .select()
     .eq("list_id", id);
+
+  // console.log(collabsData, collabsError);
   return {
     list: tierListData[0],
     collaborators: collabsData,

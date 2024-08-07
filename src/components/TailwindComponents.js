@@ -9,6 +9,7 @@ import {
   Button,
   List,
   ListItem,
+  Tooltip,
 } from "@material-tailwind/react";
 
 export {
@@ -20,4 +21,5 @@ export {
   Button,
   List,
   ListItem,
+  Tooltip,
 };

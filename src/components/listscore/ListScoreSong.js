@@ -17,7 +17,6 @@ async function getSong(id) {
   return res.json();
 }
 export default async function ListScoreSong({ song }) {
-  console.log(song);
   const data = await getSong(song.spotify_id);
 
   return (

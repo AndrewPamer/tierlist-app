@@ -1,8 +1,5 @@
-// "use client";
-// import useGetSpotifyAlbum from "@/hooks/useGetSpotifyAlbum";
 import AlbumAccordion from "../tierlists/AlbumAccordion";
 import SpotifySearchItem from "../tierlists/SpotifySearchItem";
-// import LoadingSpinner from "../LoadingSpinner";
 import ListScoreAlbumBody from "./ListScoreAlbumBody";
 import getSpotifyToken from "@/tools/getSpotifyToken";
 async function getAlbumInfo(id) {
@@ -21,10 +18,7 @@ async function getAlbumInfo(id) {
 }
 export default async function ListScoreAlbum({ album }) {
   const data = await getAlbumInfo(album.spotify_id);
-  // const { data, isLoading } = useGetSpotifyAlbum(album.spotify_id);
-  // if (isLoading) {
-  //   return <LoadingSpinner />;
-  // }
+
   return (
     <AlbumAccordion
       header={<SpotifySearchItem item={data} />}

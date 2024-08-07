@@ -1,7 +1,9 @@
+import { Suspense } from "react";
 import { List } from "@/components/TailwindComponents";
 import AlbumAccordion from "../tierlists/AlbumAccordion";
 import ListScoreAlbum from "./ListScoreAlbum";
 import ListScoreSong from "./ListScoreSong";
+import SpotifySearchItemSkeleton from "../SpotifySearchItemSkeleton";
 export default function ListScoreBody({ songs, albums }) {
   return (
     <div className="flex flex-col gap-5">
@@ -10,7 +12,11 @@ export default function ListScoreBody({ songs, albums }) {
         body={
           <div>
             {albums.map((album) => {
-              return <ListScoreAlbum key={album.album_id} album={album} />;
+              return (
+                <Suspense fallback={<SpotifySearchItemSkeleton />}>
+                  <ListScoreAlbum key={album.album_id} album={album} />{" "}
+                </Suspense>
+              );
             })}
           </div>
         }
@@ -22,7 +28,11 @@ export default function ListScoreBody({ songs, albums }) {
             {
               <List className="bg-alt-bg-darker ">
                 {songs.map((song) => {
-                  return <ListScoreSong key={song.song_id} song={song} />;
+                  return (
+                    <Suspense fallback={<SpotifySearchItemSkeleton />}>
+                      <ListScoreSong key={song.song_id} song={song} />
+                    </Suspense>
+                  );
                 })}
               </List>
             }
