@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+import LoadingSpinner from "../LoadingSpinner";
 import AlbumAccordion from "../tierlists/AlbumAccordion";
 import ListScoreBody from "./ListScoreBody";
 import { createClient } from "@/utils/supabase/server";
@@ -26,7 +28,11 @@ export default async function TierListScoreToDo({ id }) {
   return (
     <AlbumAccordion
       header={"To-Do"}
-      body={<ListScoreBody songs={todoData?.songs} albums={todoData?.albums} />}
+      body={
+        <Suspense fallback={<LoadingSpinner />}>
+          <ListScoreBody songs={todoData?.songs} albums={todoData?.albums} />
+        </Suspense>
+      }
     />
   );
 }

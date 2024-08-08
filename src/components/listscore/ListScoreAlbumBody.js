@@ -17,7 +17,7 @@ async function getAlbumSongs(id) {
   return res.json();
 }
 export default async function ListScoreAlbumBody({ album }) {
-  const data = await getAlbumSongs(album.spotify_id);
+  const data = await getAlbumSongs(album.id);
 
   return (
     <List className="bg-alt-bg-darker rounded-md flex flex-col items-start">

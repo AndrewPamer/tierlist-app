@@ -16,12 +16,11 @@ async function getSong(id) {
 
   return res.json();
 }
-export default async function ListScoreSong({ song }) {
-  const data = await getSong(song.spotify_id);
-
+export default function ListScoreSong({ song }) {
+  // const data = await getSong(song.spotify_id);
   return (
     <ListItem className="p-1 flex justify-between" ripple={false}>
-      <SpotifySearchItem item={data} />
+      <SpotifySearchItem item={song} />
       <ItemScore songID={song.song_id} albumSong={false} />
     </ListItem>
   );

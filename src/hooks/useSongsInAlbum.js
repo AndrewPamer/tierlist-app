@@ -21,8 +21,9 @@ export default function useSongsInAlbum(albumID) {
     `https://api.spotify.com/v1/albums/${albumID}/tracks`,
     fetcher,
     {
-      revalidateOnReconnect: false,
+      revalidateIfStale: false,
       revalidateOnFocus: false,
+      revalidateOnReconnect: false,
     }
   );
 
