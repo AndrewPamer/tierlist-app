@@ -16,9 +16,9 @@ export default function HomePageListCard({ header, lists }) {
       <CardBody className=" flex gap-2 overflow-x-auto ">
         {lists.map((listItem) => {
           return (
-            // <Suspense key={listItem.id} fallback={<UserListCardPlaceholder />}>
-            <UserListCard key={listItem.id} list={listItem} />
-            // {/* </Suspense> */}
+            <Suspense key={listItem.id} fallback={<UserListCardPlaceholder />}>
+              <UserListCard list={listItem} />
+            </Suspense>
           );
         })}
       </CardBody>
