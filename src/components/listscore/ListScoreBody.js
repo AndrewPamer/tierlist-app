@@ -1,5 +1,3 @@
-export const maxDuration = 60;
-
 import { Suspense } from "react";
 import { List } from "@/components/TailwindComponents";
 import AlbumAccordion from "../tierlists/AlbumAccordion";
