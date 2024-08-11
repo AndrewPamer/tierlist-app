@@ -9,11 +9,11 @@ export default function SpotifySearchItem({ item, children }) {
     >
       <BlurImage
         imageSrc={
-          item?.images ? item.images[0].url : item?.album?.images[0]?.url
+          item?.images ? item.images[2].url : item?.album?.images[2]?.url
         }
         alt={`Cover art for ${item.name}`}
-        width={640}
-        height={640}
+        width={64}
+        height={64}
         className="mb-1 h-14 w-14"
       />
       {/* <Image

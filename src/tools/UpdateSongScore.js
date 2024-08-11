@@ -1,14 +1,19 @@
-import { createClient } from "@/utils/supabase/client";
-export default async function UpdateSongScore({ song_id, score, upsert }) {
+// import { createClient } from "@/utils/supabase/client";
+"use server";
+import { createClient } from "@/utils/supabase/server";
+
+export default async function UpdateSongScore({ song_id, score }) {
   const supabase = createClient();
   const {
-    data: {
-      user: { id },
-    },
+    data: { user },
   } = await supabase.auth.getUser();
-  upsert({
-    id: song_id,
-    user_id: id,
-    score,
-  });
+  const { data, error } = await supabase
+    .from("listsongscore")
+    .upsert({ user_id: user.id, id: song_id, score })
+    .select();
+
+  if (error) {
+    return -1;
+  }
+  return data[0].score;
 }

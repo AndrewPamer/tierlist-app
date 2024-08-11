@@ -1,12 +1,14 @@
+import { Suspense } from "react";
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import TierListScoreHeader from "@/components/listscore/TierListScoreHeader";
-
+import AlbumAccordion from "@/components/tierlists/AlbumAccordion";
+import ListScoreAlbum from "@/components/listscore/ListScoreAlbum";
+import ListScoreSong from "@/components/listscore/ListScoreSong";
 import TierListScoreToDo from "@/components/listscore/TierListScoreToDo";
 import TierListScoreInProgress from "@/components/listscore/TierListScoreInProgress";
 import TierListScoreCompleted from "@/components/listscore/TierListScoreCompleted";
-
-import getSpotifyToken from "@/tools/getSpotifyToken";
+import SpotifySearchItemSkeleton from "@/components/SpotifySearchItemSkeleton";
 
 async function getListData(id) {
   const supabase = createClient();
@@ -29,70 +31,21 @@ async function getListData(id) {
     .select()
     .eq("list_id", id);
 
-  const { access_token } = await getSpotifyToken();
-
-  const spotifyAlbums = { albums: [] };
-  const spotifySongs = { tracks: [] };
-
-  const listAlbums = albumsData.map((album) => album.spotify_id);
   const albumChunks = [];
-  for (let i = 0; i < listAlbums.length; i += 20) {
-    albumChunks.push(listAlbums.slice(i, i + 20));
+  for (let i = 0; i < albumsData.length; i += 20) {
+    albumChunks.push(albumsData.slice(i, i + 20));
   }
 
-  for (const chunk of albumChunks) {
-    const res = await fetch(
-      `https://api.spotify.com/v1/albums?ids=${chunk.join(",")}`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-        },
-      }
-    );
-
-    if (!res.ok) {
-      throw new Error(`HTTP Error: ${res.status}`);
-    }
-
-    const resJson = await res.json();
-
-    spotifyAlbums.albums.push(...resJson.albums);
-  }
-
-  const listSongs = songsData.map((song) => song.spotify_id);
   const songChunks = [];
-  for (let i = 0; i < listSongs.length; i += 50) {
-    songChunks.push(listSongs.slice(i, i + 50));
+  for (let i = 0; i < songsData.length; i += 50) {
+    songChunks.push(songsData.slice(i, i + 50));
   }
-
-  for (const chunk of songChunks) {
-    const res = await fetch(
-      `https://api.spotify.com/v1/tracks?ids=${chunk.join(",")}`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-        },
-      }
-    );
-
-    if (!res.ok) {
-      throw new Error(`HTTP Error: ${res.status}`);
-    }
-
-    const resJson = await res.json();
-
-    spotifySongs.tracks.push(...resJson.tracks);
-  }
-
-  // console.log(spotifyAlbums);
 
   return {
     list: tierListData[0],
     collaborators: collabsData,
-    songs: songsData,
-    albums: albumsData,
+    songs: songChunks,
+    albums: albumChunks,
   };
 }
 
@@ -108,9 +61,49 @@ export default async function List({ params: { id } }) {
         collaborators={data.collaborators}
       />
       <div className="bg-alt-bg p-3 rounded-md mt-10">
-        <TierListScoreToDo id={id} />
+        {data.albums?.length !== 0 && (
+          <AlbumAccordion
+            header={"Albums"}
+            body={data.albums.map((albums) => {
+              return (
+                <Suspense
+                  fallback={
+                    <div>
+                      {albums.map((album) => (
+                        <SpotifySearchItemSkeleton />
+                      ))}
+                    </div>
+                  }
+                >
+                  <ListScoreAlbum albums={albums} />
+                </Suspense>
+              );
+            })}
+          />
+        )}
+        {data.songs?.length !== 0 && (
+          <AlbumAccordion
+            header={"Songs"}
+            body={data.songs.map((songs) => {
+              return (
+                <Suspense
+                  fallback={
+                    <div>
+                      {songs.map((song) => (
+                        <SpotifySearchItemSkeleton />
+                      ))}
+                    </div>
+                  }
+                >
+                  <ListScoreSong songs={songs} />
+                </Suspense>
+              );
+            })}
+          />
+        )}
+        {/* <TierListScoreToDo id={id} />
         <TierListScoreInProgress />
-        <TierListScoreCompleted />
+        <TierListScoreCompleted /> */}
       </div>
     </main>
   );

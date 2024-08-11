@@ -32,8 +32,21 @@ async function getCollabsScore(albumID, songID) {
   );
   return data;
 }
-export default async function CollabsScore({ albumID, songID }) {
-  const data = await getCollabsScore(albumID, songID);
+async function getSongCollabsScore(songID) {
+  const supabase = createClient();
+  const { data, error } = await supabase.rpc("get_song_score_and_profiles", {
+    song_id: songID,
+  });
+  return data;
+}
+export default async function CollabsScore({
+  albumID,
+  songID,
+  albumSong = true,
+}) {
+  const data = albumSong
+    ? await getCollabsScore(albumID, songID)
+    : await getSongCollabsScore(songID);
   return (
     <Tooltip content={<CollabScoreView data={data} />}>
       <Button className="p-1.5 ml-auto mr-2">
