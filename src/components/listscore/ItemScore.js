@@ -7,10 +7,7 @@ import {
   MenuList,
   MenuItem,
 } from "@material-tailwind/react";
-import LoadingSpinner from "../LoadingSpinner";
-import useGetAlbumSongScore from "@/hooks/useGetAlbumSongScore";
 import UpdateAlbumSongScore from "@/tools/UpdateAlbumSongScore";
-import useGetSongScore from "@/hooks/useGetSongScore";
 import UpdateSongScore from "@/tools/UpdateSongScore";
 export default function ItemScore({
   albumID,
@@ -19,16 +16,7 @@ export default function ItemScore({
   defaultScore,
 }) {
   const [score, setScore] = useState(defaultScore ? defaultScore : "Score");
-  // const { data, isLoading, error, upsert } = albumSong
-  //   ? useGetAlbumSongScore({
-  //       album_id: albumID,
-  //       spotify_id: songID,
-  //     })
-  //   : useGetSongScore(songID);
 
-  // if (isLoading) {
-  //   return <LoadingSpinner />;
-  // }
   return (
     <Menu>
       <MenuHandler>
@@ -38,21 +26,6 @@ export default function ItemScore({
         {Array.from({ length: 21 }).map((_, i) => {
           return (
             <MenuItem
-              // onClick={
-              //   () =>
-              //   albumSong
-              //     ? UpdateAlbumSongScore({
-              //         album_id: albumID,
-              //         spotify_id: songID,
-              //         score: i,
-              //         upsert,
-              //       })
-              //     : UpdateSongScore({
-              //         song_id: songID,
-              //         score: i,
-              //         upsert,
-              //       })
-              // }
               onClick={async () => {
                 const newScore = albumSong
                   ? await UpdateAlbumSongScore({

@@ -1,22 +1,18 @@
 import Image from "next/image";
-import BlurImage from "../BlurImage";
-export default function SpotifySearchItem({ item, children }) {
+export default function SpotifySearchItemClient({ item, children }) {
   return (
     <div
       className=" text-left flex items-center overflow-hidden gap-2 p-2 text-text"
       key={item.id}
       type="button"
     >
-      <BlurImage
-        imageSrc={
-          item?.images ? item.images[2].url : item?.album?.images[2]?.url
-        }
-        alt={`Cover art for ${item.name}`}
+      <Image
+        className="mb-1 h-14 w-14"
+        src={item?.images ? item.images[2].url : item?.album?.images[2]?.url}
         width={64}
         height={64}
-        className="mb-1 h-14 w-14"
+        alt={`Cover art for ${item.name}`}
       />
-
       <div className="overflow-hidden">
         <h3 className=" text-md font-bold text-ellipsis  truncate	">
           {item.name}

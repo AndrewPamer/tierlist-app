@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Input, Typography } from "@material-tailwind/react";
+import { Input } from "@material-tailwind/react";
 import FriendCard from "./FriendCard";
 import LoadingSpinner from "../LoadingSpinner";
 import searchForFriends from "@/tools/searchForFriends";

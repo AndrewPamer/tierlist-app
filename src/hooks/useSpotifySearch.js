@@ -1,10 +1,11 @@
 import useSWR from "swr";
-
+import getSpotifyToken from "@/tools/getSpotifyToken";
 async function fetcher([url, token, queryParams]) {
+  const { access_token } = await getSpotifyToken();
   const res = await fetch(url + queryParams, {
     method: "GET",
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${access_token}`,
     },
   });
 

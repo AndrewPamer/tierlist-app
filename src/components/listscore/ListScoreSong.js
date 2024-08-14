@@ -35,7 +35,7 @@ export default async function ListScoreSong({ songs }) {
     return (
       <ListItem
         key={song.song_id}
-        className="p-1 flex justify-between"
+        className="p-1 flex justify-between hover:bg-button-text focus:bg-button-text active:bg-button-text"
         ripple={false}
       >
         <SpotifySearchItem item={song} />

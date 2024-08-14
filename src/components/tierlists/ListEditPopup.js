@@ -41,9 +41,9 @@ export function ListEditItem({ item, onChange, checked }) {
         </ListItemPrefix>
         <Image
           className="mr-2 h-10 w-10"
-          src={item?.images ? item.images[0].url : item.album.images[0].url}
-          width={640}
-          height={640}
+          src={item?.images ? item.images[2].url : item.album.images[2].url}
+          width={64}
+          height={64}
           alt={`Cover Image for ${item.name}`}
         />
         <div>

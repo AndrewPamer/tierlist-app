@@ -2,7 +2,8 @@
 import { useState } from "react";
 import { getListContext } from "../context/ListContextProvider";
 import useSpotifySearch from "@/hooks/useSpotifySearch";
-import SpotifySearchItem from "./SpotifySearchItem";
+// import SpotifySearchItem from "./SpotifySearchItem";
+import SpotifySearchItemClient from "./SpotifySearchItemClient";
 import LoadingSpinner from "../LoadingSpinner";
 import AlbumOrSongRadio from "./AlbumOrSongRadio";
 import AlbumAccordion from "./AlbumAccordion";
@@ -60,7 +61,6 @@ export default function SpotifySearch({ token }) {
           albumClick={() => setFilter("albums")}
           songClick={() => setFilter("tracks")}
         />
-
         {isLoading ? (
           <LoadingSpinner />
         ) : (
@@ -71,7 +71,7 @@ export default function SpotifySearch({ token }) {
                   <AlbumAccordion
                     key={item.id}
                     i={i}
-                    header={<SpotifySearchItem item={item} />}
+                    header={<SpotifySearchItemClient item={item} />}
                     body={
                       <>
                         <Button
@@ -94,7 +94,7 @@ export default function SpotifySearch({ token }) {
             {filter === "tracks" &&
               data?.tracks?.items?.map((item, i) => {
                 return (
-                  <SpotifySearchItem key={i} item={item} button={true}>
+                  <SpotifySearchItemClient key={i} item={item} button={true}>
                     <Button
                       className="	ml-auto	px-3 py-1 text-lg"
                       onClick={() => addSongToList(item)}
@@ -105,7 +105,7 @@ export default function SpotifySearch({ token }) {
                     >
                       +
                     </Button>
-                  </SpotifySearchItem>
+                  </SpotifySearchItemClient>
                 );
               })}
             <div className="flex justify-center mt-5 gap-5">
