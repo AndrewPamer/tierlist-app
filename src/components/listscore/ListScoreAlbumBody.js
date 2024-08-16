@@ -7,7 +7,6 @@ import { Suspense } from "react";
 async function getAlbumSongs(id) {
   try {
     const { access_token } = await getSpotifyToken();
-    console.log(access_token);
     const res = await fetch(`https://api.spotify.com/v1/albums/${id}/tracks`, {
       method: "GET",
       headers: {

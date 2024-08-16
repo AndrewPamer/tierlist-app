@@ -9,6 +9,7 @@ import TierListScoreToDo from "@/components/listscore/TierListScoreToDo";
 import TierListScoreInProgress from "@/components/listscore/TierListScoreInProgress";
 import TierListScoreCompleted from "@/components/listscore/TierListScoreCompleted";
 import SpotifySearchItemSkeleton from "@/components/SpotifySearchItemSkeleton";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 async function getListData(id) {
   const supabase = createClient();
@@ -64,21 +65,26 @@ export default async function List({ params: { id } }) {
         {data.albums?.length !== 0 && (
           <AlbumAccordion
             header={"Albums"}
-            body={data.albums.map((albums) => {
-              return (
-                <Suspense
-                  fallback={
-                    <div>
-                      {albums.map((album) => (
-                        <SpotifySearchItemSkeleton />
-                      ))}
-                    </div>
-                  }
-                >
-                  <ListScoreAlbum albums={albums} />
-                </Suspense>
-              );
-            })}
+            body={
+              <Suspense fallback={<LoadingSpinner />}>
+                <ListScoreAlbum albums={data.albums} />
+              </Suspense>
+            }
+            // body={data.albums.map((albums) => {
+            //   return (
+            //     <Suspense
+            //       fallback={
+            //         <div>
+            //           {albums.map((album) => (
+            //             <SpotifySearchItemSkeleton />
+            //           ))}
+            //         </div>
+            //       }
+            //     >
+            //       <ListScoreAlbum albums={albums} />
+            //     </Suspense>
+            //   );
+            // })}
           />
         )}
         {data.songs?.length !== 0 && (

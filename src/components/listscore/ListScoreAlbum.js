@@ -33,17 +33,38 @@ async function getAlbumsInfo(albums) {
   return resJson;
 }
 export default async function ListScoreAlbum({ albums }) {
-  const data = await getAlbumsInfo(albums);
-  return data.albums.map((album) => {
-    return (
-      <AlbumAccordion
-        header={<SpotifySearchItem item={album} />}
-        body={
-          <Suspense fallback={<LoadingSpinner />}>
-            <ListScoreAlbumBody album={album} />
-          </Suspense>
-        }
-      />
-    );
+  const data = await Promise.all(
+    albums.map(async (album) => {
+      return await getAlbumsInfo(album);
+    })
+  );
+
+  return data.map((album) => {
+    return album.albums.map((a) => {
+      return (
+        <AlbumAccordion
+          header={<SpotifySearchItem item={a} />}
+          body={
+            <Suspense fallback={<LoadingSpinner />}>
+              <ListScoreAlbumBody album={a} />
+            </Suspense>
+          }
+        />
+      );
+    });
   });
+
+  // const data = await getAlbumsInfo(albums);
+  // return data.albums.map((album) => {
+  //   return (
+  //     <AlbumAccordion
+  //       header={<SpotifySearchItem item={album} />}
+  //       body={
+  //         <Suspense fallback={<LoadingSpinner />}>
+  //           <ListScoreAlbumBody album={album} />
+  //         </Suspense>
+  //       }
+  //     />
+  //   );
+  // });
 }
