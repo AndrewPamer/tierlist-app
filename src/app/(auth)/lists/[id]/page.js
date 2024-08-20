@@ -5,32 +5,34 @@ import TierListScoreHeader from "@/components/listscore/TierListScoreHeader";
 import AlbumAccordion from "@/components/tierlists/AlbumAccordion";
 import ListScoreAlbum from "@/components/listscore/ListScoreAlbum";
 import ListScoreSong from "@/components/listscore/ListScoreSong";
-import TierListScoreToDo from "@/components/listscore/TierListScoreToDo";
-import TierListScoreInProgress from "@/components/listscore/TierListScoreInProgress";
-import TierListScoreCompleted from "@/components/listscore/TierListScoreCompleted";
 import SpotifySearchItemSkeleton from "@/components/SpotifySearchItemSkeleton";
 import LoadingSpinner from "@/components/LoadingSpinner";
-
+import SpotifySearchItem from "@/components/tierlists/SpotifySearchItem";
 async function getListData(id) {
   const supabase = createClient();
-  const { data: tierListData, error: tierListError } = await supabase
-    .from("tierlists")
-    .select("*, profiles!tierlists_creator_id_fkey(id, username, color)")
-    .eq("id", id);
-  const { data: collabsData, error: collabsError } = await supabase
-    .from("listcollaborators")
-    .select(
-      "profiles(id, username, color, listalbumsongscore(album_id, spotify_id, score), listalbumscore(id, score), listsongscore(id, score))"
-    )
-    .eq("list_id", id);
-  const { data: songsData, error: songsError } = await supabase
-    .from("listsongs")
-    .select()
-    .eq("list_id", id);
-  const { data: albumsData, error: albumsError } = await supabase
-    .from("listalbums")
-    .select()
-    .eq("list_id", id);
+
+  const [
+    { data: tierListData, error: tierListError },
+    { data: collabsData, error: collabsError },
+    { data: songsData, error: songsError },
+    { data: albumsData, error: albumsError },
+    { data: testD, error: testE },
+  ] = await Promise.all([
+    supabase
+      .from("tierlists")
+      .select("*, profiles!tierlists_creator_id_fkey(id, username, color)")
+      .eq("id", id),
+    supabase
+      .from("listcollaborators")
+      .select(
+        "profiles(id, username, color, listalbumsongscore(album_id, spotify_id, score), listalbumscore(id, score), listsongscore(id, score))"
+      )
+      .eq("list_id", id),
+    supabase.rpc("get_songs_and_scores", { query_list_id: id }),
+    supabase.rpc("get_albums_and_score", { query_list_id: id }),
+    // supabase.from("listalbums").select().eq("list_id", id),
+    supabase.rpc("get_albums_and_score", { query_list_id: id }),
+  ]);
 
   const albumChunks = [];
   for (let i = 0; i < albumsData.length; i += 20) {
@@ -65,18 +67,13 @@ export default async function List({ params: { id } }) {
         {data.albums?.length !== 0 && (
           <AlbumAccordion
             header={"Albums"}
-            // body={
-            //   <Suspense fallback={<LoadingSpinner />}>
-            //     <ListScoreAlbum albums={data.albums} />
-            //   </Suspense>
-            // }
             body={data.albums.map((albums) => {
               return (
                 <Suspense
                   fallback={
                     <div>
                       {albums.map((album) => (
-                        <SpotifySearchItemSkeleton />
+                        <SpotifySearchItemSkeleton key={album.id} />
                       ))}
                     </div>
                   }
@@ -85,6 +82,11 @@ export default async function List({ params: { id } }) {
                 </Suspense>
               );
             })}
+            // body={
+            //   <Suspense fallback={"Loading..."}>
+            //     <ListScoreAlbum albums={data.albums} />
+            //   </Suspense>
+            // }
           />
         )}
         {data.songs?.length !== 0 && (
@@ -107,9 +109,6 @@ export default async function List({ params: { id } }) {
             })}
           />
         )}
-        {/* <TierListScoreToDo id={id} />
-        <TierListScoreInProgress />
-        <TierListScoreCompleted /> */}
       </div>
     </main>
   );

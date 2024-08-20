@@ -5,9 +5,12 @@ import SpotifySearchItem from "../tierlists/SpotifySearchItem";
 import getSpotifyToken from "@/tools/getSpotifyToken";
 import ItemScoreFetcher from "./ItemScoreFetcher";
 import CollabsScore from "./CollabsScore";
+import ItemScore from "./ItemScore";
 async function getSongs(songs) {
   const { access_token } = await getSpotifyToken();
-  const songIdMap = new Map(songs.map((song) => [song.spotify_id, song.id]));
+  const songIdMap = new Map(
+    songs.map((song) => [song.spotify_id, [song.id, song.score]])
+  );
   const listSongs = songs.map((song) => song.spotify_id).join(",");
 
   const res = await fetch(
@@ -25,7 +28,8 @@ async function getSongs(songs) {
 
   const resJson = await res.json();
   resJson.tracks.forEach((song) => {
-    song.song_id = songIdMap.get(song.id);
+    song.song_id = songIdMap.get(song.id)[0];
+    song.score = songIdMap.get(song.id)[1];
   });
   return resJson;
 }
@@ -39,13 +43,17 @@ export default async function ListScoreSong({ songs }) {
         ripple={false}
       >
         <SpotifySearchItem item={song} />
-        <Suspense fallback={<LoadingSpinner />}>
+        {/* <Suspense fallback={<LoadingSpinner />}>
           <CollabsScore songID={song.song_id} albumSong={false} />
-        </Suspense>
-        <Suspense fallback={<LoadingSpinner />}>
-          <ItemScoreFetcher songID={song.song_id} albumSong={false} />
-        </Suspense>
-        {/* <ItemScore songID={song.song_id} albumSong={false} /> */}
+        </Suspense> */}
+        {/* <ItemScore 
+
+        /> */}
+        <ItemScore
+          songID={song.song_id}
+          albumSong={false}
+          defaultScore={song.score}
+        />
       </ListItem>
     );
   });

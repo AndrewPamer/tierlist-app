@@ -8,7 +8,10 @@ async function getAlbumsInfo(albums) {
   const { access_token } = await getSpotifyToken();
 
   const albumIdMap = new Map(
-    albums.map((album) => [album.spotify_id, album.id])
+    albums.map((album) => [
+      album.spotify_id,
+      [album.id, album.user_song_scores],
+    ])
   );
 
   const listAlbums = albums.map((album) => album.spotify_id).join(",");
@@ -28,11 +31,14 @@ async function getAlbumsInfo(albums) {
 
   const resJson = await res.json();
   resJson.albums.forEach((album) => {
-    album.album_id = albumIdMap.get(album.id);
+    album.album_id = albumIdMap.get(album.id)[0];
+    album.user_song_scores = albumIdMap.get(album.id)[1];
   });
+
   return resJson;
 }
 export default async function ListScoreAlbum({ albums }) {
+  // const data = await getAlbumsInfo(albums);
   // const data = await Promise.all(
   //   albums.map(async (album) => {
   //     return await getAlbumsInfo(album);
@@ -44,11 +50,7 @@ export default async function ListScoreAlbum({ albums }) {
   //     return (
   //       <AlbumAccordion
   //         header={<SpotifySearchItem item={a} />}
-  //         body={
-  //           <Suspense fallback={<LoadingSpinner />}>
-  //             <ListScoreAlbumBody album={a} />
-  //           </Suspense>
-  //         }
+  //         body={<ListScoreAlbumBody album={a} />}
   //       />
   //     );
   //   });
@@ -59,11 +61,7 @@ export default async function ListScoreAlbum({ albums }) {
     return (
       <AlbumAccordion
         header={<SpotifySearchItem item={album} />}
-        body={
-          <Suspense fallback={<LoadingSpinner />}>
-            <ListScoreAlbumBody album={album} />
-          </Suspense>
-        }
+        body={<ListScoreAlbumBody album={album} />}
       />
     );
   });

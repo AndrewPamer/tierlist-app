@@ -15,7 +15,9 @@ export default function ItemScore({
   albumSong,
   defaultScore,
 }) {
-  const [score, setScore] = useState(defaultScore ? defaultScore : "Score");
+  const [score, setScore] = useState(
+    defaultScore !== undefined ? defaultScore : "Score"
+  );
 
   return (
     <Menu>
