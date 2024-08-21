@@ -53,10 +53,11 @@ export default async function addTierList(tierlistData) {
     //3. Add the songs
     if (tierlistData.list?.songs?.length > 0) {
       const { error } = await supabase.from("listsongs").insert(
-        tierlistData.list.songs.map((song) => {
+        tierlistData.list.songs.map((song, i) => {
           return {
             list_id: listID,
             spotify_id: song,
+            order: i,
           };
         })
       );
@@ -68,10 +69,11 @@ export default async function addTierList(tierlistData) {
     //4. Add the albums
     if (tierlistData.list?.albums?.length > 0) {
       const { error } = await supabase.from("listalbums").insert(
-        tierlistData.list.albums.map((album) => {
+        tierlistData.list.albums.map((album, i) => {
           return {
             list_id: listID,
             spotify_id: album,
+            order: i,
           };
         })
       );
