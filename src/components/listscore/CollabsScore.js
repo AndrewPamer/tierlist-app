@@ -20,35 +20,32 @@ function CollabScoreView({ data }) {
     </div>
   );
 }
-async function getCollabsScore(albumID, songID) {
-  const supabase = createClient();
+// async function getCollabsScore(albumID, songID) {
+//   const supabase = createClient();
 
-  const { data, error } = await supabase.rpc(
-    "get_list_album_scores_and_profiles",
-    {
-      album_id: albumID,
-      song_id: songID,
-    }
-  );
-  return data;
-}
-async function getSongCollabsScore(songID) {
-  const supabase = createClient();
-  const { data, error } = await supabase.rpc("get_song_score_and_profiles", {
-    song_id: songID,
-  });
-  return data;
-}
-export default async function CollabsScore({
-  albumID,
-  songID,
-  albumSong = true,
-}) {
-  const data = albumSong
-    ? await getCollabsScore(albumID, songID)
-    : await getSongCollabsScore(songID);
+//   const { data, error } = await supabase.rpc(
+//     "get_list_album_scores_and_profiles",
+//     {
+//       album_id: albumID,
+//       song_id: songID,
+//     }
+//   );
+//   return data;
+// }
+// async function getSongCollabsScore(songID) {
+//   const supabase = createClient();
+//   const { data, error } = await supabase.rpc("get_song_score_and_profiles", {
+//     song_id: songID,
+//   });
+//   return data;
+// }
+export default function CollabsScore({ collabs }) {
+  // const data = albumSong
+  //   ? await getCollabsScore(albumID, songID)
+  //   : await getSongCollabsScore(songID);
+
   return (
-    <Tooltip content={<CollabScoreView data={data} />}>
+    <Tooltip content={<CollabScoreView data={collabs} />}>
       <Button className="p-1.5 ml-auto mr-2">
         <svg
           xmlns="http://www.w3.org/2000/svg"

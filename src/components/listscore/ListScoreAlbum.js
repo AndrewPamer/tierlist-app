@@ -10,7 +10,7 @@ async function getAlbumsInfo(albums) {
   const albumIdMap = new Map(
     albums.map((album) => [
       album.spotify_id,
-      [album.id, album.user_song_scores],
+      [album.id, album.user_song_scores, album.collaborators],
     ])
   );
 
@@ -33,6 +33,7 @@ async function getAlbumsInfo(albums) {
   resJson.albums.forEach((album) => {
     album.album_id = albumIdMap.get(album.id)[0];
     album.user_song_scores = albumIdMap.get(album.id)[1];
+    album.collaborators = albumIdMap.get(album.id)[2];
   });
 
   return resJson;

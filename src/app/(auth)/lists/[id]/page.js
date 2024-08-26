@@ -54,6 +54,7 @@ async function getListData(id) {
 
 export default async function List({ params: { id } }) {
   const data = await getListData(id);
+
   return (
     <main>
       <Link href="/home" className=" px-2 py-1 hover:underline">
