@@ -22,7 +22,7 @@ export default function ItemScore({
   return (
     <Menu>
       <MenuHandler>
-        <Button className="p-1.5 w-16">{score}</Button>
+        <Button className="p-1.5 w-16 flex-none">{score}</Button>
       </MenuHandler>
       <MenuList className="max-h-72 bg-alt-bg text-text border-text">
         {Array.from({ length: 21 }).map((_, i) => {

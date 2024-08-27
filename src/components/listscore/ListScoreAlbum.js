@@ -1,9 +1,8 @@
-import { Suspense } from "react";
-import LoadingSpinner from "../LoadingSpinner";
 import AlbumAccordion from "../tierlists/AlbumAccordion";
 import SpotifySearchItem from "../tierlists/SpotifySearchItem";
 import ListScoreAlbumBody from "./ListScoreAlbumBody";
 import getSpotifyToken from "@/tools/getSpotifyToken";
+import ListScoreAlbumsFilter from "./ListScoreAlbumsFilter";
 async function getAlbumsInfo(albums) {
   const { access_token } = await getSpotifyToken();
 
@@ -39,25 +38,8 @@ async function getAlbumsInfo(albums) {
   return resJson;
 }
 export default async function ListScoreAlbum({ albums }) {
-  // const data = await getAlbumsInfo(albums);
-  // const data = await Promise.all(
-  //   albums.map(async (album) => {
-  //     return await getAlbumsInfo(album);
-  //   })
-  // );
-
-  // return data.map((album) => {
-  //   return album.albums.map((a) => {
-  //     return (
-  //       <AlbumAccordion
-  //         header={<SpotifySearchItem item={a} />}
-  //         body={<ListScoreAlbumBody album={a} />}
-  //       />
-  //     );
-  //   });
-  // });
-
   const data = await getAlbumsInfo(albums);
+  // return <ListScoreAlbumsFilter albums={data} />;
   return data.albums.map((album) => {
     return (
       <AlbumAccordion
