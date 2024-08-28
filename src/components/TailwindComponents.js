@@ -10,6 +10,10 @@ import {
   List,
   ListItem,
   Tooltip,
+  Switch,
+  Popover,
+  PopoverHandler,
+  PopoverContent,
 } from "@material-tailwind/react";
 
 export {
@@ -22,4 +26,8 @@ export {
   List,
   ListItem,
   Tooltip,
+  Switch,
+  Popover,
+  PopoverHandler,
+  PopoverContent,
 };

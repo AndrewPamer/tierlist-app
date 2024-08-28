@@ -156,6 +156,15 @@ export default function Login() {
             disabled={disabled || isSubmitSuccessful}
             fullWidth
             className="mt-5"
+            loading={
+              passwordReset
+                ? disabled
+                  ? true
+                  : false
+                : disabled
+                ? true
+                : false
+            }
           >
             {passwordReset
               ? disabled

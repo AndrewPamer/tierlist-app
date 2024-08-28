@@ -1,20 +1,22 @@
-"use client";
+// "use client";
 
-import { getAuthContext } from "@/components/context/AuthContextProvider";
-import { createClient } from "@/utils/supabase/client";
+// import { getAuthContext } from "@/components/context/AuthContextProvider";
+// import { createClient } from "@/utils/supabase/client";
+import { createClient } from "@/utils/supabase/server";
 
-import { usePathname } from "next/navigation";
+import Navbar from "@/components/friends/Navbar";
+// import { usePathname } from "next/navigation";
 
-import {
-  useQuery,
-  useUpdateMutation,
-} from "@supabase-cache-helpers/postgrest-swr";
+// import {
+//   useQuery,
+//   useUpdateMutation,
+// } from "@supabase-cache-helpers/postgrest-swr";
 
 import {
   Popover,
   PopoverHandler,
   PopoverContent,
-} from "@material-tailwind/react";
+} from "@/components/TailwindComponents";
 
 import Link from "next/link";
 
@@ -43,36 +45,51 @@ const colors = [
   "ba582a",
 ];
 
-export default function AccountLayout({ children }) {
-  const pathname = usePathname();
-
+async function getUserInfo() {
   const supabase = createClient();
-  const user = getAuthContext();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  const { data, error, isLoading } = useQuery(
-    supabase
-      .from("profiles")
-      .select("username, color")
-      .eq("id", user?.id)
-      .single(),
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    }
-  );
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("username, color")
+    .eq("id", user?.id)
+    .single();
+  return data;
+}
 
-  const { trigger: update } = useUpdateMutation(
-    supabase.from("profiles"),
-    ["id"],
-    null,
-    {
-      // onSuccess: () => console.log("SDf"),
-    }
-  );
+export default async function AccountLayout({ children }) {
+  const data = await getUserInfo();
+  // const pathname = usePathname();
 
-  if (isLoading) {
-    return "Loading...";
-  }
+  // const supabase = createClient();
+  // const user = getAuthContext();
+
+  // const { data, error, isLoading } = useQuery(
+  //   supabase
+  //     .from("profiles")
+  //     .select("username, color")
+  //     .eq("id", user?.id)
+  //     .single(),
+  //   {
+  //     revalidateOnFocus: false,
+  //     revalidateOnReconnect: false,
+  //   }
+  // );
+
+  // const { trigger: update } = useUpdateMutation(
+  //   supabase.from("profiles"),
+  //   ["id"],
+  //   null,
+  //   {
+  //     // onSuccess: () => console.log("SDf"),
+  //   }
+  // );
+
+  // if (isLoading) {
+  //   return "Loading...";
+  // }
 
   return (
     <main>
@@ -99,7 +116,7 @@ export default function AccountLayout({ children }) {
                     key={i}
                     style={{ backgroundColor: `#${color}` }}
                     className="p-4 border"
-                    onClick={() => update({ id: user.id, color: color })}
+                    // onClick={() => update({ id: user.id, color: color })}
                   ></button>
                 );
               })}
@@ -113,8 +130,8 @@ export default function AccountLayout({ children }) {
           </button>
         </form>
       </div>
-      <ul className="flex justify-center mt-5 gap-10">
-        {navLinks.map((item, i) => {
+      <ul className="flex justify-center mt-5 gap-10 mb-5">
+        {/* {navLinks.map((item, i) => {
           return (
             <li key={i}>
               <Link
@@ -125,7 +142,8 @@ export default function AccountLayout({ children }) {
               </Link>
             </li>
           );
-        })}
+        })} */}
+        <Navbar />
       </ul>
       {children}
     </main>

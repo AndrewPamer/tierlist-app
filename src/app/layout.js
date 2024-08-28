@@ -67,6 +67,15 @@ const theme = {
             active: "active:opacity-[0.85] active:shadow-none",
           },
         },
+        outlined: {
+          theme: {
+            border: "border border-text",
+            color: "text-text",
+            hover: "hover:opacity-75",
+            focus: "focus:opacity-[0.85] focus:shadow-none",
+            active: "active:opacity-[0.85] active:shadow-none",
+          },
+        },
         text: {
           theme: {
             color: "text-text",
