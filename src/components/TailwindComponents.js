@@ -14,6 +14,7 @@ import {
   Popover,
   PopoverHandler,
   PopoverContent,
+  IconButton,
 } from "@material-tailwind/react";
 
 export {
@@ -30,4 +31,5 @@ export {
   Popover,
   PopoverHandler,
   PopoverContent,
+  IconButton,
 };

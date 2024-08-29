@@ -168,10 +168,10 @@ export default function Login() {
           >
             {passwordReset
               ? disabled
-                ? "Sending..."
+                ? "Sending"
                 : "Send Reset Email"
               : disabled
-              ? "Logging in..."
+              ? "Logging in"
               : "Log In"}
           </Button>
         </form>

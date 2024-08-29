@@ -1,3 +1,5 @@
+import "@fortawesome/fontawesome-svg-core/styles.css";
+
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
 import "@/styles/globals.css";
@@ -81,6 +83,30 @@ const theme = {
             color: "text-text",
             hover: "hover:text-button-hover",
             active: "active:text-button-hover",
+          },
+        },
+      },
+    },
+  },
+  iconButton: {
+    defaultProps: {
+      color: "theme",
+      ripple: false,
+    },
+    valid: {
+      variants: ["filled", "outlined", "gradient", "text"],
+
+      colors: ["theme"],
+    },
+    styles: {
+      variants: {
+        filled: {
+          theme: {
+            background: "bg-button-bg",
+            color: "text-button-text",
+            hover: "hover:bg-button-hover",
+            focus: "focus:opacity-[0.85] focus:shadow-none",
+            active: "active:opacity-[0.85] active:shadow-none",
           },
         },
       },

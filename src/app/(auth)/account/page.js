@@ -1,10 +1,9 @@
 import Link from "next/link";
-import { Suspense } from "react";
-import HomePageListCard from "@/components/home/HomePageListCard";
 import { createClient } from "@/utils/supabase/server";
-import { Card, Typography } from "@/components/TailwindComponents";
-import UserListCard from "@/components/home/UserListCard";
-import UserListCardPlaceholder from "@/components/home/UserListCardPlaceholder";
+import { Card, Typography, IconButton } from "@/components/TailwindComponents";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import DeleteListPopup from "@/components/friends/DeleteListPopup";
 const HEADERS = [
   "Name",
   "Albums",
@@ -12,9 +11,9 @@ const HEADERS = [
   "Collaborators",
   "Created At",
   "Privacy",
+  "Edit",
+  "Delete",
 ];
-
-async function getListInfo() {}
 
 async function getUserLists() {
   const supabase = createClient();
@@ -24,12 +23,8 @@ async function getUserLists() {
   if (!user) {
     throw new Error("User not found");
   }
-  // const { data, error } = await supabase
-  //   .from("tierlists")
-  //   .select()
-  //   .eq("creator_id", user.id);
+
   const { data, error } = await supabase.rpc("get_lists_and_info");
-  console.log(data, error);
 
   return data;
 }
@@ -95,6 +90,17 @@ export default async function Account() {
                     <Typography>
                       {list.public ? "Public" : "Private"}
                     </Typography>
+                  </td>
+                  <td className={classes}>
+                    <IconButton>
+                      <FontAwesomeIcon
+                        icon={faPenToSquare}
+                        className="text-lg"
+                      />
+                    </IconButton>
+                  </td>
+                  <td className={classes}>
+                    <DeleteListPopup listID={list.id} listName={list.name} />
                   </td>
                 </tr>
               );
