@@ -194,7 +194,7 @@ export default function SignUp() {
                 Username Requirements:
               </Typography>
               <ul className=" mt-1 ml-1 list-disc list-inside font-light ">
-                <li>At least 8 characters long.</li>
+                <li>At least 3 characters long.</li>
                 <li>At most 15 characters long.</li>
               </ul>
             </Alert>
