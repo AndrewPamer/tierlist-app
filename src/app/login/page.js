@@ -1,13 +1,22 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Typography, Card, Input, Button } from "@material-tailwind/react";
+import {
+  Typography,
+  Card,
+  Input,
+  Button,
+  Alert,
+} from "@material-tailwind/react";
 
 import Link from "next/link";
 import { login } from "./actions";
 import { BsExclamationTriangle } from "react-icons/bs";
 import { createClient } from "@/utils/supabase/client";
 import { ToastContainer, toast, Flip } from "react-toastify";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
+import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function Login() {
@@ -85,10 +94,12 @@ export default function Login() {
           Login
         </Typography>
         {responseMessage && (
-          <div className="flex justify-center items-center gap-2 text-error font-bold border-2 rounded-lg	p-2 mb-5 border-error">
-            <BsExclamationTriangle size={30} />
-            <h3 className="text-xl">{responseMessage}</h3>
-          </div>
+          <Alert
+            className="bg-transparent border border-red-500 text-red-500 mt-5"
+            icon={<FontAwesomeIcon size="lg" icon={faCircleExclamation} />}
+          >
+            <Typography className="font-bold">{responseMessage}</Typography>
+          </Alert>
         )}
         <form
           onSubmit={handleSubmit((data) =>

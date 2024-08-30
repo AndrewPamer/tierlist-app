@@ -1,9 +1,17 @@
 "use client";
 import { useState } from "react";
-import { Typography, Card, Input, Button } from "@material-tailwind/react";
+import {
+  Typography,
+  Card,
+  Input,
+  Button,
+  Alert,
+} from "@material-tailwind/react";
 import { useForm } from "react-hook-form";
 import { resetpassword } from "./actions";
-import { BsExclamationTriangle } from "react-icons/bs";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
+import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
 export default function PasswordReset() {
   const [responseMessage, setResponseMessage] = useState(null);
 
@@ -33,17 +41,19 @@ export default function PasswordReset() {
           Reset Your Password
         </Typography>
         {responseMessage && (
-          <div className="flex flex-col  items-center gap-2 text-error font-bold border-2 rounded-lg	p-2  border-error">
-            <BsExclamationTriangle size={35} />
-            <h3 className="text-xl text-center">{responseMessage}</h3>
-          </div>
+          <Alert
+            className="bg-transparent border border-red-500 text-red-500 mt-5"
+            icon={<FontAwesomeIcon size="lg" icon={faCircleExclamation} />}
+          >
+            <Typography className="font-bold">{responseMessage}</Typography>
+          </Alert>
         )}
         <form
           onSubmit={handleSubmit((data) => handleReset(data))}
           className="mt-5 flex flex-col gap-6"
         >
           <div>
-            <Typography>Password</Typography>
+            <Typography className="font-bold">Password</Typography>
             <Input
               {...register("password", {
                 required: "Password is required",
@@ -66,6 +76,7 @@ export default function PasswordReset() {
                 },
               })}
               className="!border-text focus:!border-text"
+              type="password"
               labelProps={{
                 className: "before:content-none after:content-none",
               }}
@@ -73,9 +84,24 @@ export default function PasswordReset() {
             <Typography className="text-error font-bold">
               {errors.password?.message}
             </Typography>
+            <Alert
+              className="bg-input-bg mt-2"
+              icon={<FontAwesomeIcon icon={faCircleInfo} size="lg" />}
+            >
+              <Typography className="font-medium">
+                Password Requirements:
+              </Typography>
+              <ul className=" mt-1 ml-1 list-disc list-inside font-light ">
+                <li>At least 8 characters long.</li>
+                <li>At least one digit (0-9).</li>
+                <li>At least one lowercase character.</li>
+                <li>At least one uppercase character.</li>
+                <li>At least one special character.</li>
+              </ul>
+            </Alert>
           </div>
           <div>
-            <Typography>Confirm Password</Typography>
+            <Typography className="font-bold">Confirm Password</Typography>
             <Input
               {...register("passwordconf", {
                 required: "Password Confirmation is required",
@@ -86,6 +112,7 @@ export default function PasswordReset() {
                 },
               })}
               className="!border-text focus:!border-text"
+              type="password"
               labelProps={{
                 className: "before:content-none after:content-none",
               }}

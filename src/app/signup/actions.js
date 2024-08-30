@@ -37,6 +37,6 @@ export async function signup({ email, password, username }) {
       error: e.message,
     };
   }
-  revalidatePath("/", "layout");
-  redirect("/home");
+  // revalidatePath("/", "layout");
+  // redirect("/home");
 }

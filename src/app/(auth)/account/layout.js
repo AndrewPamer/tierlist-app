@@ -16,15 +16,10 @@ import {
   Popover,
   PopoverHandler,
   PopoverContent,
+  Button,
 } from "@/components/TailwindComponents";
 
 import Link from "next/link";
-
-const navLinks = [
-  { title: "Lists", path: "/account" },
-  { title: "Friends", path: "/account/friends" },
-  { title: "Settings", path: "/account/settings" },
-];
 
 const colors = [
   "000000",
@@ -125,9 +120,12 @@ export default async function AccountLayout({ children }) {
         </Popover>
         <h1 className="text-lg font-bold mt-1">{data.username}</h1>
         <form action="/auth/signout" method="post">
-          <button className="font-bold bg-button-bg text-button-text text-1xl px-2 py-1 rounded-lg hover:bg-button-hover mt-3">
+          <Button
+            type="submit"
+            className="text-sm   px-4 py-2 rounded-lg hover:bg-button-hover mt-3"
+          >
             Log Out
-          </button>
+          </Button>
         </form>
       </div>
       <ul className="flex justify-center mt-5 gap-10 mb-5">

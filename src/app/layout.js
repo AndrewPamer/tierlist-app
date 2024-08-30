@@ -163,6 +163,7 @@ const theme = {
                 color: "text-text",
                 borderColor: "border-text",
                 borderColorFocused: "focus:border-text",
+                disabled: "disabled:bg-alt-bg disabled:opacity-55	",
               },
             },
             label: {
