@@ -38,9 +38,19 @@ async function getAlbumsInfo(albums) {
   return resJson;
 }
 export default async function ListScoreAlbum({ albums }) {
-  const data = await getAlbumsInfo(albums);
-  // return <ListScoreAlbumsFilter albums={data} />;
-  return data.albums.map((album) => {
+  console.log(albums);
+  const data = await Promise.all(
+    albums.map(async (albumGroup) => {
+      return await getAlbumsInfo(albumGroup);
+    })
+  );
+  const albumsData = [];
+  data.map((albumData) => {
+    albumsData.push(...albumData.albums);
+  });
+  // const data = await getAlbumsInfo(albums);
+  return <ListScoreAlbumsFilter albums={albumsData} />;
+  return albumsData.map((album) => {
     return (
       <AlbumAccordion
         header={<SpotifySearchItem item={album} />}
