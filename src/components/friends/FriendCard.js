@@ -5,7 +5,7 @@ import {
   PopoverContent,
   Button,
   List,
-} from "@material-tailwind/react";
+} from "@/components/TailwindComponents";
 
 import DialogPopup from "@/components/DialogPopup";
 
@@ -48,24 +48,6 @@ export default function FriendCard({ name, buttons, color, popup = true }) {
       ) : (
         <List></List>
       )}
-
-      {/* <Menu>
-        <MenuButton className="bg-alt-bg-darker p-1 rounded-full overflow-hidden">
-          <BsThreeDotsVertical />
-        </MenuButton>
-        <MenuItems
-          anchor="top"
-          className="bg-alt-bg-darker flex-col rounded-lg 	"
-        >
-          {buttons.map((button, i) => (
-            <MenuItem key={i} className="text-xs p-1">
-              <button onClick={() => showPopup(button)}>
-                {button.buttonTitle}
-              </button>
-            </MenuItem>
-          ))}
-        </MenuItems>
-      </Menu> */}
     </div>
   );
 }

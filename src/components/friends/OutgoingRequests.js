@@ -1,55 +1,29 @@
-"use client";
-import {
-  useSubscription,
-  useQuery,
-} from "@supabase-cache-helpers/postgrest-swr";
+import { createClient } from "@/utils/supabase/server";
 import FriendCard from "./FriendCard";
 
-export default function OutgoingRequests({ supabase, user }) {
-  const { data, isLoading, error, mutate } = useQuery(
-    supabase.rpc("get_outgoing_friend_requests"),
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    }
-  );
+async function cancelRequest(request_id) {
+  const supabase = createClient();
+  try {
+    const { error } = await supabase.rpc("cancel_outgoing_friend_request", {
+      request_id,
+    });
 
-  const { status } = useSubscription(
-    supabase,
-    "outgoing_db_changes",
-    {
-      event: "*",
-      schema: "public",
-      table: "friendrequests",
-      filter: `sender_id=eq.${user.id}`,
-    },
-    ["id"],
-    {
-      callback: (payload) => {
-        // console.log(payload);
-        mutate();
-      },
+    if (error) {
+      throw error;
     }
-  );
-
-  async function cancelRequest(request_id) {
-    try {
-      const { error } = await supabase.rpc("cancel_outgoing_friend_request", {
-        request_id,
-      });
-
-      if (error) {
-        throw error;
-      }
-    } catch (e) {
-      console.error(e);
-    }
+  } catch (e) {
+    console.error(e);
   }
+}
 
-  if (isLoading) {
-    return "Loading...";
-  }
+async function getOutgoingRequests() {
+  const supabase = createClient();
+  const { data, error } = await supabase.rpc("get_outgoing_friend_requests");
+  return data;
+}
 
+export default async function OutgoingRequests() {
+  const data = await getOutgoingRequests();
   if (data.length == 0) {
     return null;
   }
@@ -68,7 +42,10 @@ export default function OutgoingRequests({ supabase, user }) {
                 buttonTitle: "Cancel Request",
                 popupTitle: `Cancel friend request to ${outgoingReq.recipient_username}`,
                 popupHeader: `Are you sure you want to cancel the friend request to ${outgoingReq.recipient_username}?`,
-                popupAction: () => cancelRequest(outgoingReq.request_id),
+                popupAction: async () => {
+                  "use server";
+                  cancelRequest(outgoingReq.request_id);
+                },
               },
             ]}
           />

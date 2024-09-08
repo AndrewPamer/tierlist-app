@@ -7,7 +7,7 @@ import ListScoreAlbum from "@/components/listscore/ListScoreAlbum";
 import ListScoreSong from "@/components/listscore/ListScoreSong";
 import SpotifySearchItemSkeleton from "@/components/SpotifySearchItemSkeleton";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import SpotifySearchItem from "@/components/tierlists/SpotifySearchItem";
+import BackArrow from "@/components/BackArrow";
 async function getListData(id) {
   const supabase = createClient();
 
@@ -57,9 +57,8 @@ export default async function List({ params: { id } }) {
 
   return (
     <main>
-      <Link href="/home" className=" px-2 py-1 hover:underline">
-        Back to Home
-      </Link>
+      <BackArrow backhref={"/home"} />
+
       <TierListScoreHeader
         list={data.list}
         collaborators={data.collaborators}

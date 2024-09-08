@@ -25,21 +25,12 @@ export default function DialogPopup({ data }) {
       <Dialog open={open} handler={() => setOpen(!open)}>
         <DialogHeader>{data.popupTitle}</DialogHeader>
         <DialogBody>{data.popupHeader}</DialogBody>
-        <DialogFooter>
-          <Button
-            variant="text"
-            color="red"
-            onClick={() => setOpen(!open)}
-            className="mr-1"
-          >
-            <span>Cancel</span>
+        <DialogFooter className="flex gap-2">
+          <Button variant="outlined" onClick={() => data.popupAction()}>
+            Confirm
           </Button>
-          <Button
-            variant="gradient"
-            color="green"
-            onClick={() => data.popupAction()}
-          >
-            <span>Confirm</span>
+          <Button onClick={() => setOpen(!open)} className="mr-1">
+            Cancel
           </Button>
         </DialogFooter>
       </Dialog>

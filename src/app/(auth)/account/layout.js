@@ -1,24 +1,10 @@
-// "use client";
-
-// import { getAuthContext } from "@/components/context/AuthContextProvider";
-// import { createClient } from "@/utils/supabase/client";
 import { createClient } from "@/utils/supabase/server";
 
 import Navbar from "@/components/friends/Navbar";
-// import { usePathname } from "next/navigation";
 
-// import {
-//   useQuery,
-//   useUpdateMutation,
-// } from "@supabase-cache-helpers/postgrest-swr";
-
-import {
-  Popover,
-  PopoverHandler,
-  PopoverContent,
-  Button,
-} from "@/components/TailwindComponents";
-
+import { Button } from "@/components/TailwindComponents";
+import AccountUserAvatar from "@/components/friends/AccountUserAvatar";
+import BackArrow from "@/components/BackArrow";
 import Link from "next/link";
 
 const colors = [
@@ -56,45 +42,15 @@ async function getUserInfo() {
 
 export default async function AccountLayout({ children }) {
   const data = await getUserInfo();
-  // const pathname = usePathname();
-
-  // const supabase = createClient();
-  // const user = getAuthContext();
-
-  // const { data, error, isLoading } = useQuery(
-  //   supabase
-  //     .from("profiles")
-  //     .select("username, color")
-  //     .eq("id", user?.id)
-  //     .single(),
-  //   {
-  //     revalidateOnFocus: false,
-  //     revalidateOnReconnect: false,
-  //   }
-  // );
-
-  // const { trigger: update } = useUpdateMutation(
-  //   supabase.from("profiles"),
-  //   ["id"],
-  //   null,
-  //   {
-  //     // onSuccess: () => console.log("SDf"),
-  //   }
-  // );
-
-  // if (isLoading) {
-  //   return "Loading...";
-  // }
 
   return (
     <main>
       <p className="text-sm">
-        <Link href="/home" className="p-2 inline-block">
-          Go Back
-        </Link>
+        <BackArrow backhref={"/home"} />
       </p>
       <div className="flex items-center flex-col ">
-        <Popover placement="bottom">
+        <AccountUserAvatar user={data} />
+        {/* <Popover placement="bottom">
           <PopoverHandler>
             <button
               className="flex justify-center items-center bg-red-400 w-24 h-24 rounded-full text-4xl"
@@ -117,7 +73,7 @@ export default async function AccountLayout({ children }) {
               })}
             </div>
           </PopoverContent>
-        </Popover>
+        </Popover> */}
         <h1 className="text-lg font-bold mt-1">{data.username}</h1>
         <form action="/auth/signout" method="post">
           <Button

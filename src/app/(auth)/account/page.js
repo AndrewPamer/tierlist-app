@@ -1,6 +1,11 @@
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
-import { Card, Typography, IconButton } from "@/components/TailwindComponents";
+import {
+  Card,
+  Typography,
+  IconButton,
+  Button,
+} from "@/components/TailwindComponents";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import DeleteListPopup from "@/components/friends/DeleteListPopup";
@@ -31,6 +36,18 @@ async function getUserLists() {
 
 export default async function Account() {
   const userLists = await getUserLists();
+  if (userLists.length === 0) {
+    return (
+      <Card className="bg-alt-bg text-text p-5 text-center">
+        <Typography variant="h5" className="mb-3">
+          No Lists
+        </Typography>
+        <Button>
+          <Link href="/create">Click here to create your first list</Link>
+        </Button>
+      </Card>
+    );
+  }
   return (
     <>
       {/* <Card className="flex flex-row flex-wrap bg-alt-bg gap-5 p-1.5 justify-center">

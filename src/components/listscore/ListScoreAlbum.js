@@ -38,7 +38,6 @@ async function getAlbumsInfo(albums) {
   return resJson;
 }
 export default async function ListScoreAlbum({ albums }) {
-  console.log(albums);
   const data = await Promise.all(
     albums.map(async (albumGroup) => {
       return await getAlbumsInfo(albumGroup);

@@ -9,13 +9,13 @@ import ListCreateForm from "@/components/tierlists/ListCreateForm";
 
 import ListEditPopup from "@/components/tierlists/ListEditPopup";
 import SpotifySearchWrapper from "@/components/tierlists/SpotifySearchWrapper";
+import BackArrow from "@/components/BackArrow";
 
 export default async function CreatePage() {
   return (
     <main>
-      <Link href="/home" className=" px-2 py-1 hover:underline">
-        Back to Home
-      </Link>
+      <BackArrow backhref={"/home"} />
+
       <Typography variant="h1" className="text-3xl text-center">
         Create a new List
       </Typography>

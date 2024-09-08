@@ -1,74 +1,53 @@
-"use client";
-import {
-  useSubscription,
-  useQuery,
-} from "@supabase-cache-helpers/postgrest-swr";
+import { createClient } from "@/utils/supabase/server";
+
 import FriendCard from "./FriendCard";
-export default function IncomingRequests({ supabase, user }) {
-  // const [incoming, setIncoming] = useState([]);
 
-  const { data, isLoading, error, mutate } = useQuery(
-    supabase.rpc("get_incoming_friend_requests"),
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
+async function acceptRequest(requestid) {
+  const supabase = createClient();
+  try {
+    const { error } = await supabase.rpc("accept_friend_request", {
+      requestid,
+    });
+    if (error) {
+      throw error;
     }
-  );
-
-  const { status } = useSubscription(
-    supabase,
-    "incoming_db_changes",
-    {
-      event: "*",
-      schema: "public",
-      table: "friendrequests",
-      filter: `recipient_id=eq.${user.id}`,
-    },
-    ["id"],
-    {
-      callback: (payload) => {
-        // console.log(payload);
-        mutate();
-      },
-    }
-  );
-
-  async function acceptRequest(requestid) {
-    try {
-      const { error } = await supabase.rpc("accept_friend_request", {
-        requestid,
-      });
-      if (error) {
-        throw error;
-      }
-    } catch (e) {
-      console.error(e);
-    }
+  } catch (e) {
+    console.error(e);
   }
+}
 
-  async function denyRequest(requestid) {
-    try {
-      const { error } = await supabase.rpc("deny_friend_request", {
-        requestid,
-      });
-      if (error) {
-        throw error;
-      }
-    } catch (e) {
-      console.error(e);
+async function denyRequest(requestid) {
+  const supabase = createClient();
+  try {
+    const { error } = await supabase.rpc("deny_friend_request", {
+      requestid,
+    });
+    if (error) {
+      throw error;
     }
+  } catch (e) {
+    console.error(e);
   }
+}
 
-  if (isLoading) {
-    return "Loading...";
-  }
+async function getIncomingRequests() {
+  const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const { data, error } = await supabase.rpc("get_incoming_friend_requests");
+  return data;
+}
 
-  if (data.length == 0) {
-    return null;
+export default async function IncomingRequests() {
+  const data = await getIncomingRequests();
+
+  if (data.length === 0) {
+    return;
   }
 
   return (
-    <div className="flex flex-col ">
+    <div className="flex flex-col">
       <h2 className="font-bold self-center">Incoming Friend Requests</h2>
       {data.map((incomingReq) => {
         return (
@@ -81,13 +60,19 @@ export default function IncomingRequests({ supabase, user }) {
                 buttonTitle: "Accept Request",
                 popupTitle: `Accept friend request from ${incomingReq.sender_username}`,
                 popupHeader: `Are you sure you want to accept the friend request from ${incomingReq.sender_username}?`,
-                popupAction: () => acceptRequest(incomingReq.request_id),
+                popupAction: async () => {
+                  "use server";
+                  acceptRequest(incomingReq.request_id);
+                },
               },
               {
                 buttonTitle: "Deny Request",
                 popupTitle: `Deny friend request from ${incomingReq.sender_username}`,
                 popupHeader: `Are you sure you want to deny the friend request from ${incomingReq.sender_username}?`,
-                popupAction: () => denyRequest(incomingReq.request_id),
+                popupAction: async () => {
+                  "use server";
+                  denyRequest(incomingReq.request_id);
+                },
               },
             ]}
           />

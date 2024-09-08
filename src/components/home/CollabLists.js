@@ -18,5 +18,8 @@ async function getCollabLists() {
 
 export default async function CollabLists() {
   const collabLists = await getCollabLists();
+  if (collabLists.length === 0) {
+    return;
+  }
   return <HomePageListCard header={"Collaborator Lists"} lists={collabLists} />;
 }

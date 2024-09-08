@@ -1,15 +1,15 @@
 "use client";
 import { useState, useMemo } from "react";
+import { useForm } from "react-hook-form";
 import { Input } from "@material-tailwind/react";
-import SpotifySearchItemClient from "../tierlists/SpotifySearchItemClient";
-import ListScoreAlbumBody from "./ListScoreAlbumBody";
-import AlbumAccordion from "../tierlists/AlbumAccordion";
-import useDebounce from "@/hooks/useDebounce";
 
+import useDebounce from "@/hooks/useDebounce";
+import ListSearch from "./ListSearch";
 export default function ListScoreAlbumsFilter({ albums }) {
   // const [filterAlbums, setFilterAlbums] = useState(albums);
+  const { register, watch } = useForm({ defaultValues: { search: "" } });
   const [searchText, setSearchText] = useState("");
-  const debouncedSearchText = useDebounce(searchText, 1500);
+  const debouncedSearchText = useDebounce(watch("search"), 333);
   const filterAlbums = useMemo(() => {
     if (debouncedSearchText === "") {
       return albums;
@@ -22,28 +22,11 @@ export default function ListScoreAlbumsFilter({ albums }) {
   }, [albums, debouncedSearchText]);
   return (
     <>
-      {debouncedSearchText}
-      <Input
-        label="Search for an album"
-        onChange={(e) => {
-          //   const filteredArr = albums.filter((album) =>
-          //     album.name.toUpperCase().includes(e.target.value.toUpperCase())
-          //   );
-
-          //   setFilterAlbums(filteredArr);
-          // }
-          setSearchText(e.target.value);
-        }}
-      />
-      {filterAlbums.map((album) => {
-        return (
-          <AlbumAccordion
-            header={<SpotifySearchItemClient item={album} />}
-            body={<ListScoreAlbumBody album={album} />}
-            key={album.id}
-          />
-        );
-      })}
+      {}
+      <form>
+        <Input {...register("search")} label="Search for an album" />
+      </form>
+      <ListSearch albums={filterAlbums} />
     </>
   );
 }
