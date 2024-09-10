@@ -231,7 +231,7 @@ export default function RootLayout({
     <html lang="en">
       <ThemeProvider value={theme}>
         <body
-          className={`!bg-background !text-text ${inter.className} ${inter.variable}`}
+          className={`!bg-background !text-text ${inter.className} ${inter.variable} max-w-screen-lg m-auto`}
         >
           {children}
           <SpeedInsights />

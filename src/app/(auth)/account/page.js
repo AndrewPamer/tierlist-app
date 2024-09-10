@@ -50,15 +50,6 @@ export default async function Account() {
   }
   return (
     <>
-      {/* <Card className="flex flex-row flex-wrap bg-alt-bg gap-5 p-1.5 justify-center">
-        {userLists.map((listItem) => {
-          return (
-            <Suspense key={listItem.id} fallback={<UserListCardPlaceholder />}>
-              <UserListCard list={listItem} />
-            </Suspense>
-          );
-        })}
-      </Card> */}
       <Card className="h-full w-full overflow-auto bg-alt-bg">
         <table className="w-full min-w-max table-auto text-left bg-alt-bg text-text">
           <thead>

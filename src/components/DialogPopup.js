@@ -26,7 +26,13 @@ export default function DialogPopup({ data }) {
         <DialogHeader>{data.popupTitle}</DialogHeader>
         <DialogBody>{data.popupHeader}</DialogBody>
         <DialogFooter className="flex gap-2">
-          <Button variant="outlined" onClick={() => data.popupAction()}>
+          <Button
+            variant="outlined"
+            onClick={async () => {
+              const k = await data.popupAction();
+              setOpen(!open);
+            }}
+          >
             Confirm
           </Button>
           <Button onClick={() => setOpen(!open)} className="mr-1">

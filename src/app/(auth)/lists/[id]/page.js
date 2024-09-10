@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 import { createClient } from "@/utils/supabase/server";
-import Link from "next/link";
 import TierListScoreHeader from "@/components/listscore/TierListScoreHeader";
 import AlbumAccordion from "@/components/tierlists/AlbumAccordion";
 import ListScoreAlbum from "@/components/listscore/ListScoreAlbum";
@@ -16,7 +15,6 @@ async function getListData(id) {
     { data: collabsData, error: collabsError },
     { data: songsData, error: songsError },
     { data: albumsData, error: albumsError },
-    { data: testD, error: testE },
   ] = await Promise.all([
     supabase
       .from("tierlists")
@@ -29,8 +27,6 @@ async function getListData(id) {
       )
       .eq("list_id", id),
     supabase.rpc("get_songs_and_scores", { query_list_id: id }),
-    supabase.rpc("get_albums_and_score", { query_list_id: id }),
-    // supabase.from("listalbums").select().eq("list_id", id),
     supabase.rpc("get_albums_and_score", { query_list_id: id }),
   ]);
 

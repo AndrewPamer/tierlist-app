@@ -1,11 +1,4 @@
-// "use client";
-// import {
-//   useSubscription,
-//   useQuery,
-// } from "@supabase-cache-helpers/postgrest-swr";
-
-// import { getAuthContext } from "@/components/context/AuthContextProvider";
-// import { createClient } from "@/utils/supabase/client";
+import { revalidatePath } from "next/cache";
 import { createClient } from "@/utils/supabase/server";
 
 import FriendCard from "@/components/friends/FriendCard";
@@ -52,6 +45,7 @@ export default async function Friends() {
                       "use server";
 
                       removeFriend(friend.friend_id);
+                      revalidatePath("/account/friends");
                     },
                   },
                 ]}
@@ -63,7 +57,7 @@ export default async function Friends() {
       ) : null}
       <IncomingRequests />
       <OutgoingRequests />
-      {/* <Search /> */}
+      <Search />
     </section>
   );
 }

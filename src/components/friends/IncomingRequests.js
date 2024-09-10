@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import { createClient } from "@/utils/supabase/server";
 
 import FriendCard from "./FriendCard";
@@ -63,6 +64,7 @@ export default async function IncomingRequests() {
                 popupAction: async () => {
                   "use server";
                   acceptRequest(incomingReq.request_id);
+                  revalidatePath("/account/friends");
                 },
               },
               {
@@ -72,6 +74,7 @@ export default async function IncomingRequests() {
                 popupAction: async () => {
                   "use server";
                   denyRequest(incomingReq.request_id);
+                  revalidatePath("/account/friends");
                 },
               },
             ]}
