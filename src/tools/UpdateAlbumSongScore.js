@@ -1,4 +1,5 @@
 "use server";
+import { revalidatePath } from "next/cache";
 // import { createClient } from "@/utils/supabase/client";
 // import { useUpsertMutation } from "@supabase-cache-helpers/postgrest-swr";
 import { createClient } from "@/utils/supabase/server";
@@ -21,23 +22,6 @@ export default async function UpdateAlbumSongScore({
   if (error) {
     return -1;
   }
-  return data[0].score;
-  // const supabase = createClient();
-  // const {
-  //   data: {
-  //     user: { id },
-  //   },
-  // } = await supabase.auth.getUser();
 
-  // upsert({
-  //   album_id,
-  //   user_id: id,
-  //   spotify_id,
-  //   score,
-  // });
-  //   const { data, error } = await supabase.rpc("update_album_song_score", {
-  //     album_id,
-  //     spotify_id,
-  //     score,
-  //   });
+  return data[0].score;
 }

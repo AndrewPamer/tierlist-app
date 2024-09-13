@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import TierListScoreHeader from "@/components/listscore/TierListScoreHeader";
 import AlbumAccordion from "@/components/tierlists/AlbumAccordion";
@@ -7,6 +8,19 @@ import ListScoreSong from "@/components/listscore/ListScoreSong";
 import SpotifySearchItemSkeleton from "@/components/SpotifySearchItemSkeleton";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import BackArrow from "@/components/BackArrow";
+
+async function canAccess(id) {
+  const supabase = createClient();
+  const { data: accessData, error: accessError } = await supabase.rpc(
+    "can_access_list",
+    {
+      listid: id,
+    }
+  );
+
+  return accessData;
+}
+
 async function getListData(id) {
   const supabase = createClient();
 
@@ -25,7 +39,8 @@ async function getListData(id) {
       .select(
         "profiles(id, username, color, listalbumsongscore(album_id, spotify_id, score), listalbumscore(id, score), listsongscore(id, score))"
       )
-      .eq("list_id", id),
+      .eq("list_id", id)
+      .order("collaborator_id"),
     supabase.rpc("get_songs_and_scores", { query_list_id: id }),
     supabase.rpc("get_albums_and_score", { query_list_id: id }),
   ]);
@@ -49,6 +64,10 @@ async function getListData(id) {
 }
 
 export default async function List({ params: { id } }) {
+  const access = await canAccess(id);
+  if (!access) {
+    redirect("/home");
+  }
   const data = await getListData(id);
 
   return (

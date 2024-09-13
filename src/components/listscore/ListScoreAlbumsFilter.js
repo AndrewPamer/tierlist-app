@@ -22,7 +22,6 @@ export default function ListScoreAlbumsFilter({ albums }) {
   }, [albums, debouncedSearchText]);
   return (
     <>
-      {}
       <form>
         <Input {...register("search")} label="Search for an album" />
       </form>
