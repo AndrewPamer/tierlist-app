@@ -107,21 +107,26 @@ export default async function List({ params: { id } }) {
         {data.songs?.length !== 0 && (
           <AlbumAccordion
             header={"Songs"}
-            body={data.songs.map((songs) => {
-              return (
-                <Suspense
-                  fallback={
-                    <div>
-                      {songs.map((song) => (
-                        <SpotifySearchItemSkeleton />
-                      ))}
-                    </div>
-                  }
-                >
-                  <ListScoreSong songs={songs} />
-                </Suspense>
-              );
-            })}
+            body={
+              <Suspense fallback={<LoadingSpinner />}>
+                <ListScoreSong songs={data.songs} />
+              </Suspense>
+            }
+            // body={data.songs.map((songs) => {
+            //   return (
+            //     <Suspense
+            //       fallback={
+            //         <div>
+            //           {songs.map((song) => (
+            //             <SpotifySearchItemSkeleton />
+            //           ))}
+            //         </div>
+            //       }
+            //     >
+            //       <ListScoreSong songs={songs} />
+            //     </Suspense>
+            //   );
+            // })}
           />
         )}
       </div>

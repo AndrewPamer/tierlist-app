@@ -2,7 +2,7 @@ import AlbumAccordion from "../tierlists/AlbumAccordion";
 import SpotifySearchItem from "../tierlists/SpotifySearchItem";
 import ListScoreAlbumBody from "./ListScoreAlbumBody";
 import getSpotifyToken from "@/tools/getSpotifyToken";
-import ListScoreAlbumsFilter from "./ListScoreAlbumsFilter";
+import ItemFilter from "./ItemFilter";
 async function getAlbumsInfo(albums) {
   const { access_token } = await getSpotifyToken();
 
@@ -40,7 +40,7 @@ async function getAlbumsInfo(albums) {
 export default async function ListScoreAlbum({ albums }) {
   const data = await Promise.all(
     albums.map(async (albumGroup) => {
-      return await getAlbumsInfo(albumGroup);
+      return getAlbumsInfo(albumGroup);
     })
   );
   const albumsData = [];
@@ -48,7 +48,7 @@ export default async function ListScoreAlbum({ albums }) {
     albumsData.push(...albumData.albums);
   });
   // const data = await getAlbumsInfo(albums);
-  return <ListScoreAlbumsFilter albums={albumsData} />;
+  return <ItemFilter items={albumsData} />;
   return albumsData.map((album) => {
     return (
       <AlbumAccordion

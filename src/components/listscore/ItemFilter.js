@@ -1,31 +1,33 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { Input } from "@material-tailwind/react";
 
 import useDebounce from "@/hooks/useDebounce";
 import ListSearch from "./ListSearch";
-export default function ListScoreAlbumsFilter({ albums }) {
-  // const [filterAlbums, setFilterAlbums] = useState(albums);
+export default function ItemFilter({ items, album = true }) {
   const { register, watch } = useForm({ defaultValues: { search: "" } });
-  const [searchText, setSearchText] = useState("");
   const debouncedSearchText = useDebounce(watch("search"), 333);
-  const filterAlbums = useMemo(() => {
+  const filterItems = useMemo(() => {
     if (debouncedSearchText === "") {
-      return albums;
+      return items;
     }
-    return albums.filter((album) => {
-      return album.name
+    return items.filter((item) => {
+      return item.name
         .toUpperCase()
         .includes(debouncedSearchText.toUpperCase());
     });
-  }, [albums, debouncedSearchText]);
+  }, [items, debouncedSearchText]);
+
   return (
     <>
       <form>
-        <Input {...register("search")} label="Search for an album" />
+        <Input
+          {...register("search")}
+          label={`Search for ${album ? "an" : "a"} ${album ? "album" : "song"}`}
+        />
       </form>
-      <ListSearch albums={filterAlbums} />
+      <ListSearch items={filterItems} album={album} />
     </>
   );
 }

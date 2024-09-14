@@ -1,12 +1,12 @@
-import { Suspense } from "react";
 import { ListItem } from "@/components/TailwindComponents";
-import LoadingSpinner from "../LoadingSpinner";
 import SpotifySearchItem from "../tierlists/SpotifySearchItem";
 import getSpotifyToken from "@/tools/getSpotifyToken";
-import ItemScoreFetcher from "./ItemScoreFetcher";
 import CollabsScore from "./CollabsScore";
 import ItemScore from "./ItemScore";
-async function getSongs(songs) {
+
+import ItemFilter from "./ItemFilter";
+
+async function getSongsInfo(songs) {
   const { access_token } = await getSpotifyToken();
   const songIdMap = new Map(
     songs.map((song) => [
@@ -38,7 +38,21 @@ async function getSongs(songs) {
   return resJson;
 }
 export default async function ListScoreSong({ songs }) {
-  const data = await getSongs(songs);
+  // const data = await getSongs(songs);
+  const data = await Promise.all(
+    songs.map(async (songGroup) => {
+      return getSongsInfo(songGroup);
+    })
+  );
+
+  const songsData = [];
+  data.map((songData) => {
+    songsData.push(...songData.tracks);
+  });
+
+  return <ItemFilter items={songsData} album={false} />;
+
+  return "F";
   return data.tracks.map((song) => {
     return (
       <ListItem
@@ -47,7 +61,7 @@ export default async function ListScoreSong({ songs }) {
         ripple={false}
       >
         <SpotifySearchItem item={song} />
-        {song.collaborators[0].collaborator_id && (
+        {song.collaborators[0]?.collaborator_id && (
           <CollabsScore collabs={song.collaborators} />
         )}
 

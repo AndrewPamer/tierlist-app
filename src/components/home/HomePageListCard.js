@@ -13,7 +13,7 @@ export default function HomePageListCard({ header, lists }) {
       >
         <Typography variant="h5">{header}</Typography>
       </CardHeader>
-      <CardBody className=" flex gap-2 overflow-x-auto ">
+      <CardBody className=" flex gap-2 overflow-x-auto lg:flex-wrap">
         {lists.map((listItem) => {
           return (
             <Suspense key={listItem.id} fallback={<UserListCardPlaceholder />}>
