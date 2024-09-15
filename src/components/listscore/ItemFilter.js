@@ -5,7 +5,7 @@ import { Input } from "@material-tailwind/react";
 
 import useDebounce from "@/hooks/useDebounce";
 import ListSearch from "./ListSearch";
-export default function ItemFilter({ items, album = true }) {
+export default function ItemFilter({ items, album = true, canScore }) {
   const { register, watch } = useForm({ defaultValues: { search: "" } });
   const debouncedSearchText = useDebounce(watch("search"), 333);
   const filterItems = useMemo(() => {
@@ -27,7 +27,7 @@ export default function ItemFilter({ items, album = true }) {
           label={`Search for ${album ? "an" : "a"} ${album ? "album" : "song"}`}
         />
       </form>
-      <ListSearch items={filterItems} album={album} />
+      <ListSearch items={filterItems} album={album} canScore={canScore} />
     </>
   );
 }

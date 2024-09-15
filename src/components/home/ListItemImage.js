@@ -20,13 +20,7 @@ async function getCoverArt({ type, id }) {
 }
 export default async function ListItemImage({ item, className }) {
   const data = await getCoverArt({ type: item.type, id: item.id });
-  // const { data, error, isLoading } = useGetCoverArt({
-  //   ID: item.id,
-  //   type: item.type,
-  // });
-  // if (isLoading) {
-  //   return;
-  // }
+
   const imageSrcs = item.type === "tracks" ? data?.album?.images : data?.images;
   return (
     <BlurImage

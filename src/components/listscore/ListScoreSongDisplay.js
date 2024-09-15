@@ -3,7 +3,7 @@ import { ListItem } from "@material-tailwind/react";
 import SpotifySearchItemClient from "../tierlists/SpotifySearchItemClient";
 import CollabsScore from "./CollabsScore";
 import ItemScore from "./ItemScore";
-export default function ListScoreSongDisplay({ song }) {
+export default function ListScoreSongDisplay({ song, canScore }) {
   return (
     <ListItem
       key={song.song_id}
@@ -14,12 +14,13 @@ export default function ListScoreSongDisplay({ song }) {
       {song.collaborators[0]?.collaborator_id && (
         <CollabsScore collabs={song.collaborators} />
       )}
-
-      <ItemScore
-        songID={song.song_id}
-        albumSong={false}
-        defaultScore={song.score ?? undefined}
-      />
+      {canScore && (
+        <ItemScore
+          songID={song.song_id}
+          albumSong={false}
+          defaultScore={song.score ?? undefined}
+        />
+      )}
     </ListItem>
   );
 }

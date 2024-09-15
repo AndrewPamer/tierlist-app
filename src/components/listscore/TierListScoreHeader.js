@@ -1,11 +1,22 @@
 "use client";
-import { Typography, Tooltip } from "@material-tailwind/react";
-export default function TierListScoreHeader({ list, collaborators }) {
+import { Typography, Tooltip, IconButton } from "@material-tailwind/react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+export default function TierListScoreHeader({ list, collaborators, isOwner }) {
   const creatorProfile = list.profiles;
+
   return (
     <header className="mt-5">
-      <Typography variant="h1" className="text-3xl text-center font-bold">
+      <Typography
+        variant="h1"
+        className="text-3xl text-center font-bold flex justify-center gap-3"
+      >
         {list.name}
+        {isOwner && (
+          <IconButton>
+            <FontAwesomeIcon icon={faPenToSquare} className="text-lg" />
+          </IconButton>
+        )}
       </Typography>
       <section
         className={`flex  mt-3 ${

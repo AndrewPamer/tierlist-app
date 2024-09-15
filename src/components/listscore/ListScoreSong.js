@@ -37,7 +37,7 @@ async function getSongsInfo(songs) {
   });
   return resJson;
 }
-export default async function ListScoreSong({ songs }) {
+export default async function ListScoreSong({ songs, canScore }) {
   // const data = await getSongs(songs);
   const data = await Promise.all(
     songs.map(async (songGroup) => {
@@ -50,7 +50,7 @@ export default async function ListScoreSong({ songs }) {
     songsData.push(...songData.tracks);
   });
 
-  return <ItemFilter items={songsData} album={false} />;
+  return <ItemFilter items={songsData} album={false} canScore={canScore} />;
 
   return "F";
   return data.tracks.map((song) => {

@@ -1,35 +1,23 @@
 "use client";
-import { createClient } from "@/utils/supabase/client";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import {
   Input,
   Typography,
   Card,
   CardHeader,
   CardBody,
+  IconButton,
 } from "@material-tailwind/react";
-import { useQuery } from "@supabase-cache-helpers/postgrest-swr";
-import HomePageListCard from "./HomePageListCard";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import publicListSearch from "@/tools/publicListSearch";
 import LoadingSpinner from "../LoadingSpinner";
 export default function PublicListSearch() {
-  const supabase = createClient();
-  const [search, setSearch] = useState(null);
-
-  function handleSearch(e) {
-    if (e.target.value === "") {
-      setSearch(null);
-    } else {
-      setSearch(e.target.value);
-    }
-  }
-
-  const { data, error, isLoading } = useQuery(
-    supabase.rpc("public_list_search", {
-      search: search,
-    })
-  );
-
-  console.log(data, error);
+  const [firstSearch, setFirstSearch] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [searchData, setSearchData] = useState([]);
+  const { register, handleSubmit } = useForm();
 
   return (
     <Card className="bg-alt-bg text-text ">
@@ -43,13 +31,36 @@ export default function PublicListSearch() {
         </Typography>
       </CardHeader>
       <CardBody>
-        <Input label="List Name" onChange={(e) => handleSearch(e)} />
-        {isLoading ? (
+        <form
+          onSubmit={handleSubmit(async (data) => {
+            if (data.search !== "") {
+              try {
+                setLoading(true);
+                const listSearchData = await publicListSearch(data.search);
+                setSearchData(listSearchData);
+              } catch (e) {
+                console.error(e);
+              } finally {
+                setLoading(false);
+                setFirstSearch(false);
+              }
+            }
+          })}
+          className="flex gap-2"
+        >
+          <Input label="List Name" {...register("search")} />
+          <IconButton type="submit">
+            <FontAwesomeIcon icon={faMagnifyingGlass} size="xl" />
+          </IconButton>
+        </form>
+        {loading ? (
           <LoadingSpinner />
-        ) : data?.length === 0 ? (
-          <Typography>No Result</Typography>
+        ) : searchData?.length === 0 && !firstSearch ? (
+          <Typography>No Results</Typography>
+        ) : firstSearch ? (
+          <></>
         ) : (
-          <HomePageListCard header={""} lists={data} />
+          <div>{searchData.map((searchList) => {})}</div>
         )}
       </CardBody>
     </Card>

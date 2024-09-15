@@ -4,16 +4,16 @@ import AlbumAccordion from "../tierlists/AlbumAccordion";
 import ListScoreSongDisplay from "./ListScoreSongDisplay";
 import ListScoreAlbumBody from "./ListScoreAlbumBody";
 import SpotifySearchItemClient from "../tierlists/SpotifySearchItemClient";
-const ListSearch = memo(function ListSearch({ items, album = true }) {
+const ListSearch = memo(function ListSearch({ items, album = true, canScore }) {
   if (album) {
     return (
       <>
         {items.map((album) => {
           return (
             <AlbumAccordion
-              header={<SpotifySearchItemClient item={album} />}
-              body={<ListScoreAlbumBody album={album} />}
               key={album.id}
+              header={<SpotifySearchItemClient item={album} />}
+              body={<ListScoreAlbumBody album={album} canScore={canScore} />}
             />
           );
         })}
@@ -24,7 +24,13 @@ const ListSearch = memo(function ListSearch({ items, album = true }) {
     return (
       <>
         {items.map((song) => {
-          return <ListScoreSongDisplay key={song.id} song={song} />;
+          return (
+            <ListScoreSongDisplay
+              key={song.id}
+              song={song}
+              canScore={canScore}
+            />
+          );
         })}
       </>
     );

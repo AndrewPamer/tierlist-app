@@ -1,10 +1,5 @@
-// "use client";
 import { createClient } from "@/utils/supabase/server";
-// import { createClient } from "@/utils/supabase/client";
 import ListItemImage from "./ListItemImage";
-// import LoadingSpinner from "../LoadingSpinner";
-
-// import useSWR from "swr";
 
 async function getItemIDs(listID) {
   const itemsIDs = [];
@@ -46,12 +41,6 @@ async function getItemIDs(listID) {
 
 export default async function ListImageCollage({ listID }) {
   const data = await getItemIDs(listID);
-
-  // const { data: itemsIDs, error, isLoading } = useSWR([listID], getItemIDs);
-
-  // if (isLoading) {
-  //   return;
-  // }
 
   return (
     <div className="grid grid-cols-2 grid-rows-2  ">

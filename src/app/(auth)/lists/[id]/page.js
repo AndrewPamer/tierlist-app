@@ -5,7 +5,6 @@ import TierListScoreHeader from "@/components/listscore/TierListScoreHeader";
 import AlbumAccordion from "@/components/tierlists/AlbumAccordion";
 import ListScoreAlbum from "@/components/listscore/ListScoreAlbum";
 import ListScoreSong from "@/components/listscore/ListScoreSong";
-import SpotifySearchItemSkeleton from "@/components/SpotifySearchItemSkeleton";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import BackArrow from "@/components/BackArrow";
 
@@ -23,6 +22,9 @@ async function canAccess(id) {
 
 async function getListData(id) {
   const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   const [
     { data: tierListData, error: tierListError },
@@ -55,8 +57,16 @@ async function getListData(id) {
     songChunks.push(songsData.slice(i, i + 50));
   }
 
+  let isUserCollab = false;
+  collabsData.forEach((collab) => {
+    if (collab.profiles.id === user.id) {
+      isUserCollab = true;
+    }
+  });
   return {
     list: tierListData[0],
+    isOwner: user.id === tierListData[0].creator_id,
+    isUserCollab,
     collaborators: collabsData,
     songs: songChunks,
     albums: albumChunks,
@@ -77,29 +87,19 @@ export default async function List({ params: { id } }) {
       <TierListScoreHeader
         list={data.list}
         collaborators={data.collaborators}
+        isOwner={data.isOwner}
       />
+
       <div className="bg-alt-bg p-3 rounded-md mt-10">
         {data.albums?.length !== 0 && (
           <AlbumAccordion
             header={"Albums"}
-            // body={data.albums.map((albums) => {
-            //   return (
-            //     <Suspense
-            //       fallback={
-            //         <div>
-            //           {albums.map((album) => (
-            //             <SpotifySearchItemSkeleton key={album.id} />
-            //           ))}
-            //         </div>
-            //       }
-            //     >
-            //       <ListScoreAlbum albums={albums} />
-            //     </Suspense>
-            //   );
-            // })}
             body={
               <Suspense fallback={<LoadingSpinner />}>
-                <ListScoreAlbum albums={data.albums} />
+                <ListScoreAlbum
+                  albums={data.albums}
+                  canScore={data.isOwner || data.isUserCollab}
+                />
               </Suspense>
             }
           />
@@ -109,24 +109,12 @@ export default async function List({ params: { id } }) {
             header={"Songs"}
             body={
               <Suspense fallback={<LoadingSpinner />}>
-                <ListScoreSong songs={data.songs} />
+                <ListScoreSong
+                  songs={data.songs}
+                  canScore={data.isOwner || data.isUserCollab}
+                />
               </Suspense>
             }
-            // body={data.songs.map((songs) => {
-            //   return (
-            //     <Suspense
-            //       fallback={
-            //         <div>
-            //           {songs.map((song) => (
-            //             <SpotifySearchItemSkeleton />
-            //           ))}
-            //         </div>
-            //       }
-            //     >
-            //       <ListScoreSong songs={songs} />
-            //     </Suspense>
-            //   );
-            // })}
           />
         )}
       </div>

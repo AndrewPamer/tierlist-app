@@ -2,8 +2,7 @@ import { List, ListItem, Typography } from "@/components/TailwindComponents";
 
 import ItemScore from "./ItemScore";
 import CollabsScore from "./CollabsScore";
-
-export default function ListScoreAlbumBody({ album }) {
+export default function ListScoreAlbumBody({ album, canScore }) {
   let songScoreDict = {};
   album.user_song_scores.forEach((score) => {
     songScoreDict[score.song_id] = score.score;
@@ -36,12 +35,14 @@ export default function ListScoreAlbumBody({ album }) {
                 })}
               />
             )}
-            <ItemScore
-              albumID={album.album_id}
-              songID={item.id}
-              albumSong={true}
-              defaultScore={songScoreDict[item.id]}
-            />
+            {canScore && (
+              <ItemScore
+                albumID={album.album_id}
+                songID={item.id}
+                albumSong={true}
+                defaultScore={songScoreDict[item.id]}
+              />
+            )}
           </ListItem>
         );
       })}

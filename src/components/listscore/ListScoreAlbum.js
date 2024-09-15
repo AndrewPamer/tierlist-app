@@ -37,7 +37,7 @@ async function getAlbumsInfo(albums) {
 
   return resJson;
 }
-export default async function ListScoreAlbum({ albums }) {
+export default async function ListScoreAlbum({ albums, canScore }) {
   const data = await Promise.all(
     albums.map(async (albumGroup) => {
       return getAlbumsInfo(albumGroup);
@@ -48,7 +48,7 @@ export default async function ListScoreAlbum({ albums }) {
     albumsData.push(...albumData.albums);
   });
   // const data = await getAlbumsInfo(albums);
-  return <ItemFilter items={albumsData} />;
+  return <ItemFilter items={albumsData} canScore={canScore} />;
   return albumsData.map((album) => {
     return (
       <AlbumAccordion
