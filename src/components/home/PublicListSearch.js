@@ -65,7 +65,6 @@ export default function PublicListSearch() {
         ) : (
           <div className="flex gap-2 overflow-x-auto lg:flex-wrap mt-5">
             {searchData.map((searchList, i) => {
-              console.log(searchList);
               return (
                 <Link href={`/lists/${searchList.list.id}`}>
                   <Card

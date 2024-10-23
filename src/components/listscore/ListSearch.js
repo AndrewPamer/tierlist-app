@@ -11,7 +11,6 @@ const ListSearch = memo(function ListSearch({ items, album = true, canScore }) {
         {items.map((album) => {
           return (
             <AlbumAccordion
-              key={album.id}
               header={<SpotifySearchItemClient item={album} />}
               body={<ListScoreAlbumBody album={album} canScore={canScore} />}
             />

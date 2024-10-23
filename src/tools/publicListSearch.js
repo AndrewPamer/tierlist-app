@@ -82,7 +82,7 @@ export default async function publicListSearch(search) {
             : imageSrc?.images;
         })
       );
-      return { imageItems: imageSrcs, list: item.list };
+      return { imageItems: imageSrcs, list: item.list, key: item.list.id };
     })
   );
   return dataWithImageSrcs;
